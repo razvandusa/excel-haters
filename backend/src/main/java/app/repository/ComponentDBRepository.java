@@ -86,6 +86,32 @@ public class ComponentDBRepository {
     }
 
     /**
+     * Check if terminal exists in database
+     * @param terminalId Terminal id to check
+     * @return True if terminal exists, false otherwise
+     */
+    public Boolean findTerminalById(Long terminalId) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM component WHERE terminal_id = ?);";
+
+        try (Connection conn = DriverManager.getConnection(url, username, password);
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setLong(1, terminalId);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getBoolean(1);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return false;
+    }
+
+    /**
      * Find component by id. If component is not found, null is returned.
      * @param id Component id to find
      * @return Component object if found, null otherwise

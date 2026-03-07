@@ -78,6 +78,30 @@ public class AssignmentDBRepository {
     }
 
     /**
+     * Check if assignment exists in database.
+     * @param assignment Assignment to check
+     * @return assignment if exists, null otherwise
+     */
+    public Assignment findById(Assignment assignment) {
+        String sql = "SELECT * FROM assignment WHERE start = ? AND finish = ? AND component_id = ? AND flight_id = ?;";
+        try (Connection conn = DriverManager.getConnection(url, username, password);
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setTimestamp(1, Timestamp.valueOf(assignment.getStart()));
+            ps.setTimestamp(2, Timestamp.valueOf(assignment.getEnd()));
+            ps.setLong(3, assignment.getIdComponent());
+            ps.setString(4, assignment.getIdFlight());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Assignment(assignment.getStart(), assignment.getEnd(), assignment.getIdComponent(), assignment.getIdFlight());
+            }
+        } catch (SQLException e) {
+            System.out.println("Error finding assignment from database: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    /**
      * Get all assignments from database
      * @return List of all assignments
      */
