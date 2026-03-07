@@ -61,6 +61,7 @@ public class ComponentController {
             @RequestParam String startTime,
             @RequestParam String endTime
     ) {
+        // assignmentService.findBy...
         return List.of(
                 Map.of("id", 21, "name", "Gate B3", "type", type, "isActive", true),
                 Map.of("id", 22, "name", "Gate B4", "type", type, "isActive", true)

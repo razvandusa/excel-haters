@@ -8,7 +8,7 @@ import java.util.Map;
 
 @RestController
 public class AssignmentController {
-
+    // assignmentService
     @GetMapping("/api/components/{componentId}/assignments")
     public List<Map<String, Object>> getAssignmentsForComponentByDate(
             @PathVariable Long componentId,

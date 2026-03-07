@@ -24,6 +24,7 @@ public class TerminalController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Map<String, Object> createTerminal(@RequestBody CreateTerminalRequest request) {
+        // service.
         return Map.of(
                 "message", "Terminal created",
                 "name", request.getName(),
