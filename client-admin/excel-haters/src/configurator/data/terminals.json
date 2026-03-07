@@ -1,0 +1,140 @@
+[
+  {
+    "id": "T1",
+    "name": "North Wing",
+    "type": "arrivals",
+    "isActive": true
+  },
+  {
+    "id": "T2",
+    "name": "Central Hall",
+    "type": "departures",
+    "isActive": true
+  },
+  {
+    "id": "T3",
+    "name": "East Annex",
+    "type": "arrivals",
+    "isActive": false
+  },
+  {
+    "id": "T4",
+    "name": "South Concourse",
+    "type": "departures",
+    "isActive": true
+  },
+  {
+    "id": "T5",
+    "name": "West Pier",
+    "type": "arrivals",
+    "isActive": true
+  },
+  {
+    "id": "T6",
+    "name": "Skybridge Hub",
+    "type": "departures",
+    "isActive": false
+  },
+  {
+    "id": "T7",
+    "name": "Runway Gatehouse",
+    "type": "arrivals",
+    "isActive": true
+  },
+  {
+    "id": "T8",
+    "name": "Aurora Terminal",
+    "type": "departures",
+    "isActive": true
+  },
+  {
+    "id": "T9",
+    "name": "Harbor Wing",
+    "type": "arrivals",
+    "isActive": false
+  },
+  {
+    "id": "T10",
+    "name": "Delta Hall",
+    "type": "departures",
+    "isActive": true
+  },
+  {
+    "id": "T11",
+    "name": "Maple Concourse",
+    "type": "arrivals",
+    "isActive": true
+  },
+  {
+    "id": "T12",
+    "name": "Cedar Pier",
+    "type": "departures",
+    "isActive": false
+  },
+  {
+    "id": "T13",
+    "name": "Northern Dock",
+    "type": "arrivals",
+    "isActive": true
+  },
+  {
+    "id": "T14",
+    "name": "Southern Dock",
+    "type": "departures",
+    "isActive": true
+  },
+  {
+    "id": "T15",
+    "name": "Comet Terminal",
+    "type": "arrivals",
+    "isActive": false
+  },
+  {
+    "id": "T16",
+    "name": "Galaxy Hall",
+    "type": "departures",
+    "isActive": true
+  },
+  {
+    "id": "T17",
+    "name": "Summit Wing",
+    "type": "arrivals",
+    "isActive": true
+  },
+  {
+    "id": "T18",
+    "name": "Valley Concourse",
+    "type": "departures",
+    "isActive": false
+  },
+  {
+    "id": "T19",
+    "name": "Riverfront Hub",
+    "type": "arrivals",
+    "isActive": true
+  },
+  {
+    "id": "T20",
+    "name": "Cloudline Pier",
+    "type": "departures",
+    "isActive": true
+  },
+  {
+    "id": "T21",
+    "name": "Pioneer Terminal",
+    "type": "arrivals",
+    "isActive": false
+  },
+  {
+    "id": "T22",
+    "name": "Liberty Hall",
+    "type": "departures",
+    "isActive": true
+  },
+  {
+    "id": "T23",
+    "name": "Horizon Annex",
+    "type": "arrivals",
+    "isActive": true
+  }
+]
