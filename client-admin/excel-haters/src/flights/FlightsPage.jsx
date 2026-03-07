@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import AddFlightModal from './components/AddFlightModal.jsx'
 import FlightActionModal from './components/FlightActionModal.jsx'
 import cancelFlightFieldDefinitions from './config/cancelFlightFieldDefinitions.js'
@@ -6,12 +7,14 @@ import updateFlightTimeFieldDefinitions from './config/updateFlightTimeFieldDefi
 import useFlightForm from './hooks/useFlightForm.js'
 
 export default function FlightsPage() {
+  const excelInputRef = useRef(null)
   const {
     closeForm,
     draftCancelFlight,
     draftFlight,
     draftFlightTimeUpdate,
     handleCancelFlightChange,
+    handleExcelUpload,
     handleFieldChange,
     handleFlightTimeChange,
     isAddFormOpen,
@@ -35,7 +38,11 @@ export default function FlightsPage() {
         <h1 className="page-title">{flightsContent.title}</h1>
 
         <div className="flights-page-actions">
-          <button type="button" className="configurator-action-link">
+          <button
+            type="button"
+            className="configurator-action-link"
+            onClick={() => excelInputRef.current?.click()}
+          >
             {flightsContent.addExcelLabel}
           </button>
           <button
@@ -60,6 +67,13 @@ export default function FlightsPage() {
             {flightsContent.cancelFlightLabel}
           </button>
         </div>
+        <input
+          ref={excelInputRef}
+          type="file"
+          accept=".xlsx,.xls"
+          className="configurator-image-panel__input"
+          onChange={handleExcelUpload}
+        />
       </div>
 
       <AddFlightModal

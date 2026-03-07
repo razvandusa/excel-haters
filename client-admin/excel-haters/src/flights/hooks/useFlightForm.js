@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import * as XLSX from 'xlsx'
 
 const emptyFlightForm = {
   flightID: '',
@@ -18,6 +19,33 @@ const emptyFlightTimeUpdateForm = {
 
 const emptyCancelFlightForm = {
   id: '',
+}
+
+function formatDateTimeValue(value) {
+  if (!value) {
+    return value
+  }
+
+  const normalizedValue = String(value).trim()
+
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(normalizedValue)) {
+    return `${normalizedValue.replace('T', ' ')}:00`
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(normalizedValue)) {
+    return normalizedValue.replace('T', ' ')
+  }
+
+  return normalizedValue
+}
+
+function normalizeFlightTimes(payload) {
+  return {
+    ...payload,
+    departureTime: formatDateTimeValue(payload.departureTime),
+    arrivalTime: formatDateTimeValue(payload.arrivalTime),
+    newTime: formatDateTimeValue(payload.newTime),
+  }
 }
 
 export default function useFlightForm() {
@@ -79,10 +107,48 @@ export default function useFlightForm() {
     setActiveForm('')
   }
 
+  async function handleExcelUpload(event) {
+    const [file] = event.target.files || []
+
+    if (!file) {
+      return
+    }
+
+    try {
+      const fileBuffer = await file.arrayBuffer()
+      const workbook = XLSX.read(fileBuffer, { type: 'array' })
+      const sheets = workbook.SheetNames.map((sheetName) => ({
+        name: sheetName,
+        rows: XLSX.utils
+          .sheet_to_json(workbook.Sheets[sheetName], {
+            defval: '',
+          })
+          .map((row) => normalizeFlightTimes(row)),
+      }))
+
+      console.log(
+        'Loaded flight Excel JSON:',
+        JSON.stringify(
+          {
+            fileName: file.name,
+            sheets,
+          },
+          null,
+          2,
+        ),
+      )
+    } finally {
+      event.target.value = ''
+    }
+  }
+
   function submitFlight(event) {
     event.preventDefault()
 
-    console.log('Added flight JSON:', JSON.stringify(draftFlight, null, 2))
+    console.log(
+      'Added flight JSON:',
+      JSON.stringify(normalizeFlightTimes(draftFlight), null, 2),
+    )
     resetForm()
     closeForm()
   }
@@ -92,7 +158,7 @@ export default function useFlightForm() {
 
     console.log(
       'Updated flight time JSON:',
-      JSON.stringify(draftFlightTimeUpdate, null, 2),
+      JSON.stringify(normalizeFlightTimes(draftFlightTimeUpdate), null, 2),
     )
     resetFlightTimeForm()
     closeForm()
@@ -122,6 +188,7 @@ export default function useFlightForm() {
     draftFlight,
     draftFlightTimeUpdate,
     handleCancelFlightChange,
+    handleExcelUpload,
     handleFieldChange,
     handleFlightTimeChange,
     isAddFormOpen: activeForm === 'add',
