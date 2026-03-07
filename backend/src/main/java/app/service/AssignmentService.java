@@ -79,7 +79,7 @@ public class AssignmentService {
 
         Assignment existingAssignment = repository.findById(assignment);
         if (existingAssignment == null) {
-            throw new IllegalArgumentException("Assignment with id " + assignment.getId() + " does not exist.");
+            throw new IllegalArgumentException("Assignment does not exist.");
         }
 
         var component = componentService.findById(assignment.getIdComponent());
