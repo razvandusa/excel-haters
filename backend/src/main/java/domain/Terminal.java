@@ -1,12 +1,13 @@
 package domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Terminal {
     Long id;
     String name;
     Boolean active;
-    List<Component> components;
+    List<Component> components = new ArrayList<>();
 
     public Terminal(String name, Boolean active) {
         this.name = name;
