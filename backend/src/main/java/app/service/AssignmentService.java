@@ -2,11 +2,15 @@ package app.service;
 
 import app.domain.Assignment;
 import app.domain.Component;
+import app.dto.assignment.UpdateAssignmentRequest;
+import app.repository.AssignmentDBRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Service
 public class AssignmentService {
 
     private final AssignmentDBRepository repository;
@@ -64,7 +68,8 @@ public class AssignmentService {
         repository.save(assignment);
     }
 
-    public void update(Assignment assignment) {
+    public void update(UpdateAssignmentRequest updateAssignmentRequest) {
+        repository.deleteById();
         if (assignment == null) {
             throw new IllegalArgumentException("Assignment assignment nu poate fi null");
         }

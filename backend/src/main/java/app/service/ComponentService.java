@@ -2,18 +2,28 @@ package app.service;
 
 import app.domain.Component;
 import app.domain.Terminal;
+import app.dto.component.CreateComponentRequest;
+import app.dto.component.UpdateComponentRequest;
+import app.repository.ComponentDBRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ComponentService {
 
-    private final ComponentsDBRepository repository;
+    private final ComponentDBRepository repository;
 
-    public ComponentService(ComponentsDBRepository repository) {
+    public ComponentService(ComponentDBRepository repository) {
         this.repository = repository;
     }
 
-    public void add(Component component) {
+    public void add(Long terminalId, CreateComponentRequest componentRequest) {
+        Component component = new Component();
+        component.setName(componentRequest.getName());
+        component.setType(componentRequest.getType());
+        component.setActive(componentRequest.getIsActive());
+        component.setTerminalId(terminalId);
         // Verificare ca componenta sa nu fie null
         if (component == null) {
             throw new IllegalArgumentException("Componentul nu poate fi null");
@@ -51,9 +61,6 @@ public class ComponentService {
             throw new IllegalArgumentException("Tipul componentului trebuie să fie GATE, DESK, SECURITY sau STAND");
         }
 
-        // Setam sa nu fie activa componenta cand o adaugam
-        component.setActive(false);
-
         repository.save(component);
     }
 
@@ -68,7 +75,7 @@ public class ComponentService {
         repository.deleteById(id);
     }
 
-    public void update(Long id, String name, Boolean active) {
+    public void update(Long id, UpdateComponentRequest updateComponentRequest) {
         // Verificare daca componenta exista
         Component component = repository.findById(id);
         if (component == null) {
@@ -76,14 +83,11 @@ public class ComponentService {
         }
 
         // Verificare ca numele pe care vrem sa il setam exista si nu e gol
-        if (name != null && !name.isBlank()) {
-            component.setName(name);
+        if (updateComponentRequest.getName() != null && !updateComponentRequest.getName().isBlank()) {
+            component.setName(updateComponentRequest.getName());
         }
 
-        // Verificare ca statusul de active care vrem sa il setam exista
-        if (active != null) {
-            component.setActive(active);
-        }
+        component.setActive(updateComponentRequest.getIsActive());
 
         repository.update(component);
     }
@@ -92,7 +96,7 @@ public class ComponentService {
         return repository.findById(id);
     }
 
-    public Long findByName(String name) {
+    public Component findByName(String name) {
         return repository.findByName(name);
     }
 
