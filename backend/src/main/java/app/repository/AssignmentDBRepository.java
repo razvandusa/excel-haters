@@ -24,6 +24,10 @@ public class AssignmentDBRepository {
         }
     }
 
+    /**
+     * Save assignment to database
+     * @param assignment Assignment to save
+     */
     public void save(Assignment assignment) {
         String sql = "INSERT INTO assignment (start, finish, component_id, flight_id) VALUES (?, ?, ?, ?);";
         try (Connection conn = DriverManager.getConnection(url, username, password);
@@ -39,14 +43,40 @@ public class AssignmentDBRepository {
         }
     }
 
-    public void deleteById(Long id) {
-
+    /**
+     * Update assignment in database. If assignment is not found, nothing happens.
+     * @param assignment Assignment to update
+     */
+    public void update(Assignment assignment) {
+        //first delete the old assignment
+        delete(assignment.getStart(), assignment.getEnd(), assignment.getIdComponent());
+        save(new Assignment(assignment.getStart(), assignment.getEnd(), assignment.getIdComponent(), assignment.getIdFlight()));
     }
 
-    public Assignment findById(Long id) {
-        return null;
+    /**
+     * Delete assignment from database
+     * @param start start time of assignment
+     * @param finish finish time of assignment
+     * @param componentId id of component
+     */
+    public void delete(LocalDateTime start, LocalDateTime finish, Long componentId) {
+        String sql = "DELETE FROM assignment WHERE start = ? AND finish = ? AND component_id = ?;";
+        try (Connection conn = DriverManager.getConnection(url, username, password);
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setTimestamp(1, Timestamp.valueOf(start));
+            ps.setTimestamp(2, Timestamp.valueOf(finish));
+            ps.setLong(3, componentId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error deleting assignment from database: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
+    /**
+     * Get all assignments from database
+     * @return List of all assignments
+     */
     public List<Assignment> getAll() {
         String sql = "SELECT * FROM assignment;";
         List<Assignment> assignments = new ArrayList<>();

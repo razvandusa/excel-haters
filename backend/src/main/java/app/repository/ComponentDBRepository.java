@@ -104,7 +104,30 @@ public class ComponentDBRepository {
         return null;
     }
 
-    //TODO implement findByName
+    /**
+     * Find component by name. If component is not found, null is returned.
+     * @param name Component name to find
+     * @return Component object if found, null otherwise
+     */
+    public Component findByName(String name) {
+        String sql = "SELECT * FROM component WHERE name = ?;";
+        try (Connection conn = DriverManager.getConnection(url, username, password);
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Long terminalId = rs.getLong("terminal_id");
+                String Name = rs.getString("name");
+                String type = rs.getString("type");
+                Boolean active = rs.getBoolean("active");
+                return new Component(terminalId, Name, type, active);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error finding component from database: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
 
     /**
      * Get all components from database
