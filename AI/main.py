@@ -35,7 +35,29 @@ def parse_ocr_text(raw_text_list: list):
         # Clean common OCR mistakes before regex matching 
         # (e.g., removing spaces, fixing 'l' or 'I' read as '1')
         clean_text = text.replace(" ", "").upper()
-        clean_text = clean_text.replace("L", "1").replace("I", "1").replace("0", "D") 
+
+        # Split into prefix and number parts so we only fix mistakes in the right place.
+        # We try to extract a known prefix first, then apply corrections only to that part.
+        # This prevents replacing '6' with 'G' inside a valid number like D6 or S16.
+        raw_prefix = clean_text[:2] if len(clean_text) >= 2 else clean_text
+
+        # Prefix-only fixes: characters that look like valid prefix letters when misread
+        # Applied ONLY to the first 1-2 characters, never to the numeric suffix
+        PREFIX_FIXES = {
+            "0": "D",  # 0 looks like D
+            "6": "G",  # 6 looks like G
+            "5": "S",  # 5 looks like S
+        }
+
+        # Fix the prefix region (first 1-2 chars) and leave the rest untouched
+        if len(clean_text) >= 2 and clean_text[:2] in PREFIX_FIXES:
+            clean_text = PREFIX_FIXES[clean_text[:2]] + clean_text[2:]
+        elif len(clean_text) >= 1 and clean_text[0] in PREFIX_FIXES:
+            clean_text = PREFIX_FIXES[clean_text[0]] + clean_text[1:]
+
+        # Number-only fixes: characters that look like digits when misread
+        # Safe to apply globally after the prefix is already validated
+        clean_text = clean_text[:1] + clean_text[1:].replace("L", "1").replace("I", "1")
         # maybe other mistakes? we can fix later if needed 
         
         match = pattern.match(clean_text)
