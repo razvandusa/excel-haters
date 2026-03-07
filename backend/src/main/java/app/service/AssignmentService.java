@@ -137,7 +137,13 @@ public class AssignmentService {
             }
         }
 
-        repository.update(assignment);
+        Assignment updatedAssignment = new Assignment();
+        updatedAssignment.setIdFlight(assignment.getIdFlight());
+        updatedAssignment.setIdComponent(newComponentId);
+        updatedAssignment.setStart(assignment.getStart());
+        updatedAssignment.setEnd(assignment.getEnd());
+
+        repository.update(assignment, updatedAssignment);
     }
 
     public void remove(Assignment id) {
