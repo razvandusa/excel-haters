@@ -64,21 +64,17 @@ public class AssignmentController {
         );
     }
 
-    @PatchMapping("/api/flights/{flightId}/assignments/{assignmentId}")
-    public Map<String, Object> updateAssignment(
-            @PathVariable String flightId,
-            @RequestBody UpdateAssignmentRequest request
-    ) {
+    @PatchMapping("/api/assignments")
+    public Map<String, Object> updateAssignmentComponent(@RequestBody UpdateAssignmentComponentRequest request) {
         try {
-            assignmentService.update(flightId, request);
+            assignmentService.update(request);
             return Map.of(
-                    "message", "Assignment updated",
-                    "flightId", flightId,
-                    "componentId", request.getComponentId(),
-                    "from", request.getFrom(),
-                    "to", request.getTo()
+                    "message", "Assignment component updated",
+                    "flightId", request.getFlightId(),
+                    "oldComponentId", request.getOldComponentId(),
+                    "newComponentId", request.getNewComponentId()
             );
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             return Map.of("error", e.getMessage());
         }
     }
