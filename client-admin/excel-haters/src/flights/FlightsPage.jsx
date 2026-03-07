@@ -1,141 +1,97 @@
-import { useState } from 'react'
-
-const flightFieldDefinitions = [
-  { key: 'flightID', label: 'Flight ID', type: 'text' },
-  { key: 'terminal', label: 'Terminal', type: 'text' },
-  { key: 'desk', label: 'Desk', type: 'text' },
-  { key: 'security', label: 'Security', type: 'text' },
-  { key: 'gate', label: 'Gate', type: 'text' },
-  { key: 'stand', label: 'Stand', type: 'text' },
-  { key: 'departureTime', label: 'Departure Time', type: 'datetime-local' },
-  { key: 'arrivalTime', label: 'Arrival Time', type: 'datetime-local' },
-]
-
-const emptyFlightForm = {
-  flightID: '',
-  terminal: '',
-  desk: '',
-  security: '',
-  gate: '',
-  stand: '',
-  departureTime: '',
-  arrivalTime: '',
-}
+import AddFlightModal from './components/AddFlightModal.jsx'
+import FlightActionModal from './components/FlightActionModal.jsx'
+import cancelFlightFieldDefinitions from './config/cancelFlightFieldDefinitions.js'
+import flightsContent from './config/flightsContent.js'
+import updateFlightTimeFieldDefinitions from './config/updateFlightTimeFieldDefinitions.js'
+import useFlightForm from './hooks/useFlightForm.js'
 
 export default function FlightsPage() {
-  const [isFormOpen, setIsFormOpen] = useState(false)
-  const [draftFlight, setDraftFlight] = useState(emptyFlightForm)
-
-  function handleFieldChange(field, value) {
-    setDraftFlight((currentDraft) => ({
-      ...currentDraft,
-      [field]: value,
-    }))
-  }
-
-  function resetForm() {
-    setDraftFlight(emptyFlightForm)
-  }
-
-  function handleAddFlight(event) {
-    event.preventDefault()
-
-    console.log(
-      'Added flight JSON:',
-      JSON.stringify(draftFlight, null, 2),
-    )
-    resetForm()
-    setIsFormOpen(false)
-  }
+  const {
+    closeForm,
+    draftCancelFlight,
+    draftFlight,
+    draftFlightTimeUpdate,
+    handleCancelFlightChange,
+    handleFieldChange,
+    handleFlightTimeChange,
+    isAddFormOpen,
+    isCancelFlightFormOpen,
+    isUpdateTimeFormOpen,
+    openAddForm,
+    openCancelFlightForm,
+    openUpdateTimeForm,
+    resetCancelFlightForm,
+    resetForm,
+    resetFlightTimeForm,
+    submitCancelFlight,
+    submitFlight,
+    submitFlightTimeUpdate,
+  } = useFlightForm()
 
   return (
     <section className="page-shell">
       <div className="page-panel page-panel--flights">
-        <p className="page-kicker page-kicker--flights">Flights</p>
-        <h1 className="page-title">Flight operations overview</h1>
+        <p className="page-kicker page-kicker--flights">{flightsContent.kicker}</p>
+        <h1 className="page-title">{flightsContent.title}</h1>
 
         <div className="flights-page-actions">
           <button type="button" className="configurator-action-link">
-            Add Flight with Excel
+            {flightsContent.addExcelLabel}
           </button>
           <button
             type="button"
             className="configurator-action-link"
-            onClick={() => setIsFormOpen(true)}
+            onClick={openAddForm}
           >
-            Add Flight with Form
+            {flightsContent.addFormLabel}
+          </button>
+          <button
+            type="button"
+            className="configurator-action-link"
+            onClick={openUpdateTimeForm}
+          >
+            {flightsContent.updateTimeLabel}
+          </button>
+          <button
+            type="button"
+            className="configurator-action-link"
+            onClick={openCancelFlightForm}
+          >
+            {flightsContent.cancelFlightLabel}
           </button>
         </div>
-
-        <section className="flights-spec-card">
-          <div className="flights-spec-card__fields">
-            {flightFieldDefinitions.map((field) => (
-              <span key={field.key} className="configurator-detail-badge">
-                {field.key}
-              </span>
-            ))}
-          </div>
-        </section>
       </div>
 
-      {isFormOpen ? (
-        <div
-          className="configurator-modal-backdrop"
-          onClick={() => setIsFormOpen(false)}
-        >
-          <div
-            className="configurator-modal flights-form-modal"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="configurator-modal__header">
-              <h2 className="configurator-modal__title">Add Flight</h2>
-              <button
-                type="button"
-                className="configurator-modal__close"
-                onClick={() => setIsFormOpen(false)}
-              >
-                Close
-              </button>
-            </div>
-
-            <form onSubmit={handleAddFlight}>
-              <div className="configurator-modal__body flights-form-grid">
-                {flightFieldDefinitions.map((field) => (
-                  <label key={field.key} className="configurator-modal__field">
-                    <span className="configurator-modal__label">
-                      {field.label}
-                    </span>
-                    <input
-                      type={field.type}
-                      value={draftFlight[field.key]}
-                      onChange={(event) =>
-                        handleFieldChange(field.key, event.target.value)
-                      }
-                      className="configurator-modal__input"
-                    />
-                  </label>
-                ))}
-              </div>
-
-              <div className="configurator-modal__actions">
-                <button
-                  type="button"
-                  className="configurator-pagination-button"
-                  onClick={() => {
-                    resetForm()
-                    setIsFormOpen(false)
-                  }}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="configurator-action-link">
-                  Add Flight
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      ) : null}
+      <AddFlightModal
+        draftFlight={draftFlight}
+        isOpen={isAddFormOpen}
+        onChangeField={handleFieldChange}
+        onClose={closeForm}
+        onReset={resetForm}
+        onSubmit={submitFlight}
+      />
+      <FlightActionModal
+        draftValues={draftFlightTimeUpdate}
+        fields={updateFlightTimeFieldDefinitions}
+        isOpen={isUpdateTimeFormOpen}
+        onChangeField={handleFlightTimeChange}
+        onClose={closeForm}
+        onReset={resetFlightTimeForm}
+        onSubmit={submitFlightTimeUpdate}
+        submitLabel={flightsContent.updateTimeSubmitLabel}
+        title={flightsContent.updateTimeModalTitle}
+      />
+      <FlightActionModal
+        draftValues={draftCancelFlight}
+        fields={cancelFlightFieldDefinitions}
+        isOpen={isCancelFlightFormOpen}
+        onChangeField={handleCancelFlightChange}
+        onClose={closeForm}
+        onReset={resetCancelFlightForm}
+        onSubmit={submitCancelFlight}
+        submitLabel={flightsContent.cancelSubmitLabel}
+        title={flightsContent.cancelModalTitle}
+      />
     </section>
   )
 }

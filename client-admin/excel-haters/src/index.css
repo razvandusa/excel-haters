@@ -97,22 +97,6 @@ body {
     @apply mt-4 flex flex-wrap gap-2;
   }
 
-  .flights-spec-card {
-    @apply mt-8 border border-white/10 bg-slate-950/40 p-5;
-  }
-
-  .flights-spec-card__endpoint {
-    @apply text-sm font-semibold uppercase tracking-[0.18em] text-amber-200;
-  }
-
-  .flights-spec-card__copy {
-    @apply mt-3 text-sm text-slate-300;
-  }
-
-  .flights-spec-card__fields {
-    @apply mt-4 flex flex-wrap gap-2;
-  }
-
   .flights-form-modal {
     @apply max-w-3xl;
   }
