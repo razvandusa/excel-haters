@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -69,14 +70,16 @@ public class AssignmentService {
     }
 
     public void update(UpdateAssignmentRequest updateAssignmentRequest) {
-        repository.deleteById();
-        if (assignment == null) {
-            throw new IllegalArgumentException("Assignment assignment nu poate fi null");
-        }
+        Assignment assignment = new Assignment();
+        assignment.setIdFlight(updateAssignmentRequest.getFlightId());
+        assignment.setIdComponent(updateAssignmentRequest.getOldComponentId());
+        assignment.setStart(LocalDateTime.parse(updateAssignmentRequest.getFrom(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        assignment.setEnd(LocalDateTime.parse(updateAssignmentRequest.getTo(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        Long newComponentId = updateAssignmentRequest.getNewComponentId();
 
-        Assignment existingAssignment = repository.findById(assignment.getId());
+        Assignment existingAssignment = repository.findById(assignment);
         if (existingAssignment == null) {
-            throw new IllegalArgumentException("Assignment with id " + assignment.getId() + " does not exist.");
+            throw new IllegalArgumentException("Assignment does not exist.");
         }
 
         var component = componentService.findById(assignment.getIdComponent());
@@ -118,8 +121,11 @@ public class AssignmentService {
         assignment.setEnd(finish);
 
         List<Assignment> assignmentsForComponent = repository.getAll().stream()
-                .filter(a -> a.getIdComponent().equals(assignment.getIdComponent()))
-                .filter(a -> !a.getId().equals(assignment.getId()))
+                .filter(a -> a.getIdComponent().equals(newComponentId))
+                .filter(a -> !(a.getIdFlight().equals(existingAssignment.getIdFlight()) &&
+                               a.getIdComponent().equals(existingAssignment.getIdComponent()) &&
+                               a.getStart().equals(existingAssignment.getStart()) &&
+                               a.getEnd().equals(existingAssignment.getEnd())))
                 .toList();
 
         for (Assignment a : assignmentsForComponent) {
@@ -131,19 +137,25 @@ public class AssignmentService {
             }
         }
 
-        repository.update(assignment);
+        Assignment updatedAssignment = new Assignment();
+        updatedAssignment.setIdFlight(assignment.getIdFlight());
+        updatedAssignment.setIdComponent(newComponentId);
+        updatedAssignment.setStart(assignment.getStart());
+        updatedAssignment.setEnd(assignment.getEnd());
+
+        repository.update(assignment, updatedAssignment);
     }
 
-    public void remove(Long id) {
+    public void remove(Assignment id) {
         // Verificare daca exista un assignment cu acest id
         Assignment assignment = repository.findById(id);
         if (assignment == null) {
             throw new IllegalArgumentException("Assignment with id " + id + " does not exist.");
         }
-        repository.deleteById(id);
+        repository.delete(assignment);
     }
 
-    public Assignment findById(Long id) {
+    public Assignment findById(Assignment id) {
         return repository.findById(id);
     }
 
@@ -165,16 +177,28 @@ public class AssignmentService {
         return repository.getAll();
     }
 
-    public List<Component> findByTypeAndInterval(String type, LocalDateTime intervalStart, LocalDateTime intervalEnd) {
+    public List<Component> findByTypeAndInterval(String type, String intervalStart, String intervalEnd) {
+        LocalDateTime intervalStartFormatted = LocalDateTime.parse(intervalStart, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        LocalDateTime intervalEndFormatted = LocalDateTime.parse(intervalEnd, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         if (type == null || intervalStart == null || intervalEnd == null) {
             throw new IllegalArgumentException("Type și intervalul nu pot fi null");
         }
 
         return componentService.getAll().stream()
-                .filter(c -> type.equals(c.getType())) // filtrează după tip
+                .filter(c -> type.equals(c.getType()))
                 .filter(c -> {
-                    // intervalul componentei trebuie să includă complet intervalul cerut
-                    return !c.getStart().isAfter(intervalStart) && !c.getEnd().isBefore(intervalEnd);
+                    List<Assignment> assignments = repository.getAll().stream()
+                            .filter(a -> a.getIdComponent().equals(c.getId()))
+                            .toList();
+
+                    for (Assignment a : assignments) {
+                        boolean overlap = !(intervalEndFormatted.isBefore(a.getStart()) || intervalStartFormatted.isAfter(a.getEnd()));
+                        if (overlap) {
+                            return false; // componenta este ocupată
+                        }
+                    }
+
+                    return true; // componenta este liberă
                 })
                 .toList();
     }
@@ -196,7 +220,7 @@ public class AssignmentService {
                 .toList();
     }
 
-    public List<Assignment> findAssignmentsByFlightId(Long flightId) {
+    public List<Assignment> findAssignmentsByFlightId(String flightId) {
         if (flightId == null) {
             throw new IllegalArgumentException("flightId nu poate fi null");
         }

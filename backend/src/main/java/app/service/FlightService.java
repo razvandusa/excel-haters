@@ -24,7 +24,7 @@ public class FlightService {
 
     public void add(CreateFlightRequest flightRequest) {
         Flight flight = new Flight();
-        flight.setFlightId(flightRequest.getFlightCode());
+        flight.setFlightId(flightRequest.getFlightId());
         flight.setTerminalName(flightRequest.getTerminalName());
         flight.setDeparture(LocalDateTime.parse(flightRequest.getDepartureTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         flight.setArrival(LocalDateTime.parse(flightRequest.getArrivalTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));

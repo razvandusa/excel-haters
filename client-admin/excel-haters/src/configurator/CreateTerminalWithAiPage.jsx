@@ -1,11 +1,15 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import ComponentTypeColumns from './components/ComponentTypeColumns.jsx'
+import TerminalPhotoUploadPanel from './components/TerminalPhotoUploadPanel.jsx'
+import useImageUploadPreview from './hooks/useImageUploadPreview.js'
 
 export default function CreateTerminalWithAiPage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [draftName, setDraftName] = useState('AI Terminal')
   const [draftIsActive, setDraftIsActive] = useState(true)
+  const { uploadedImageName, uploadedImageUrl, handleImageUpload } =
+    useImageUploadPreview()
 
   // Future AI terminal generation will use a separate API call on this page.
   // Do not reuse the terminal detail API hooks here.
@@ -33,15 +37,12 @@ export default function CreateTerminalWithAiPage() {
               Update
             </button>
             <Link to="/configurator" className="configurator-action-link">
-              Back to Configurator
+              Back
             </Link>
           </div>
         </div>
 
         <div className="configurator-detail-meta">
-          <span className="configurator-detail-badge">
-            Type: {generatedTerminal.type}
-          </span>
           <span
             className={
               generatedTerminal.isActive
@@ -53,20 +54,20 @@ export default function CreateTerminalWithAiPage() {
           </span>
         </div>
 
+        <TerminalPhotoUploadPanel
+          imageName={uploadedImageName}
+          imageUrl={uploadedImageUrl}
+          onUpload={handleImageUpload}
+        />
+
         <div className="mt-8">
           <ComponentTypeColumns components={[]} />
         </div>
       </div>
 
       {isEditModalOpen ? (
-        <div
-          className="configurator-modal-backdrop"
-          onClick={() => setIsEditModalOpen(false)}
-        >
-          <div
-            className="configurator-modal"
-            onClick={(event) => event.stopPropagation()}
-          >
+        <div className="configurator-modal-backdrop">
+          <div className="configurator-modal">
             <div className="configurator-modal__header">
               <h2 className="configurator-modal__title">Update Terminal</h2>
               <button

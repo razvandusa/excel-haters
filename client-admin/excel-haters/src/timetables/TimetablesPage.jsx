@@ -1,23 +1,24 @@
-import TerminalTable from '../configurator/components/TerminalTable.jsx'
-import useTerminalManager from '../configurator/hooks/useTerminalManager.js'
+import TimetablesTerminalTable from './components/TimetablesTerminalTable.jsx'
+import timetablesContent from './config/timetablesContent.js'
+import useTimetablesOverview from './hooks/useTimetablesOverview.js'
 
 export default function TimetablesPage() {
-  const { terminals, terminalsError, terminalsLoading } = useTerminalManager()
+  const { terminals, terminalsError, terminalsLoading } = useTimetablesOverview()
 
   return (
     <section className="page-shell">
       <div className="page-panel page-panel--timetables">
-        <p className="page-kicker page-kicker--timetables">Timetables</p>
-        <h1 className="page-title">Timetable management</h1>
+        <p className="page-kicker page-kicker--timetables">
+          {timetablesContent.kicker}
+        </p>
+        <h1 className="page-title">{timetablesContent.title}</h1>
 
         <div className="mt-8">
-          <TerminalTable
+          <TimetablesTerminalTable
             terminals={terminals}
-            title="Terminals"
+            title={timetablesContent.terminalsTableTitle}
             isLoading={terminalsLoading}
             error={terminalsError}
-            showType={false}
-            showIsActive={false}
           />
         </div>
       </div>

@@ -1,0 +1,52 @@
+[
+  {
+    "flightID": "329006",
+    "terminal": "D",
+    "desk": "D10",
+    "security": "S1",
+    "gate": "G1",
+    "stand": "ST1",
+    "departureTime": "2026-03-07T22:40:00",
+    "arrivalTime": "2026-03-07T23:55:00"
+  },
+  {
+    "flightID": "329007",
+    "terminal": "D",
+    "desk": "D11",
+    "security": "S2",
+    "gate": "G2",
+    "stand": "ST2",
+    "departureTime": "2026-03-07T23:10:00",
+    "arrivalTime": "2026-03-08T00:20:00"
+  },
+  {
+    "flightID": "329008",
+    "terminal": "A",
+    "desk": "A05",
+    "security": "S3",
+    "gate": "A8",
+    "stand": "ST8",
+    "departureTime": "2026-03-08T06:15:00",
+    "arrivalTime": "2026-03-08T08:05:00"
+  },
+  {
+    "flightID": "329009",
+    "terminal": "B",
+    "desk": "B03",
+    "security": "S4",
+    "gate": "B4",
+    "stand": "ST4",
+    "departureTime": "2026-03-08T09:30:00",
+    "arrivalTime": "2026-03-08T11:00:00"
+  },
+  {
+    "flightID": "329010",
+    "terminal": "C",
+    "desk": "C07",
+    "security": "S5",
+    "gate": "C6",
+    "stand": "ST6",
+    "departureTime": "2026-03-08T14:45:00",
+    "arrivalTime": "2026-03-08T16:10:00"
+  }
+]
