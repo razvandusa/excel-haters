@@ -14,6 +14,9 @@ export default function RecommendationPage() {
           {recommendationContent.kicker}
         </p>
         <h1 className="page-title">{recommendationContent.title}</h1>
+        <p className="configurator-page-copy">
+          {recommendationContent.description}
+        </p>
 
         <RecommendationFlightForm
           flightId={flightId}

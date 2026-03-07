@@ -1,0 +1,198 @@
+[
+  {
+    "id": "GD-G1-01",
+    "name": "G1",
+    "type": "gate",
+    "terminalID": "D",
+    "isActive": true
+  },
+  {
+    "id": "GD-G2-01",
+    "name": "G2",
+    "type": "gate",
+    "terminalID": "D",
+    "isActive": true
+  },
+  {
+    "id": "GD-G3-01",
+    "name": "G3",
+    "type": "gate",
+    "terminalID": "D",
+    "isActive": true
+  },
+  {
+    "id": "GA-A8-01",
+    "name": "A8",
+    "type": "gate",
+    "terminalID": "A",
+    "isActive": true
+  },
+  {
+    "id": "GA-A9-01",
+    "name": "A9",
+    "type": "gate",
+    "terminalID": "A",
+    "isActive": true
+  },
+  {
+    "id": "GB-B4-01",
+    "name": "B4",
+    "type": "gate",
+    "terminalID": "B",
+    "isActive": false
+  },
+  {
+    "id": "GC-C6-01",
+    "name": "C6",
+    "type": "gate",
+    "terminalID": "C",
+    "isActive": true
+  },
+  {
+    "id": "GC-C7-01",
+    "name": "C7",
+    "type": "gate",
+    "terminalID": "C",
+    "isActive": true
+  },
+  {
+    "id": "GD-G4-01",
+    "name": "G4",
+    "type": "gate",
+    "terminalID": "D",
+    "isActive": true
+  },
+  {
+    "id": "GD-G5-01",
+    "name": "G5",
+    "type": "gate",
+    "terminalID": "D",
+    "isActive": true
+  },
+  {
+    "id": "GD-G6-01",
+    "name": "G6",
+    "type": "gate",
+    "terminalID": "D",
+    "isActive": false
+  },
+  {
+    "id": "GA-A10-01",
+    "name": "A10",
+    "type": "gate",
+    "terminalID": "A",
+    "isActive": true
+  },
+  {
+    "id": "GA-A11-01",
+    "name": "A11",
+    "type": "gate",
+    "terminalID": "A",
+    "isActive": true
+  },
+  {
+    "id": "GA-A12-01",
+    "name": "A12",
+    "type": "gate",
+    "terminalID": "A",
+    "isActive": false
+  },
+  {
+    "id": "GB-B5-01",
+    "name": "B5",
+    "type": "gate",
+    "terminalID": "B",
+    "isActive": true
+  },
+  {
+    "id": "GB-B6-01",
+    "name": "B6",
+    "type": "gate",
+    "terminalID": "B",
+    "isActive": true
+  },
+  {
+    "id": "GB-B7-01",
+    "name": "B7",
+    "type": "gate",
+    "terminalID": "B",
+    "isActive": false
+  },
+  {
+    "id": "GC-C8-01",
+    "name": "C8",
+    "type": "gate",
+    "terminalID": "C",
+    "isActive": true
+  },
+  {
+    "id": "GC-C9-01",
+    "name": "C9",
+    "type": "gate",
+    "terminalID": "C",
+    "isActive": true
+  },
+  {
+    "id": "GC-C10-01",
+    "name": "C10",
+    "type": "gate",
+    "terminalID": "C",
+    "isActive": false
+  },
+  {
+    "id": "GD-G7-01",
+    "name": "G7",
+    "type": "gate",
+    "terminalID": "D",
+    "isActive": true
+  },
+  {
+    "id": "GA-A13-01",
+    "name": "A13",
+    "type": "gate",
+    "terminalID": "A",
+    "isActive": true
+  },
+  {
+    "id": "GB-B8-01",
+    "name": "B8",
+    "type": "gate",
+    "terminalID": "B",
+    "isActive": true
+  },
+  {
+    "id": "GC-C11-01",
+    "name": "C11",
+    "type": "gate",
+    "terminalID": "C",
+    "isActive": true
+  },
+  {
+    "id": "GD-G8-01",
+    "name": "G8",
+    "type": "gate",
+    "terminalID": "D",
+    "isActive": true
+  },
+  {
+    "id": "GA-A14-01",
+    "name": "A14",
+    "type": "gate",
+    "terminalID": "A",
+    "isActive": false
+  },
+  {
+    "id": "GB-B9-01",
+    "name": "B9",
+    "type": "gate",
+    "terminalID": "B",
+    "isActive": true
+  },
+  {
+    "id": "GC-C12-01",
+    "name": "C12",
+    "type": "gate",
+    "terminalID": "C",
+    "isActive": true
+  }
+]

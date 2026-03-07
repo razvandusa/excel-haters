@@ -15,6 +15,8 @@ export default function ComponentTypeColumns({
   error = '',
   showControls = true,
   showStatus = true,
+  onIconClick,
+  selectedComponentId = '',
 }) {
   const [componentItems, setComponentItems] = useState(components)
 
@@ -83,7 +85,11 @@ export default function ComponentTypeColumns({
                   typedComponents.map((component) => (
                     <article
                       key={component.id}
-                      className="configurator-type-column__item"
+                      className={
+                        selectedComponentId && component.id !== selectedComponentId
+                          ? 'configurator-type-column__item configurator-type-column__item--dimmed'
+                          : 'configurator-type-column__item'
+                      }
                     >
                       <div className="configurator-type-column__item-copy">
                         <p className="configurator-type-column__item-id">
@@ -94,6 +100,15 @@ export default function ComponentTypeColumns({
                         </h3>
                       </div>
                       <span className="configurator-type-column__item-actions">
+                        <button
+                          type="button"
+                          className="configurator-type-column__icon-button"
+                          onClick={() => onIconClick?.(component)}
+                        >
+                          <span className="material-symbols-outlined">
+                            cycle
+                          </span>
+                        </button>
                         {showStatus ? (
                           <span
                             className={

@@ -1,4 +1,6 @@
+import ComponentTable from '../../configurator/components/ComponentTable.jsx'
 import ComponentTypeColumns from '../../configurator/components/ComponentTypeColumns.jsx'
+import useRecommendationComponentLookup from '../hooks/useRecommendationComponentLookup.js'
 
 function buildFlightComponents(flight) {
   if (!flight) {
@@ -9,24 +11,28 @@ function buildFlightComponents(flight) {
     {
       id: `${flight.flightID}-desk`,
       name: flight.desk,
+      terminalID: flight.terminal,
       type: 'desk',
       isActive: true,
     },
     {
       id: `${flight.flightID}-security`,
       name: flight.security,
+      terminalID: flight.terminal,
       type: 'security',
       isActive: true,
     },
     {
       id: `${flight.flightID}-gate`,
       name: flight.gate,
+      terminalID: flight.terminal,
       type: 'gate',
       isActive: true,
     },
     {
       id: `${flight.flightID}-stand`,
       name: flight.stand,
+      terminalID: flight.terminal,
       type: 'stand',
       isActive: true,
     },
@@ -34,6 +40,14 @@ function buildFlightComponents(flight) {
 }
 
 export default function RecommendationValidationResult({ result }) {
+  const {
+    handleComponentLookup,
+    lookupTitle,
+    matchedComponents,
+    selectedComponentId,
+  } =
+    useRecommendationComponentLookup(result?.flight || null)
+
   if (!result) {
     return null
   }
@@ -56,6 +70,19 @@ export default function RecommendationValidationResult({ result }) {
             components={buildFlightComponents(result.flight)}
             showControls={false}
             showStatus={false}
+            onIconClick={handleComponentLookup}
+            selectedComponentId={selectedComponentId}
+          />
+        </div>
+      ) : null}
+
+      {lookupTitle ? (
+        <div className="mt-10">
+          <ComponentTable
+            components={matchedComponents}
+            title={lookupTitle}
+            showTypeColumn={false}
+            showStatusColumn={false}
           />
         </div>
       ) : null}
