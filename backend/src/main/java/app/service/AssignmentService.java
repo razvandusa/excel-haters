@@ -220,7 +220,7 @@ public class AssignmentService {
                 .toList();
     }
 
-    public List<Assignment> findAssignmentsByFlightId(Long flightId) {
+    public List<Assignment> findAssignmentsByFlightId(String flightId) {
         if (flightId == null) {
             throw new IllegalArgumentException("flightId nu poate fi null");
         }
