@@ -2,6 +2,8 @@ package app.repository;
 
 import app.domain.Component;
 import app.domain.Flight;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,7 +15,10 @@ public class ComponentDBRepository {
     private String username;
     private String password;
 
-    public ComponentDBRepository(String url, String username, String password) {
+    public ComponentDBRepository(
+            @Value("${db.url}") String url,
+            @Value("${db.username}") String username,
+            @Value("${db.password}") String password) {
         this.url = url;
         this.username = username;
         this.password = password;

@@ -1,6 +1,7 @@
 package app.repository;
 
 import app.domain.Flight;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -14,7 +15,10 @@ public class FlightDBRepository {
     private String username;
     private String password;
 
-    public FlightDBRepository(String url, String username, String password) {
+    public FlightDBRepository(
+            @Value("${db.url}") String url,
+            @Value("${db.username}") String username,
+            @Value("${db.password}") String password) {
         this.url = url;
         this.username = username;
         this.password = password;
