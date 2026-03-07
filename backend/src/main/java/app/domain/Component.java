@@ -1,4 +1,4 @@
-package domain;
+package app.domain;
 
 public class Component {
     Long id;
@@ -13,6 +13,8 @@ public class Component {
         this.type = type;
         this.active = active;
     }
+
+    public Component() {}
 
     public void setId(Long id) {
         this.id = id;
