@@ -1,16 +1,25 @@
 package app.repository;
 import app.domain.Terminal;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class TerminalDBRepository {
     private String url;
     private String username;
     private String password;
 
-    public TerminalDBRepository(String url, String username, String password) {
+
+    public TerminalDBRepository(
+            @Value("${db.url}") String url,
+            @Value("${db.username}") String username,
+            @Value("${db.password}") String password)
+    {
         this.url = url;
         this.username = username;
         this.password = password;

@@ -1,18 +1,24 @@
 package app.repository;
 
 import app.domain.Assignment;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class AssignmentDBRepository {
     private String url;
     private String username;
     private String password;
 
-    public AssignmentDBRepository(String url, String username, String password) {
+    public AssignmentDBRepository(
+            @Value("${db.url}") String url,
+            @Value("${db.username}") String username,
+            @Value("${db.password}") String password) {
         this.url = url;
         this.username = username;
         this.password = password;
