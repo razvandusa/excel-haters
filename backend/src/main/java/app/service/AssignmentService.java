@@ -152,36 +152,31 @@ public class AssignmentService {
         return repository.getAll();
     }
 
-    public List<Component> findByTypeAndInterval(Long currentComponentId, LocalDateTime intervalStart, LocalDateTime intervalEnd) {
-        if (currentComponentId == null || intervalStart == null || intervalEnd == null) {
-            throw new IllegalArgumentException("Current component ID și intervalul nu pot fi null");
+    public List<Component> findByTypeAndInterval(String type, String intervalStartStr, String intervalEndStr) {
+        if (type == null || intervalStartStr == null || intervalEndStr == null) {
+            throw new IllegalArgumentException("Type și intervalul nu pot fi null");
         }
 
-        // Componenta curentă
-        Component currentComponent = componentService.findById(currentComponentId);
-        if (currentComponent == null) {
-            throw new IllegalArgumentException("Current component nu există");
-        }
-        String type = currentComponent.getType();
+        // conversie string -> LocalDateTime
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+        LocalDateTime intervalStart = LocalDateTime.parse(intervalStartStr, formatter);
+        LocalDateTime intervalEnd = LocalDateTime.parse(intervalEndStr, formatter);
 
+        // toate componentele de tipul dorit
         return componentService.getAll().stream()
-                // doar componente de același tip
                 .filter(c -> type.equals(c.getType()))
-                // excludem componenta curentă
-                .filter(c -> !c.getId().equals(currentComponentId))
-                .filter(c -> {
-                    // toate assignment-urile componentei
-                    List<Assignment> assignments = repository.getAll().stream()
-                            .filter(a -> a.getIdComponent().equals(c.getId()))
-                            .toList();
-
-                    // verificăm dacă există suprapuneri cu intervalul dat
-                    boolean hasOverlap = assignments.stream()
-                            .anyMatch(a -> !(intervalEnd.isBefore(a.getStart()) || intervalStart.isAfter(a.getEnd())));
-
-                    return !hasOverlap; // păstrăm doar componentele libere
-                })
+                .filter(c -> isComponentFreeInInterval(c, intervalStart, intervalEnd))
                 .toList();
+    }
+
+    private boolean isComponentFreeInInterval(Component component, LocalDateTime start, LocalDateTime end) {
+        List<Assignment> assignments = repository.getAll().stream()
+                .filter(a -> a.getIdComponent().equals(component.getId()))
+                .toList();
+
+        // componenta e liberă dacă niciun assignment nu se suprapune cu intervalul
+        return assignments.stream()
+                .noneMatch(a -> !(end.isBefore(a.getStart()) || start.isAfter(a.getEnd())));
     }
 
     public List<Assignment> findByComponentIdAndDate(Long idComponent, LocalDate date) {
