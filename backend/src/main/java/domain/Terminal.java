@@ -7,7 +7,7 @@ public class Terminal {
     Long id;
     String name;
     Boolean active;
-    List<Component> components = new ArrayList<>();
+    List<Assignment> components = new ArrayList<>();
 
     public Terminal(String name, Boolean active) {
         this.name = name;
@@ -38,15 +38,15 @@ public class Terminal {
         this.active = active;
     }
 
-    public List<Component> getComponents() {
+    public List<Assignment> getComponents() {
         return components;
     }
 
-    public void setComponents(List<Component> components) {
+    public void setComponents(List<Assignment> components) {
         this.components = components;
     }
 
-    public void addComponent(Component component) {
+    public void addComponent(Assignment component) {
         this.components.add(component);
     }
 }

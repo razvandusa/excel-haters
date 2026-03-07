@@ -1,13 +1,13 @@
 package domain;
 
-public class Component {
+public class Assignment {
     Long id;
     Long terminalId;
     String name;
     String type;
     Boolean active;
 
-    public Component(Long terminalId, String name, String type, Boolean active) {
+    public Assignment(Long terminalId, String name, String type, Boolean active) {
         this.terminalId = terminalId;
         this.name = name;
         this.type = type;

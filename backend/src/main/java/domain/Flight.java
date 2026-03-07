@@ -9,7 +9,7 @@ public class Flight {
     LocalDateTime departure;
     String status;
 
-    public Flight(String flightId, Component gate, Component desk, Component security, Component stand,
+    public Flight(String flightId, Assignment gate, Assignment desk, Assignment security, Assignment stand,
                   String terminalName, LocalDateTime arrival, LocalDateTime departure, String status) {
         this.flightId = flightId;
         this.terminalName = terminalName;
