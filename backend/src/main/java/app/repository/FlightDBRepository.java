@@ -1,6 +1,6 @@
-package repository;
+package app.repository;
 
-import domain.Flight;
+import app.domain.Flight;
 
 import java.sql.*;
 import java.time.LocalDateTime;

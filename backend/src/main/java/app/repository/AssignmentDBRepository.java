@@ -1,6 +1,6 @@
-package repository;
+package app.repository;
 
-import domain.Assignment;
+import app.domain.Assignment;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -44,7 +44,7 @@ public class AssignmentDBRepository {
     }
 
     public Assignment findById(Long id) {
-
+        return null;
     }
 
     public List<Assignment> getAll() {

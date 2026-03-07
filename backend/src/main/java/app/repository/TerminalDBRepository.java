@@ -1,10 +1,7 @@
-package repository;
-
-import domain.Flight;
-import domain.Terminal;
+package app.repository;
+import app.domain.Terminal;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

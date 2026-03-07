@@ -1,10 +1,9 @@
-package repository;
+package app.repository;
 
-import domain.Component;
-import domain.Flight;
+import app.domain.Component;
+import app.domain.Flight;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
