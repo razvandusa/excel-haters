@@ -3,13 +3,13 @@ package domain;
 import java.time.LocalDateTime;
 
 public class Flight {
-    Long flightId;
+    String flightId;
     String terminalName;
     LocalDateTime arrival;
     LocalDateTime departure;
     String status;
 
-    public Flight(Long flightId, Component gate, Component desk, Component security, Component stand,
+    public Flight(String flightId, Component gate, Component desk, Component security, Component stand,
                   String terminalName, LocalDateTime arrival, LocalDateTime departure, String status) {
         this.flightId = flightId;
         this.terminalName = terminalName;
@@ -18,11 +18,11 @@ public class Flight {
         this.status = status;
     }
 
-    public Long getFlightId() {
+    public String getFlightId() {
         return flightId;
     }
 
-    public void setFlightId(Long flightId) {
+    public void setFlightId(String flightId) {
         this.flightId = flightId;
     }
 
