@@ -1,9 +1,14 @@
 package app.service;
 
 import app.domain.Terminal;
+import app.dto.terminal.CreateTerminalRequest;
+import app.dto.terminal.UpdateTerminalRequest;
+import app.repository.TerminalDBRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class TerminalService {
 
     private final TerminalDBRepository repository;
@@ -12,7 +17,9 @@ public class TerminalService {
         this.repository = repository;
     }
 
-    public void add(Terminal terminal) {
+    public void add(CreateTerminalRequest terminalRequest) {
+        Terminal terminal = new Terminal();
+        terminal.setName(terminalRequest.getName());
         // Verificare ca terminalul sa nu fie null
         if (terminal == null) {
             throw new IllegalArgumentException("Terminalul nu poate fi null");
@@ -32,7 +39,7 @@ public class TerminalService {
         }
 
         // Setam sa nu fie activ terminalul cand il adaugam
-        terminal.setActive(false);
+        terminal.setActive(terminalRequest.getIsActive());
 
         repository.save(terminal);
     }
@@ -46,7 +53,9 @@ public class TerminalService {
         repository.deleteById(id);
     }
 
-    public void update(Long id, String name, Boolean active) {
+    public void update(Long id, UpdateTerminalRequest updateTerminalRequest) {
+        String name = updateTerminalRequest.getName();
+        Boolean active = updateTerminalRequest.getIsActive();
         // Verificare daca terminalul exista
         Terminal terminal = repository.findById(id);
         if (terminal != null) {
