@@ -13,22 +13,16 @@ reader = easyocr.Reader(['en'], gpu=USE_GPU)  # I dont think its necessary roman
                                  # gpu=False, a single photo might take 3 to 8 seconds to process.
 
 def preprocess_image(image_bytes: bytes):
-    # Converts to grayscale and applies thresholding to make text pop out. 
-    # Convert bytes to numpy array, then to OpenCV image
     nparr = np.frombuffer(image_bytes, np.uint8)
     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-    if img is None:
-        raise ValueError("Could not decode image. Ensure it is a valid JPEG or PNG file.")
     
-    # Convert to grayscale
+    if img is None:
+        raise ValueError("Could not decode image.")
+    
+    # Just convert to grayscale to remove color noise, but keep all the detail!
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
-    # Increase contrast / Thresholding (Otsu's method handles varied lighting well)
-    _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    
-    # Full perspective transform requires detecting the paper's corners first, 
-    # which we can add later if users upload heavily angled photos.
-    return thresh
+    return gray
 
 def parse_ocr_text(raw_text_list: list):
     components = []
@@ -41,7 +35,7 @@ def parse_ocr_text(raw_text_list: list):
         # Clean common OCR mistakes before regex matching 
         # (e.g., removing spaces, fixing 'l' or 'I' read as '1')
         clean_text = text.replace(" ", "").upper()
-        clean_text = clean_text.replace("L", "1").replace("I", "1") 
+        clean_text = clean_text.replace("L", "1").replace("I", "1").replace("0", "D") 
         # maybe other mistakes? we can fix later if needed 
         
         match = pattern.match(clean_text)
