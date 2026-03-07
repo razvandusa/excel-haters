@@ -139,6 +139,38 @@ body {
     @apply grid gap-4 md:grid-cols-2;
   }
 
+  .recommendation-result {
+    @apply mt-6 border border-white/10 bg-slate-950/40 p-5;
+  }
+
+  .recommendation-result__copy {
+    @apply mt-3 text-sm;
+  }
+
+  .recommendation-result__copy--valid {
+    @apply text-emerald-200;
+  }
+
+  .recommendation-result__copy--invalid {
+    @apply text-rose-200;
+  }
+
+  .recommendation-result__grid {
+    @apply mt-5 grid gap-3 md:grid-cols-2;
+  }
+
+  .recommendation-result__row {
+    @apply border border-white/10 bg-white/[0.02] px-4 py-3;
+  }
+
+  .recommendation-result__label {
+    @apply block text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400;
+  }
+
+  .recommendation-result__value {
+    @apply mt-2 block text-sm text-slate-100;
+  }
+
   .configurator-tables-layout {
     @apply mt-8 grid gap-6 xl:grid-cols-2;
   }
