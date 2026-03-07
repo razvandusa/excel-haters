@@ -123,11 +123,14 @@ public class ComponentDBRepository {
             ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
+                Long componentId = rs.getLong("component_id");
                 Long terminalId = rs.getLong("terminal_id");
                 String name = rs.getString("name");
                 String type = rs.getString("type");
                 Boolean active = rs.getBoolean("active");
-                return new Component(terminalId, name, type, active);
+                Component c = new Component(terminalId, name, type, active);
+                c.setId(componentId);
+                return c;
             }
         } catch (SQLException e) {
             System.out.println("Error finding component from database: " + e.getMessage());
@@ -148,11 +151,14 @@ public class ComponentDBRepository {
             ps.setString(1, name);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
+                Long componentId = rs.getLong("component_id");
                 Long terminalId = rs.getLong("terminal_id");
                 String Name = rs.getString("name");
                 String type = rs.getString("type");
                 Boolean active = rs.getBoolean("active");
-                return new Component(terminalId, Name, type, active);
+                Component c = new Component(terminalId, Name, type, active);
+                c.setId(componentId);
+                return c;
             }
         } catch (SQLException e) {
             System.out.println("Error finding component from database: " + e.getMessage());
@@ -172,11 +178,14 @@ public class ComponentDBRepository {
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
+                Long id = rs.getLong("component_id");
                 Long terminalId = rs.getLong("terminal_id");
                 String name = rs.getString("name");
                 String type = rs.getString("type");
                 Boolean active = rs.getBoolean("active");
-                components.add(new Component(terminalId, name, type, active));
+                Component c = new Component(terminalId, name, type, active);
+                c.setId(id);
+                components.add(c);
             }
         } catch (SQLException e) {
             System.out.println("Error getting all components from database: " + e.getMessage());

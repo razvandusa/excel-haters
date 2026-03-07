@@ -20,10 +20,6 @@ public class TerminalService {
     public void add(CreateTerminalRequest terminalRequest) {
         Terminal terminal = new Terminal();
         terminal.setName(terminalRequest.getName());
-        // Verificare ca terminalul sa nu fie null
-        if (terminal == null) {
-            throw new IllegalArgumentException("Terminalul nu poate fi null");
-        }
 
         // Verificare ca numele terminalului nu fie null sau gol
         if (terminal.getName() == null || terminal.getName().isBlank()) {

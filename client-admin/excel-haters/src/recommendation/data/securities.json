@@ -1,0 +1,198 @@
+[
+  {
+    "id": "SD-S1-01",
+    "name": "S1",
+    "type": "security",
+    "terminalID": "D",
+    "isActive": true
+  },
+  {
+    "id": "SD-S2-01",
+    "name": "S2",
+    "type": "security",
+    "terminalID": "D",
+    "isActive": true
+  },
+  {
+    "id": "SD-S3-01",
+    "name": "S3",
+    "type": "security",
+    "terminalID": "D",
+    "isActive": true
+  },
+  {
+    "id": "SA-S3-01",
+    "name": "S3",
+    "type": "security",
+    "terminalID": "A",
+    "isActive": true
+  },
+  {
+    "id": "SA-S4-01",
+    "name": "S4",
+    "type": "security",
+    "terminalID": "A",
+    "isActive": true
+  },
+  {
+    "id": "SB-S4-01",
+    "name": "S4",
+    "type": "security",
+    "terminalID": "B",
+    "isActive": false
+  },
+  {
+    "id": "SC-S5-01",
+    "name": "S5",
+    "type": "security",
+    "terminalID": "C",
+    "isActive": true
+  },
+  {
+    "id": "SC-S6-01",
+    "name": "S6",
+    "type": "security",
+    "terminalID": "C",
+    "isActive": true
+  },
+  {
+    "id": "SD-S4-01",
+    "name": "S4",
+    "type": "security",
+    "terminalID": "D",
+    "isActive": true
+  },
+  {
+    "id": "SD-S5-01",
+    "name": "S5",
+    "type": "security",
+    "terminalID": "D",
+    "isActive": false
+  },
+  {
+    "id": "SA-S5-01",
+    "name": "S5",
+    "type": "security",
+    "terminalID": "A",
+    "isActive": true
+  },
+  {
+    "id": "SA-S6-01",
+    "name": "S6",
+    "type": "security",
+    "terminalID": "A",
+    "isActive": true
+  },
+  {
+    "id": "SA-S7-01",
+    "name": "S7",
+    "type": "security",
+    "terminalID": "A",
+    "isActive": false
+  },
+  {
+    "id": "SB-S5-01",
+    "name": "S5",
+    "type": "security",
+    "terminalID": "B",
+    "isActive": true
+  },
+  {
+    "id": "SB-S6-01",
+    "name": "S6",
+    "type": "security",
+    "terminalID": "B",
+    "isActive": true
+  },
+  {
+    "id": "SB-S7-01",
+    "name": "S7",
+    "type": "security",
+    "terminalID": "B",
+    "isActive": false
+  },
+  {
+    "id": "SC-S7-01",
+    "name": "S7",
+    "type": "security",
+    "terminalID": "C",
+    "isActive": true
+  },
+  {
+    "id": "SC-S8-01",
+    "name": "S8",
+    "type": "security",
+    "terminalID": "C",
+    "isActive": true
+  },
+  {
+    "id": "SC-S9-01",
+    "name": "S9",
+    "type": "security",
+    "terminalID": "C",
+    "isActive": false
+  },
+  {
+    "id": "SD-S6-01",
+    "name": "S6",
+    "type": "security",
+    "terminalID": "D",
+    "isActive": true
+  },
+  {
+    "id": "SA-S8-01",
+    "name": "S8",
+    "type": "security",
+    "terminalID": "A",
+    "isActive": true
+  },
+  {
+    "id": "SB-S8-01",
+    "name": "S8",
+    "type": "security",
+    "terminalID": "B",
+    "isActive": true
+  },
+  {
+    "id": "SC-S10-01",
+    "name": "S10",
+    "type": "security",
+    "terminalID": "C",
+    "isActive": true
+  },
+  {
+    "id": "SD-S7-01",
+    "name": "S7",
+    "type": "security",
+    "terminalID": "D",
+    "isActive": true
+  },
+  {
+    "id": "SA-S9-01",
+    "name": "S9",
+    "type": "security",
+    "terminalID": "A",
+    "isActive": false
+  },
+  {
+    "id": "SB-S9-01",
+    "name": "S9",
+    "type": "security",
+    "terminalID": "B",
+    "isActive": true
+  },
+  {
+    "id": "SC-S11-01",
+    "name": "S11",
+    "type": "security",
+    "terminalID": "C",
+    "isActive": true
+  },
+  {
+    "id": "SD-S8-01",
+    "name": "S8",
+    "type": "security",
+    "terminalID": "D",
+    "isActive": false
+  }
+]

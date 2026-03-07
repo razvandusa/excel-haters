@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react'
+import debugApiRequest from '../../shared/debugApiRequest.js'
 
 const TERMINALS_API_URL =
   import.meta.env.VITE_TERMINALS_API_URL || '/api/terminals'
 
 function normalizeTerminal(terminal) {
+  const terminalId = terminal.id ?? terminal.terminalId ?? terminal.terminalID
+  const terminalName = terminal.name ?? terminal.terminalName ?? ''
+
   return {
-    id: terminal.id,
-    name: terminal.name,
+    id: terminalId,
+    name: terminalName,
     type: String(terminal.type ?? '').toLowerCase(),
     isActive: Boolean(terminal.isActive),
   }
@@ -35,6 +39,11 @@ export default function useTerminalComponents(terminalName) {
       setError('')
 
       try {
+        debugApiRequest({
+          method: 'GET',
+          url: TERMINALS_API_URL,
+        })
+
         const terminalsResponse = await fetch(TERMINALS_API_URL, {
           signal: controller.signal,
         })
@@ -58,14 +67,25 @@ export default function useTerminalComponents(terminalName) {
           throw new Error(`Terminal "${terminalName}" was not found.`)
         }
 
-        setTerminal(matchedTerminal)
+        if (
+          matchedTerminal.id === undefined ||
+          matchedTerminal.id === null ||
+          String(matchedTerminal.id).trim() === ''
+        ) {
+          throw new Error(`Terminal "${terminalName}" is missing a valid ID.`)
+        }
 
-        const componentsResponse = await fetch(
-          `${TERMINALS_API_URL}/${matchedTerminal.id}/components`,
-          {
-            signal: controller.signal,
-          },
-        )
+        setTerminal(matchedTerminal)
+        const terminalComponentsUrl = `${TERMINALS_API_URL}/${encodeURIComponent(String(matchedTerminal.id))}/components`
+
+        debugApiRequest({
+          method: 'GET',
+          url: terminalComponentsUrl,
+        })
+
+        const componentsResponse = await fetch(terminalComponentsUrl, {
+          signal: controller.signal,
+        })
 
         if (!componentsResponse.ok) {
           throw new Error(
