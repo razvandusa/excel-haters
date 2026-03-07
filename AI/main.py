@@ -65,7 +65,7 @@ def parse_ocr_text(raw_text_list: list):
                 
             components.append({
                 "type": comp_type,
-                "name": number, # Just sending the number as requested
+                "name": number # Just sending the number as requested
             })
             
     return components
