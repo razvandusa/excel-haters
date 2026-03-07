@@ -24,10 +24,6 @@ public class ComponentService {
         component.setType(componentRequest.getType());
         component.setActive(componentRequest.getIsActive());
         component.setTerminalId(terminalId);
-        // Verificare ca componenta sa nu fie null
-        if (component == null) {
-            throw new IllegalArgumentException("Componentul nu poate fi null");
-        }
 
         // Verificare ca numele componentei sa nu fie null
         if (component.getName() == null || component.getName().isBlank()) {
@@ -87,7 +83,9 @@ public class ComponentService {
             component.setName(updateComponentRequest.getName());
         }
 
-        component.setActive(updateComponentRequest.getIsActive());
+        if (updateComponentRequest.getIsActive() != null) {
+            component.setActive(updateComponentRequest.getIsActive());
+        }
 
         repository.update(component);
     }
