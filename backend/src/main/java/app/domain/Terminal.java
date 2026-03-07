@@ -1,4 +1,4 @@
-package domain;
+package app.domain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,8 @@ public class Terminal {
         this.name = name;
         this.active = active;
     }
+
+    public Terminal() {}
 
     public Long getId() {
         return id;

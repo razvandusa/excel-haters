@@ -1,4 +1,4 @@
-package domain;
+package app.domain;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +14,8 @@ public class Assignment {
         this.idComponent = idComponent;
         this.idFlight = idFlight;
     }
+
+    public Assignment() {}
 
     public LocalDateTime getStart() {
         return start;
