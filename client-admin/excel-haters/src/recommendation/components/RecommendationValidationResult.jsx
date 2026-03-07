@@ -1,10 +1,45 @@
+import ComponentTypeColumns from '../../configurator/components/ComponentTypeColumns.jsx'
+
+function buildFlightComponents(flight) {
+  if (!flight) {
+    return []
+  }
+
+  return [
+    {
+      id: `${flight.flightID}-desk`,
+      name: flight.desk,
+      type: 'desk',
+      isActive: true,
+    },
+    {
+      id: `${flight.flightID}-security`,
+      name: flight.security,
+      type: 'security',
+      isActive: true,
+    },
+    {
+      id: `${flight.flightID}-gate`,
+      name: flight.gate,
+      type: 'gate',
+      isActive: true,
+    },
+    {
+      id: `${flight.flightID}-stand`,
+      name: flight.stand,
+      type: 'stand',
+      isActive: true,
+    },
+  ]
+}
+
 export default function RecommendationValidationResult({ result }) {
   if (!result) {
     return null
   }
 
   return (
-    <section className="flights-form-modal recommendation-result">
+    <section className="recommendation-result">
       <h2 className="configurator-modal__title">{result.title}</h2>
       <p
         className={
@@ -16,13 +51,12 @@ export default function RecommendationValidationResult({ result }) {
         {result.message}
       </p>
       {result.flight ? (
-        <div className="recommendation-result__grid">
-          {Object.entries(result.flight).map(([key, value]) => (
-            <div key={key} className="recommendation-result__row">
-              <span className="recommendation-result__label">{key}</span>
-              <span className="recommendation-result__value">{value}</span>
-            </div>
-          ))}
+        <div className="mt-6">
+          <ComponentTypeColumns
+            components={buildFlightComponents(result.flight)}
+            showControls={false}
+            showStatus={false}
+          />
         </div>
       ) : null}
     </section>

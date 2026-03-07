@@ -13,6 +13,8 @@ export default function ComponentTypeColumns({
   components,
   isLoading = false,
   error = '',
+  showControls = true,
+  showStatus = true,
 }) {
   const [componentItems, setComponentItems] = useState(components)
 
@@ -64,14 +66,16 @@ export default function ComponentTypeColumns({
                 <h2 className="configurator-type-column__title">
                   {formatTitle(type)}
                 </h2>
-                <div className="configurator-type-column__actions">
-                  <button
-                    type="button"
-                    className="configurator-type-column__add-button"
-                  >
-                    +
-                  </button>
-                </div>
+                {showControls ? (
+                  <div className="configurator-type-column__actions">
+                    <button
+                      type="button"
+                      className="configurator-type-column__add-button"
+                    >
+                      +
+                    </button>
+                  </div>
+                ) : null}
               </div>
 
               <div className="configurator-type-column__list">
@@ -90,22 +94,26 @@ export default function ComponentTypeColumns({
                         </h3>
                       </div>
                       <span className="configurator-type-column__item-actions">
-                        <span
-                          className={
-                            component.isActive
-                              ? 'configurator-status configurator-status--active'
-                              : 'configurator-status configurator-status--inactive'
-                          }
-                        >
-                          {formatStatus(component.isActive)}
-                        </span>
-                        <button
-                          type="button"
-                          className="configurator-type-column__add-button"
-                          onClick={() => handleRemoveComponent(component.id)}
-                        >
-                          -
-                        </button>
+                        {showStatus ? (
+                          <span
+                            className={
+                              component.isActive
+                                ? 'configurator-status configurator-status--active'
+                                : 'configurator-status configurator-status--inactive'
+                            }
+                          >
+                            {formatStatus(component.isActive)}
+                          </span>
+                        ) : null}
+                        {showControls ? (
+                          <button
+                            type="button"
+                            className="configurator-type-column__add-button"
+                            onClick={() => handleRemoveComponent(component.id)}
+                          >
+                            -
+                          </button>
+                        ) : null}
                       </span>
                     </article>
                   ))
