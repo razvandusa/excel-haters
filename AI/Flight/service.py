@@ -17,8 +17,8 @@ load_dotenv()
 #Configuration
 
 HF_API_KEY = os.environ.get("HF_API_KEY", "")
-HF_MODEL   = "Qwen/Qwen2.5-VL-7B-Instruct"
-HF_API_URL = f"https://api-inference.huggingface.co/models/{HF_MODEL}/v1/chat/completions"
+HF_MODEL = "Qwen/Qwen2.5-VL-7B-Instruct"
+HF_API_URL = "https://router.huggingface.co/v1/chat/completions"
 
 #App
 
