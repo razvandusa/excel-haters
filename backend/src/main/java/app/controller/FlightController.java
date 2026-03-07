@@ -1,7 +1,10 @@
 package app.controller;
 
+import app.domain.Flight;
 import app.dto.flight.CreateFlightRequest;
 import app.dto.flight.UpdateFlightRequest;
+import app.service.FlightService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,25 +14,55 @@ import java.util.Map;
 @RequestMapping("/api/flights")
 public class FlightController {
 
+    private final FlightService flightService;
+
+    @Autowired
+    public FlightController(FlightService flightService) {
+        this.flightService = flightService;
+    }
+
     @GetMapping("/{id}")
     public Map<String, Object> getFlightById(@PathVariable Long id) {
-        return Map.of(
-                "id", id,
-                "code", "RO123",
-                "departureTime", "2026-03-07T10:00:00",
-                "status", "SCHEDULED"
-        );
+        try {
+            Flight flight = flightService.findById(id);
+            if (flight == null) {
+                return Map.of("error", "Flight not found");
+            }
+            return Map.of(
+                    "id", flight.getFlightId(),
+                    "terminalName", flight.getTerminalName(),
+                    "arrivalTime", flight.getArrival(),
+                    "departureTime", flight.getDeparture(),
+                    "status", flight.getStatus()
+            );
+        } catch (Exception e) {
+            return Map.of(
+                    "error", e.getMessage()
+            );
+        }
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Map<String, Object> createFlight(@RequestBody CreateFlightRequest request) {
-        return Map.of(
-                "message", "Flight created",
-                "flightCode", request.getFlightCode(),
-                "terminalId", request.getTerminalId(),
-                "departureTime", request.getDepartureTime()
-        );
+        try {
+            flightService.add(request);
+            return Map.of(
+                    "message", "Flight created",
+                    "flightId", request.getFlightId(),
+                    "terminalName", request.getTerminalName(),
+                        "deskName", request.getDeskName(),
+                    "securityName", request.getSecurityName(),
+                    "gateName", request.getGateName(),
+                    "standName", request.getStandName(),
+                    "departureTime", request.getDepartureTime(),
+                        "arrivalTime", request.getArrivalTime()
+            );
+        } catch (Exception e) {
+            return Map.of(
+                    "error", e.getMessage()
+            );
+        }
     }
 
     @PatchMapping("/{id}")
@@ -37,12 +70,19 @@ public class FlightController {
             @PathVariable Long id,
             @RequestBody UpdateFlightRequest request
     ) {
-        return Map.of(
-                "message", "Flight updated",
-                "id", id,
-                "departureTime", request.getDepartureTime(),
-                "arrivalTime", request.getArrivalTime(),
-                "status", request.getStatus()
-        );
+        try {
+            flightService.update(id, request);
+            return Map.of(
+                    "message", "Flight updated",
+                    "id", id,
+                    "departureTime", request.getDepartureTime(),
+                    "arrivalTime", request.getArrivalTime(),
+                    "status", request.getStatus()
+            );
+        } catch (Exception e) {
+            return Map.of(
+                    "error", e.getMessage()
+            );
+        }
     }
 }
