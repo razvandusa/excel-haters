@@ -45,6 +45,26 @@ public class FlightDBRepository {
     }
 
     /**
+     * Update flight in database. If flight is not found, nothing happens.
+     * @param flight Flight to update
+     */
+    public void update(Flight flight) {
+        String sql = "UPDATE flight SET terminal_name = ?, arrival = ?, departure = ?, status = ? WHERE flight_id = ?;";
+        try (Connection conn = DriverManager.getConnection(url, username, password);
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, flight.getTerminalName());
+            ps.setTimestamp(2, Timestamp.valueOf(flight.getArrival()));
+            ps.setTimestamp(3, Timestamp.valueOf(flight.getDeparture()));
+            ps.setString(4, flight.getStatus());
+            ps.setString(5, flight.getFlightId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error updating flight in database: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * Delete flight from database. If flight is not found, nothing happens.
      * @param flightId Flight id to delete
      */
