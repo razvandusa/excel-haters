@@ -1,10 +1,12 @@
 package app.repository;
 import app.domain.Terminal;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class TerminalDBRepository {
     private String url;
     private String username;

@@ -1,12 +1,14 @@
 package app.repository;
 
 import app.domain.Flight;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class FlightDBRepository {
     private String url;
     private String username;
