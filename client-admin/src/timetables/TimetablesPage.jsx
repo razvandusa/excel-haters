@@ -18,6 +18,7 @@ export default function TimetablesPage() {
             terminals={terminals}
             terminalsTitle={timetablesContent.terminalsTableTitle}
             componentsTitle={timetablesContent.componentsTableTitle}
+            assignmentsTitle={timetablesContent.assignmentsTableTitle}
             isLoading={terminalsLoading}
             error={terminalsError}
           />
