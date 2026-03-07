@@ -40,10 +40,8 @@ public class ComponentService {
         }
 
         // Verificare ca componenta sa aiba un terminal valid asignat
-        Boolean exists = repository.findTerminalById(component.getTerminalId());
-        if (!exists) {
-            throw new IllegalArgumentException("Terminalul cu id-ul " + component.getTerminalId() + " nu există");
-        }
+        Terminal terminal = repository.findTerminalById(component.getTerminalId());
+        if (terminal == null) {
 
         // Verificare ca terminalul sa nu contina deja componenta in el
         List<Component> existingComponents = repository.getAll();
