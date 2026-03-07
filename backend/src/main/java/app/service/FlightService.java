@@ -1,10 +1,16 @@
 package app.service;
 
 import app.domain.Flight;
+import app.dto.flight.CreateFlightRequest;
+import app.dto.flight.UpdateFlightRequest;
+import app.repository.FlightDBRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+@Service
 public class FlightService {
 
     private final FlightDBRepository repository;
@@ -16,7 +22,12 @@ public class FlightService {
         this.terminalService = terminalService;
     }
 
-    public void add(Flight flight) {
+    public void add(CreateFlightRequest flightRequest) {
+        Flight flight = new Flight();
+        flight.setFlightId(flightRequest.getFlightCode());
+        flight.setTerminalName(flightRequest.getTerminalName());
+        flight.setDeparture(LocalDateTime.parse(flightRequest.getDepartureTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        flight.setArrival(LocalDateTime.parse(flightRequest.getArrivalTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         // Verificare daca exista deja un flight cu acest flightId.
         if (findById(flight.getFlightId()) != null) {
             throw new IllegalArgumentException("Flight with this flightId already exists.");
@@ -62,7 +73,7 @@ public class FlightService {
         repository.save(flight);
     }
 
-    public void remove(Long id) {
+    public void remove(String id) {
         // Verificare ca flight-ul sa existe
         Flight flight = repository.findById(id);
         if (flight == null) {
@@ -105,7 +116,7 @@ public class FlightService {
     }
 
     // Seteaza delay pentru un flight
-    public void delay(Long id, LocalDateTime newDepartureTime) {
+    public void delay(String id, UpdateFlightRequest updateFlightRequest) {
         Flight flight = repository.findById(id);
 
         if (flight == null) {
@@ -116,7 +127,11 @@ public class FlightService {
             throw new IllegalArgumentException("Cannot delay an inactive flight");
         }
 
-        flight.setDeparture(newDepartureTime);
+        if (updateFlightRequest.getArrivalTime() != null) {
+            flight.setDeparture((LocalDateTime.parse(updateFlightRequest.getDepartureTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
+        } else if (updateFlightRequest.getDepartureTime() != null) {
+            flight.setArrival((LocalDateTime.parse(updateFlightRequest.getArrivalTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
+        }
         flight.setStatus("DELAYED");
 
         repository.update(flight);

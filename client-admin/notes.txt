@@ -1,0 +1,73 @@
+HACKTECH
+
+curl 10.1.0.135:8080/api/terminals/1/components - fetches all components in a terminal
+curl 10.1.0.135:8080/api/terminals - fetches all terminals
+
+Airport Configurator Tab
+terminal (ID, name, type [arrivals, departures], isActive)
+    * GET    /api/terminals        
+- create terminal            
+    * POST   /api/terminals
+- update (nume)
+    * PATCH  /api/terminals/{id}
+- update (isActive)
+    * PATCH  /api/terminals/{id}
+- delete terminal
+    * DELETE /api/terminals/{id}
+component (ID, name, type [desk, security, gate, stand], terminalID, isActive)
+    * GET   /api/terminals/{terminalId}/components
+- create component
+    * POST   /api/components
+- update (name)
+    * PATCH  /api/elements/{id}
+- update (isActive)
+    * PATCH  /api/elements/{id}
+- delete component
+    * DELETE /api/elements/{id}
+
+Timetables Tab
+- read terminals: 
+    * GET    /api/terminals
+- read components of terminals
+    * GET   /api/terminals/{terminalId}/components
+- read time intervals for this element for today (elementID, today date) -> flight ids
+    * GET /api/timetables/{elementID}/{date}
+- read flight info (flightID)
+    * GET api/flights/{id}
+
+Flights Tab
+flight (flightID, ?terminal, ?desk, ?security, ?gate, ?stand, departureTime / arrivalTime)
+- add flights with excel
+    * POST   /api/flights
+- add flight with form
+    * POST   /api/flights
+- update flight time (flightID, newTime)
+    * PATCH  /api/flights/{id}
+- cancel flight (flightID)
+    * PATCH  /api/flights/{id}
+
+Remoandations Tab
+- get flight by id
+    * GET /api/flights/{flightID}
+- get components by flight
+    * GET /api/timetables/{flightID}
+- get available components (startTime, stopTime, type)
+- update (flightID, componentID)
+
+
+GET    /api/terminals
+POST   /api/terminals
+PATCH  /api/terminals/{id}
+DELETE /api/terminals/{id}
+
+GET   /api/terminals/{terminalId}/components
+POST   /api/components
+PATCH  /api/elements/{id}
+DELETE /api/elements/{id}
+
+GET   /api/terminals/{terminalId}/components
+GET    /api/elements/{id}/flights
+
+GET /api/flights/{id}
+POST   /api/flights
+PATCH  /api/flights/{id}

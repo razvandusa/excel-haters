@@ -1,4 +1,4 @@
-package domain;
+package app.domain;
 
 import java.time.LocalDateTime;
 
@@ -17,6 +17,8 @@ public class Flight {
         this.departure = departure;
         this.status = status;
     }
+
+    public Flight() {}
 
     public String getFlightId() {
         return flightId;
