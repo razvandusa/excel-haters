@@ -36,15 +36,12 @@ export default function TerminalComponentsPage() {
               Update
             </button>
             <Link to="/configurator" className="configurator-action-link">
-              Back to Configurator
+              Back
             </Link>
           </div>
         </div>
 
         <div className="configurator-detail-meta">
-          <span className="configurator-detail-badge">
-            Type: {terminal?.type || 'Unknown'}
-          </span>
           <span
             className={
               terminal?.isActive

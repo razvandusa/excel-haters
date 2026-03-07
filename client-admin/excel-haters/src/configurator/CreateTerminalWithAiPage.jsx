@@ -1,11 +1,15 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import ComponentTypeColumns from './components/ComponentTypeColumns.jsx'
+import TerminalPhotoUploadPanel from './components/TerminalPhotoUploadPanel.jsx'
+import useImageUploadPreview from './hooks/useImageUploadPreview.js'
 
 export default function CreateTerminalWithAiPage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [draftName, setDraftName] = useState('AI Terminal')
   const [draftIsActive, setDraftIsActive] = useState(true)
+  const { uploadedImageName, uploadedImageUrl, handleImageUpload } =
+    useImageUploadPreview()
 
   // Future AI terminal generation will use a separate API call on this page.
   // Do not reuse the terminal detail API hooks here.
@@ -33,15 +37,12 @@ export default function CreateTerminalWithAiPage() {
               Update
             </button>
             <Link to="/configurator" className="configurator-action-link">
-              Back to Configurator
+              Back
             </Link>
           </div>
         </div>
 
         <div className="configurator-detail-meta">
-          <span className="configurator-detail-badge">
-            Type: {generatedTerminal.type}
-          </span>
           <span
             className={
               generatedTerminal.isActive
@@ -52,6 +53,12 @@ export default function CreateTerminalWithAiPage() {
             {generatedTerminal.isActive ? 'Active' : 'Inactive'}
           </span>
         </div>
+
+        <TerminalPhotoUploadPanel
+          imageName={uploadedImageName}
+          imageUrl={uploadedImageUrl}
+          onUpload={handleImageUpload}
+        />
 
         <div className="mt-8">
           <ComponentTypeColumns components={[]} />

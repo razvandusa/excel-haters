@@ -93,6 +93,34 @@ body {
     @apply mt-4 flex flex-wrap gap-2;
   }
 
+  .flights-page-actions {
+    @apply mt-4 flex flex-wrap gap-2;
+  }
+
+  .flights-spec-card {
+    @apply mt-8 border border-white/10 bg-slate-950/40 p-5;
+  }
+
+  .flights-spec-card__endpoint {
+    @apply text-sm font-semibold uppercase tracking-[0.18em] text-amber-200;
+  }
+
+  .flights-spec-card__copy {
+    @apply mt-3 text-sm text-slate-300;
+  }
+
+  .flights-spec-card__fields {
+    @apply mt-4 flex flex-wrap gap-2;
+  }
+
+  .flights-form-modal {
+    @apply max-w-3xl;
+  }
+
+  .flights-form-grid {
+    @apply grid gap-4 md:grid-cols-2;
+  }
+
   .configurator-tables-layout {
     @apply mt-8 grid gap-6 xl:grid-cols-2;
   }
@@ -225,8 +253,44 @@ body {
     @apply inline-flex border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-200;
   }
 
+  .configurator-image-panel {
+    @apply mt-8 border border-white/10 bg-slate-950/40 p-5;
+  }
+
+  .configurator-image-panel__header {
+    @apply flex flex-col gap-4 border-b border-white/10 pb-4 md:flex-row md:items-center md:justify-between;
+  }
+
+  .configurator-image-panel__kicker {
+    @apply text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200;
+  }
+
+  .configurator-image-panel__title {
+    @apply mt-2 text-xl font-semibold text-white;
+  }
+
+  .configurator-image-panel__input {
+    @apply sr-only;
+  }
+
+  .configurator-image-panel__body {
+    @apply mt-5;
+  }
+
+  .configurator-image-panel__preview {
+    @apply max-h-[420px] w-full border border-white/10 object-contain;
+  }
+
+  .configurator-image-panel__caption {
+    @apply mt-3 text-sm text-slate-300;
+  }
+
+  .configurator-image-panel__empty {
+    @apply border border-dashed border-white/10 px-4 py-12 text-center text-sm text-slate-400;
+  }
+
   .configurator-type-rows {
-    @apply grid grid-cols-1 gap-6 md:grid-cols-4;
+    @apply grid grid-cols-1 gap-5 md:grid-cols-4;
   }
 
   .configurator-type-column {
