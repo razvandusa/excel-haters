@@ -138,9 +138,12 @@ public class TerminalDBRepository {
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
+                Long id = rs.getLong("terminal_id");
                 String name = rs.getString("name");
                 Boolean active = rs.getBoolean("active");
-                terminals.add(new Terminal(name, active));
+                Terminal t = new Terminal(name, active);
+                t.setId(id);
+                terminals.add(t);
             }
         } catch (SQLException e) {
             System.out.println("Error getting all terminals from database: " + e.getMessage());
