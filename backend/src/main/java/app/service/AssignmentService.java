@@ -177,7 +177,9 @@ public class AssignmentService {
         return repository.getAll();
     }
 
-    public List<Component> findByTypeAndInterval(String type, LocalDateTime intervalStart, LocalDateTime intervalEnd) {
+    public List<Component> findByTypeAndInterval(String type, String intervalStart, String intervalEnd) {
+        LocalDateTime intervalStartFormatted = LocalDateTime.parse(intervalStart, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        LocalDateTime intervalEndFormatted = LocalDateTime.parse(intervalEnd, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         if (type == null || intervalStart == null || intervalEnd == null) {
             throw new IllegalArgumentException("Type și intervalul nu pot fi null");
         }
@@ -190,7 +192,7 @@ public class AssignmentService {
                             .toList();
 
                     for (Assignment a : assignments) {
-                        boolean overlap = !(intervalEnd.isBefore(a.getStart()) || intervalStart.isAfter(a.getEnd()));
+                        boolean overlap = !(intervalEndFormatted.isBefore(a.getStart()) || intervalStartFormatted.isAfter(a.getEnd()));
                         if (overlap) {
                             return false; // componenta este ocupată
                         }
