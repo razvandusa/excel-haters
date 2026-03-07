@@ -1,0 +1,14 @@
+# Security
+.env
+
+# Python / FastAPI
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.pytest_cache/
+
+# OS generated files
+.DS_Store
+Thumbs.db
