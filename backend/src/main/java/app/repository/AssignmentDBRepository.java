@@ -54,24 +54,22 @@ public class AssignmentDBRepository {
      * @param assignment Assignment to update
      */
     public void update(Assignment assignment) {
-        //first delete the old assignment
-        delete(assignment.getStart(), assignment.getEnd(), assignment.getIdComponent());
-        save(new Assignment(assignment.getStart(), assignment.getEnd(), assignment.getIdComponent(), assignment.getIdFlight()));
+        delete(assignment);
+        save(assignment);
     }
 
     /**
      * Delete assignment from database
-     * @param start start time of assignment
-     * @param finish finish time of assignment
-     * @param componentId id of component
+     * @param assignment Assignment to delete
      */
-    public void delete(LocalDateTime start, LocalDateTime finish, Long componentId) {
-        String sql = "DELETE FROM assignment WHERE start = ? AND finish = ? AND component_id = ?;";
+    public void delete(Assignment assignment) {
+        String sql = "DELETE FROM assignment WHERE start = ? AND finish = ? AND component_id = ? AND flight_id = ?;";
         try (Connection conn = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setTimestamp(1, Timestamp.valueOf(start));
-            ps.setTimestamp(2, Timestamp.valueOf(finish));
-            ps.setLong(3, componentId);
+            ps.setTimestamp(1, Timestamp.valueOf(assignment.getStart()));
+            ps.setTimestamp(2, Timestamp.valueOf(assignment.getEnd()));
+            ps.setLong(3, assignment.getIdComponent());
+            ps.setString(4, assignment.getIdFlight());
             ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error deleting assignment from database: " + e.getMessage());
