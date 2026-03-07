@@ -1,15 +1,14 @@
 package domain;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class Timestamp {
+public class Assignment {
     LocalDateTime start;
     LocalDateTime end;
     Long idComponent;
     Long idFlight;
 
-    public Timestamp(LocalDateTime start, LocalDateTime end, Long idComponent, Long idFlight) {
+    public Assignment(LocalDateTime start, LocalDateTime end, Long idComponent, Long idFlight) {
         this.start = start;
         this.end = end;
         this.idComponent = idComponent;
