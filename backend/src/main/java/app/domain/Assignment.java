@@ -1,4 +1,4 @@
-package domain;
+package app.domain;
 
 import java.time.LocalDateTime;
 
@@ -6,14 +6,16 @@ public class Assignment {
     LocalDateTime start;
     LocalDateTime end;
     Long idComponent;
-    Long idFlight;
+    String idFlight;
 
-    public Assignment(LocalDateTime start, LocalDateTime end, Long idComponent, Long idFlight) {
+    public Assignment(LocalDateTime start, LocalDateTime end, Long idComponent, String idFlight) {
         this.start = start;
         this.end = end;
         this.idComponent = idComponent;
         this.idFlight = idFlight;
     }
+
+    public Assignment() {}
 
     public LocalDateTime getStart() {
         return start;
@@ -34,10 +36,10 @@ public class Assignment {
     public void setIdComponent(Long idComponent) {
         this.idComponent = idComponent;
     }
-    public Long getIdFlight() {
+    public String getIdFlight() {
         return idFlight;
     }
-    public void setIdFlight(Long idFlight) {
+    public void setIdFlight(String idFlight) {
         this.idFlight = idFlight;
     }
 }
