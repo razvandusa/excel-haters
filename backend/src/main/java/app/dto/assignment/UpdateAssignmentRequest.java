@@ -1,16 +1,34 @@
 package app.dto.assignment;
 
 public class UpdateAssignmentRequest {
-    private Long componentId;
+    private String flightId;
+    private Long oldComponentId;
+    private Long newComponentId;
     private String from;
     private String to;
 
-    public Long getComponentId() {
-        return componentId;
+    public String getFlightId() {
+        return flightId;
     }
 
-    public void setComponentId(Long componentId) {
-        this.componentId = componentId;
+    public void setFlightId(String flightId) {
+        this.flightId = flightId;
+    }
+
+    public Long getOldComponentId() {
+        return oldComponentId;
+    }
+
+    public void setOldComponentId(Long oldComponentId) {
+        this.oldComponentId = oldComponentId;
+    }
+
+    public Long getNewComponentId() {
+        return newComponentId;
+    }
+
+    public void setNewComponentId(Long newComponentId) {
+        this.newComponentId = newComponentId;
     }
 
     public String getFrom() {
