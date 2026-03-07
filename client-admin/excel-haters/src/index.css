@@ -29,12 +29,46 @@ body {
   }
 
   .top-bar {
-    @apply sticky top-0 z-50 flex w-full flex-wrap gap-3 border border-white/10 bg-slate-900/90 shadow-2xl shadow-black/30 backdrop-blur;
+    @apply sticky top-0 z-50 flex w-full flex-col gap-2 border border-white/10 bg-slate-900/90 p-2 shadow-2xl shadow-black/30 backdrop-blur sm:flex-row sm:items-start sm:justify-between;
+  }
+
+  .top-bar__tabs {
+    @apply grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3;
+  }
+
+  .top-bar__meta {
+    @apply flex items-center justify-between gap-3 border border-white/10 bg-white/[0.03] px-3 py-2 text-[11px] font-medium uppercase tracking-[0.16em] text-slate-300 sm:ml-auto sm:min-w-[250px] sm:justify-end;
+  }
+
+  .top-bar__date {
+    @apply text-slate-400;
+  }
+
+  .top-bar__time {
+    @apply text-cyan-100;
+  }
+
+  .page-shell {
+    @apply mt-4;
   }
 
   .tab-link {
-    @apply relative overflow-hidden border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition-[transform,background-color,color,border-color,box-shadow] duration-150 ease-out hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/10 hover:shadow-lg hover:shadow-black/20 active:translate-y-px active:scale-[0.97] active:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950;
+    @apply relative inline-flex min-h-16 w-full flex-col items-center justify-center gap-1 overflow-hidden border border-white/10 bg-white/5 px-3 py-3 text-center text-xs font-medium text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition-[transform,background-color,color,border-color,box-shadow] duration-150 ease-out hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/10 hover:shadow-lg hover:shadow-black/20 active:translate-y-px active:scale-[0.97] active:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 sm:min-h-0 sm:w-auto sm:flex-row sm:justify-start sm:gap-2 sm:px-4 sm:py-2 sm:text-sm;
     will-change: transform, box-shadow;
+  }
+
+  .tab-link__icon {
+    font-size: 18px;
+    line-height: 1;
+    font-variation-settings:
+      'FILL' 0,
+      'wght' 500,
+      'GRAD' 0,
+      'opsz' 24;
+  }
+
+  .tab-link__label {
+    @apply leading-tight sm:leading-normal;
   }
 
   .tab-link--active {
@@ -62,27 +96,27 @@ body {
   }
 
   .page-panel--timetables {
-    @apply border-emerald-400/15 bg-emerald-400/5;
+    @apply border-cyan-400/15 bg-cyan-400/5;
   }
 
   .page-kicker--timetables {
-    @apply text-emerald-200;
+    @apply text-cyan-200;
   }
 
   .page-panel--flights {
-    @apply border-amber-400/15 bg-amber-400/5;
+    @apply border-cyan-400/15 bg-cyan-400/5;
   }
 
   .page-kicker--flights {
-    @apply text-amber-200;
+    @apply text-cyan-200;
   }
 
   .page-panel--recommendation {
-    @apply border-fuchsia-400/15 bg-fuchsia-400/5;
+    @apply border-cyan-400/15 bg-cyan-400/5;
   }
 
   .page-kicker--recommendation {
-    @apply text-fuchsia-200;
+    @apply text-cyan-200;
   }
 
   .configurator-page-copy {

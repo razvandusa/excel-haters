@@ -63,14 +63,8 @@ export default function TerminalComponentsPage() {
       </div>
 
       {isEditModalOpen ? (
-        <div
-          className="configurator-modal-backdrop"
-          onClick={() => setIsEditModalOpen(false)}
-        >
-          <div
-            className="configurator-modal"
-            onClick={(event) => event.stopPropagation()}
-          >
+        <div className="configurator-modal-backdrop">
+          <div className="configurator-modal">
             <div className="configurator-modal__header">
               <h2 className="configurator-modal__title">Update Terminal</h2>
               <button

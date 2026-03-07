@@ -14,11 +14,8 @@ export default function FlightActionModal({
   }
 
   return (
-    <div className="configurator-modal-backdrop" onClick={onClose}>
-      <div
-        className="configurator-modal flights-form-modal"
-        onClick={(event) => event.stopPropagation()}
-      >
+    <div className="configurator-modal-backdrop">
+      <div className="configurator-modal flights-form-modal">
         <div className="configurator-modal__header">
           <h2 className="configurator-modal__title">{title}</h2>
           <button
