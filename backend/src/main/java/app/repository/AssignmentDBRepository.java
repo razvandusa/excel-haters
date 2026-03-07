@@ -50,12 +50,13 @@ public class AssignmentDBRepository {
     }
 
     /**
-     * Update assignment in database. If assignment is not found, nothing happens.
-     * @param assignment Assignment to update
+     * Update assignment in database.
+     * @param oldAssignment old assignment to delete
+     * @param newAssignment new assignment to save
      */
-    public void update(Assignment assignment) {
-        delete(assignment);
-        save(assignment);
+    public void update(Assignment oldAssignment, Assignment newAssignment) {
+        delete(oldAssignment);
+        save(newAssignment);
     }
 
     /**
