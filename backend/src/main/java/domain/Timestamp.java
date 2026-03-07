@@ -7,11 +7,13 @@ public class Timestamp {
     LocalDateTime start;
     LocalDateTime end;
     Long idComponent;
+    Long idFlight;
 
-    public Timestamp(LocalDateTime start, LocalDateTime end, Long idComponent) {
+    public Timestamp(LocalDateTime start, LocalDateTime end, Long idComponent, Long idFlight) {
         this.start = start;
         this.end = end;
         this.idComponent = idComponent;
+        this.idFlight = idFlight;
     }
 
     public LocalDateTime getStart() {
@@ -32,5 +34,11 @@ public class Timestamp {
     }
     public void setIdComponent(Long idComponent) {
         this.idComponent = idComponent;
+    }
+    public Long getIdFlight() {
+        return idFlight;
+    }
+    public void setIdFlight(Long idFlight) {
+        this.idFlight = idFlight;
     }
 }

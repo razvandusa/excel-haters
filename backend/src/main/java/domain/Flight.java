@@ -4,10 +4,6 @@ import java.time.LocalDateTime;
 
 public class Flight {
     Long flightId;
-    Component gate;
-    Component desk;
-    Component security;
-    Component stand;
     String terminalName;
     LocalDateTime arrival;
     LocalDateTime departure;
@@ -16,10 +12,6 @@ public class Flight {
     public Flight(Long flightId, Component gate, Component desk, Component security, Component stand,
                   String terminalName, LocalDateTime arrival, LocalDateTime departure, String status) {
         this.flightId = flightId;
-        this.gate = gate;
-        this.desk = desk;
-        this.security = security;
-        this.stand = stand;
         this.terminalName = terminalName;
         this.arrival = arrival;
         this.departure = departure;
@@ -32,38 +24,6 @@ public class Flight {
 
     public void setFlightId(Long flightId) {
         this.flightId = flightId;
-    }
-
-    public Component getGate() {
-        return gate;
-    }
-
-    public void setGate(Component gate) {
-        this.gate = gate;
-    }
-
-    public Component getDesk() {
-        return desk;
-    }
-
-    public void setDesk(Component desk) {
-        this.desk = desk;
-    }
-
-    public Component getSecurity() {
-        return security;
-    }
-
-    public void setSecurity(Component security) {
-        this.security = security;
-    }
-
-    public Component getStand() {
-        return stand;
-    }
-
-    public void setStand(Component stand) {
-        this.stand = stand;
     }
 
     public String getTerminalName() {
