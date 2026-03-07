@@ -1,0 +1,70 @@
+terminal (ID, name, type [arrivals, departures], isActive)
+component (ID, name, type [desk, security, gate, stand], terminalID, isActive)
+flight (flightID, ?terminal, ?desk, ?security, ?gate, ?stand, departureTime / arrivalTime)
+assignments (componentID, flightID, from, to)
+
+Airport Configurator Tab
+~ for terminal
+    * GET    /api/terminals
+- create terminal
+    * POST   /api/terminals
+- update (nume)
+    * PATCH  /api/terminals/{id}
+- update (isActive)
+    * PATCH  /api/terminals/{id}
+- delete terminal
+    * DELETE /api/terminals/{id}
+
+~ terminal with photo and AI (this will input an photo of drawing of the components of the terminal and it will automatically add them in the drag&drop menu
+- post photo
+    * POST /api/ai/terminal-layouts → upload image, start analysis
+- recieve configuration
+    * GET /api/ai/terminal-layouts/{jobId} → get parsed result/status
+- confirm: this actually commits the elements
+    * POST /api/ai/terminal-layouts/{jobId}/commit → confirm and create components
+
+~ for components
+    * GET   /api/terminals/{terminalId}/components
+- create component
+    * POST  /api/terminals/{terminalId}/components
+- update (name)
+    * PATCH  /api/components/{id}
+- update (isActive)
+    * PATCH  /api/components/{id}
+- delete component
+    * DELETE /api/components/{id}
+
+Timetables Tab
+- read terminals:
+    * GET    /api/terminals
+- read components of terminals
+    * GET   /api/terminals/{terminalId}/components
+- read time intervals for this element for today (elementID, today date) -> flight ids
+    * GET /api/components/{componentId}/assignments?date=2026-03-07
+- read flight info (flightID)
+    * GET /api/flights/{id}
+
+Flights Tab
+- add flights with excel
+    * POST   /api/flights
+- add flight with form
+    * POST   /api/flights
+- update flight time (flightID, newTime)
+    * PATCH  /api/flights/{id}
+- cancel flight (flightID)
+    * PATCH  /api/flights/{id}
+
+Recmandations Tab
+- get flight by id
+    * GET /api/flights/{flightID}
+- get components by flight
+    * GET /api/flights/{flightId}/assignments
+- get available components (startTime, stopTime, type)
+    * GET /api/components/available?type=gate&startTime=2026-03-07T10:00:00&endTime=2026-03-07T12:00:00
+- update (flightID, componentID)
+    * PATCH /api/flights/{flightId}/assignments/{assignmentId}    OR
+    * PATCH /api/assignments/{assignmentId} is cleaner
+
+
+
+

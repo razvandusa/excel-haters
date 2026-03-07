@@ -22,14 +22,14 @@ public class FlightController {
     }
 
     @GetMapping("/{id}")
-    public Map<String, Object> getFlightById(@PathVariable Long id) {
+    public Map<String, Object> getFlightById(@PathVariable String id) {
         try {
             Flight flight = flightService.findById(id);
             if (flight == null) {
                 return Map.of("error", "Flight not found");
             }
             return Map.of(
-                    "id", flight.getFlightId(),
+                    "flightId", flight.getFlightId(),
                     "terminalName", flight.getTerminalName(),
                     "arrivalTime", flight.getArrival(),
                     "departureTime", flight.getDeparture(),
@@ -51,12 +51,8 @@ public class FlightController {
                     "message", "Flight created",
                     "flightId", request.getFlightId(),
                     "terminalName", request.getTerminalName(),
-                        "deskName", request.getDeskName(),
-                    "securityName", request.getSecurityName(),
-                    "gateName", request.getGateName(),
-                    "standName", request.getStandName(),
                     "departureTime", request.getDepartureTime(),
-                        "arrivalTime", request.getArrivalTime()
+                    "arrivalTime", request.getArrivalTime()
             );
         } catch (Exception e) {
             return Map.of(
@@ -67,17 +63,16 @@ public class FlightController {
 
     @PatchMapping("/{id}")
     public Map<String, Object> updateFlight(
-            @PathVariable Long id,
+            @PathVariable String id,
             @RequestBody UpdateFlightRequest request
     ) {
         try {
-            flightService.update(id, request);
+            flightService.delay(id, request);
             return Map.of(
                     "message", "Flight updated",
                     "id", id,
                     "departureTime", request.getDepartureTime(),
-                    "arrivalTime", request.getArrivalTime(),
-                    "status", request.getStatus()
+                    "arrivalTime", request.getArrivalTime()
             );
         } catch (Exception e) {
             return Map.of(

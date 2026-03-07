@@ -1,5 +1,6 @@
 package app.controller;
 
+import app.domain.Terminal;
 import app.dto.terminal.CreateTerminalRequest;
 import app.dto.terminal.UpdateTerminalRequest;
 import app.service.TerminalService;
@@ -23,20 +24,14 @@ public class TerminalController {
 
     @GetMapping
     public List<Map<String, Object>> getAllTerminals() {
-//        List<Terminal> terminals = terminalService.getAll();
-//        return terminals.stream()
-//                .map(terminal -> Map.of(
-//                        "id", terminal.getId(),
-//                        "name", terminal.getName(),
-//                        "type", terminal.getType(),
-//                        "isActive", terminal.isActive()
-//                ))
-//                .toList();
-        return List.of(
-                Map.of("id", 1, "name", "Terminal A", "type", "ARRIVALS", "isActive", true),
-                Map.of("id", 2, "name", "Terminal B", "type", "DEPARTURES", "isActive", true),
-                Map.of("id", 3, "name", "Terminal C", "type", "DEPARTURES", "isActive", true)
-        );
+        List<Terminal> terminals = terminalService.getAll();
+        return terminals.stream()
+                .<Map<String, Object>>map(terminal -> Map.of(
+                        "id", terminal.getId(),
+                        "name", terminal.getName(),
+                        "isActive", terminal.getActive()
+                ))
+                .toList();
     }
 
     @PostMapping
@@ -47,7 +42,6 @@ public class TerminalController {
             return Map.of(
                     "message", "Terminal created",
                     "name", request.getName(),
-                    "type", request.getType(),
                     "isActive", request.getIsActive()
             );
         } catch (IllegalArgumentException e) {

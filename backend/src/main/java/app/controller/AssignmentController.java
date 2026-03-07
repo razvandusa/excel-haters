@@ -43,7 +43,7 @@ public class AssignmentController {
 
 
     @GetMapping("/api/flights/{flightId}/assignments")
-    public List<Map<String, Object>> getAssignmentsForFlight(@PathVariable Long flightId) {
+    public List<Map<String, Object>> getAssignmentsForFlight(@PathVariable String flightId) {
         try {
             List<Assignment> assignments = assignmentService.findAssignmentsByFlightId(flightId);
             return assignments.stream()
@@ -57,15 +57,10 @@ public class AssignmentController {
         } catch (Exception e) {
             return List.of(Map.of("error", e.getMessage()));
         }
-
-        return List.of(
-                Map.of("assignmentId", 1, "flightId", flightId, "componentId", 10, "from", "2026-03-07T10:00:00", "to", "2026-03-07T11:00:00"),
-                Map.of("assignmentId", 2, "flightId", flightId, "componentId", 11, "from", "2026-03-07T09:00:00", "to", "2026-03-07T09:30:00")
-        );
     }
 
     @PatchMapping("/api/assignments")
-    public Map<String, Object> updateAssignmentComponent(@RequestBody UpdateAssignmentComponentRequest request) {
+    public Map<String, Object> updateAssignmentComponent(@RequestBody UpdateAssignmentRequest request) {
         try {
             assignmentService.update(request);
             return Map.of(
