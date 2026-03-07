@@ -28,13 +28,13 @@ public class AssignmentService {
         // Verificare ca componenta sa existe si sa fie activa
         var component = componentService.findById(assignment.getIdComponent());
         if (component == null || !component.getActive()) {
-            throw new IllegalArgumentException("Component ID is invalid");
+            throw new IllegalArgumentException("Component is invalid");
         }
 
         // Verificare ca flight-ul sa existe
         var flight = flightService.findById(assignment.getIdFlight());
         if (flight == null) {
-            throw new IllegalArgumentException("Flight ID is invalid");
+            throw new IllegalArgumentException("Flight is invalid");
         }
 
         // Setarea intervalului logic în funcție de tipul componentei
@@ -43,20 +43,40 @@ public class AssignmentService {
 
         switch (component.getType()) {
             case "DESK":
-                start = flight.getDeparture().minusHours(4);
-                finish = flight.getDeparture().minusHours(3);
+                if (flightService.findById(assignment.getIdFlight()).getDeparture() != null) {
+                    start = flight.getDeparture().minusHours(4);
+                    finish = flight.getDeparture().minusHours(2);
+                } else {
+                    start = flight.getArrival().minusMinutes(30);
+                    finish = flight.getArrival().plusMinutes(120);
+                }
                 break;
             case "SECURITY":
-                start = flight.getDeparture().minusHours(3);
-                finish = flight.getDeparture().minusHours(2);
+                if (flightService.findById(assignment.getIdFlight()).getDeparture() != null) {
+                    start = flight.getDeparture().minusHours(3);
+                    finish = flight.getDeparture().minusHours(2);
+                } else {
+                    start = flight.getArrival().plusMinutes(15);
+                    finish = flight.getArrival().plusMinutes(90);
+                }
                 break;
             case "GATE":
-                start = flight.getDeparture().minusHours(1);
-                finish = flight.getDeparture().plusHours(1);
+                if (flightService.findById(assignment.getIdFlight()).getDeparture() != null) {
+                    start = flight.getDeparture().minusHours(2);
+                    finish = flight.getDeparture().minusMinutes(15);
+                } else {
+                    start = flight.getArrival();
+                    finish = flight.getArrival().plusHours(1);
+                }
                 break;
             case "STAND":
-                start = flight.getDeparture();
-                finish = flight.getArrival();
+                if (flightService.findById(assignment.getIdFlight()).getDeparture() != null) {
+                    start = flight.getDeparture().minusHours(1);
+                    finish = flight.getDeparture().plusMinutes(15);
+                } else {
+                    start = flight.getArrival().minusHours(1);
+                    finish = flight.getArrival().plusMinutes(15);
+                }
                 break;
             default:
                 start = flight.getDeparture();
@@ -92,51 +112,6 @@ public class AssignmentService {
             throw new IllegalArgumentException("Flight ID is invalid");
         }
 
-        LocalDateTime start;
-        LocalDateTime finish;
-
-        switch (component.getType()) {
-            case "DESK":
-                start = flight.getDeparture().minusHours(4);
-                finish = flight.getDeparture().minusHours(3);
-                break;
-            case "SECURITY":
-                start = flight.getDeparture().minusHours(3);
-                finish = flight.getDeparture().minusHours(2);
-                break;
-            case "GATE":
-                start = flight.getDeparture().minusHours(1);
-                finish = flight.getDeparture().plusHours(1);
-                break;
-            case "STAND":
-                start = flight.getDeparture();
-                finish = flight.getArrival();
-                break;
-            default:
-                start = flight.getDeparture();
-                finish = flight.getArrival();
-        }
-
-        assignment.setStart(start);
-        assignment.setEnd(finish);
-
-        List<Assignment> assignmentsForComponent = repository.getAll().stream()
-                .filter(a -> a.getIdComponent().equals(newComponentId))
-                .filter(a -> !(a.getIdFlight().equals(existingAssignment.getIdFlight()) &&
-                               a.getIdComponent().equals(existingAssignment.getIdComponent()) &&
-                               a.getStart().equals(existingAssignment.getStart()) &&
-                               a.getEnd().equals(existingAssignment.getEnd())))
-                .toList();
-
-        for (Assignment a : assignmentsForComponent) {
-            if (a.getStart() != null && a.getEnd() != null && assignment.getStart() != null && assignment.getEnd() != null) {
-                boolean overlap = !(assignment.getEnd().isBefore(a.getStart()) || assignment.getStart().isAfter(a.getEnd()));
-                if (overlap) {
-                    throw new IllegalArgumentException("Assignment interval overlaps with another assignment for the same component.");
-                }
-            }
-        }
-
         Assignment updatedAssignment = new Assignment();
         updatedAssignment.setIdFlight(assignment.getIdFlight());
         updatedAssignment.setIdComponent(newComponentId);
@@ -166,7 +141,7 @@ public class AssignmentService {
                 .toList();
     }
 
-    public List<Assignment> findByFlightId(Long idFlight) {
+    public List<Assignment> findByFlightId(String idFlight) {
         // Toate assignments pentru un anumit flight
         return repository.getAll().stream()
                 .filter(t -> t.getIdFlight().equals(idFlight))
@@ -177,28 +152,34 @@ public class AssignmentService {
         return repository.getAll();
     }
 
-    public List<Component> findByTypeAndInterval(String type, String intervalStart, String intervalEnd) {
-        LocalDateTime intervalStartFormatted = LocalDateTime.parse(intervalStart, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        LocalDateTime intervalEndFormatted = LocalDateTime.parse(intervalEnd, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        if (type == null || intervalStart == null || intervalEnd == null) {
-            throw new IllegalArgumentException("Type și intervalul nu pot fi null");
+    public List<Component> findByTypeAndInterval(Long currentComponentId, LocalDateTime intervalStart, LocalDateTime intervalEnd) {
+        if (currentComponentId == null || intervalStart == null || intervalEnd == null) {
+            throw new IllegalArgumentException("Current component ID și intervalul nu pot fi null");
         }
 
+        // Componenta curentă
+        Component currentComponent = componentService.findById(currentComponentId);
+        if (currentComponent == null) {
+            throw new IllegalArgumentException("Current component nu există");
+        }
+        String type = currentComponent.getType();
+
         return componentService.getAll().stream()
+                // doar componente de același tip
                 .filter(c -> type.equals(c.getType()))
+                // excludem componenta curentă
+                .filter(c -> !c.getId().equals(currentComponentId))
                 .filter(c -> {
+                    // toate assignment-urile componentei
                     List<Assignment> assignments = repository.getAll().stream()
                             .filter(a -> a.getIdComponent().equals(c.getId()))
                             .toList();
 
-                    for (Assignment a : assignments) {
-                        boolean overlap = !(intervalEndFormatted.isBefore(a.getStart()) || intervalStartFormatted.isAfter(a.getEnd()));
-                        if (overlap) {
-                            return false; // componenta este ocupată
-                        }
-                    }
+                    // verificăm dacă există suprapuneri cu intervalul dat
+                    boolean hasOverlap = assignments.stream()
+                            .anyMatch(a -> !(intervalEnd.isBefore(a.getStart()) || intervalStart.isAfter(a.getEnd())));
 
-                    return true; // componenta este liberă
+                    return !hasOverlap; // păstrăm doar componentele libere
                 })
                 .toList();
     }

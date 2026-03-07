@@ -22,7 +22,7 @@ public class FlightService {
         this.terminalService = terminalService;
     }
 
-    public void add(CreateFlightRequest flightRequest) {
+    public void add(CreateFlightRequest flightRequest) { // metoda trebuie sa declanseze algoritmul de distribuire a componentelor pentru flight
         Flight flight = new Flight();
         flight.setFlightId(flightRequest.getFlightId());
         flight.setTerminalName(flightRequest.getTerminalName());
@@ -49,25 +49,21 @@ public class FlightService {
         LocalDateTime now = LocalDateTime.now();
         if (hasDeparture) {
             long minutesToDeparture = java.time.Duration.between(now, flight.getDeparture()).toMinutes();
-            if (minutesToDeparture > 24 * 60) {
+            if (minutesToDeparture > 50) {
                 flight.setStatus("SCHEDULED");
-            } else if (minutesToDeparture > 50) {
-                flight.setStatus("SCHEDULED");
-            } else if (minutesToDeparture > 15) {
+            } else if (minutesToDeparture > 0 && minutesToDeparture <= 50) {
                 flight.setStatus("BOARDING");
-            } else if (minutesToDeparture >= 0) {
+            } else if (minutesToDeparture <= 0) {
                 flight.setStatus("CLOSED");
-            } else {
-                flight.setStatus("INACTIVE");
             }
         } else if (hasArrival) {
             long minutesToArrival = java.time.Duration.between(now, flight.getArrival()).toMinutes();
-            if (minutesToArrival > 15) {
+            if (minutesToArrival >= 0) {
                 flight.setStatus("SCHEDULED");
-            } else if (minutesToArrival >= 0) {
+            } else if (minutesToArrival < 0 && minutesToArrival >= -15) {
                 flight.setStatus("DEPLANING");
             } else {
-                flight.setStatus("INACTIVE");
+                flight.setStatus("CLOSED");
             }
         }
         repository.save(flight);
@@ -87,7 +83,7 @@ public class FlightService {
                        String terminalName,
                        LocalDateTime arrival,
                        LocalDateTime departure,
-                       String status) {
+                       String status) { // metoda folosita cand updatam un flight in algoritm
 
         // Verificare daca exista flight-ul cu id-ul dat
         Flight flight = repository.findById(id);
@@ -123,14 +119,14 @@ public class FlightService {
             throw new IllegalArgumentException("Flight with id " + id + " does not exist");
         }
 
-        if ("INACTIVE".equals(flight.getStatus())) {
-            throw new IllegalArgumentException("Cannot delay an inactive flight");
+        if ("CLOSED".equals(flight.getStatus())) {
+            throw new IllegalArgumentException("Cannot delay an closed flight");
         }
 
         if (updateFlightRequest.getArrivalTime() != null) {
-            flight.setDeparture((LocalDateTime.parse(updateFlightRequest.getDepartureTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
+            flight.setDeparture((LocalDateTime.parse(updateFlightRequest.getArrivalTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
         } else if (updateFlightRequest.getDepartureTime() != null) {
-            flight.setArrival((LocalDateTime.parse(updateFlightRequest.getArrivalTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
+            flight.setArrival((LocalDateTime.parse(updateFlightRequest.getDepartureTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
         }
         flight.setStatus("DELAYED");
 
