@@ -16,32 +16,28 @@ import java.util.Map;
 public class ComponentController {
 
     private final ComponentService componentService;
-    private AssignmentService assignmentService;
-
+    private final AssignmentService assignmentService;
 
     @Autowired
     public ComponentController(ComponentService componentService, AssignmentService assignmentService) {
         this.componentService = componentService;
+        this.assignmentService = assignmentService;
     }
 
     @GetMapping("/api/terminals/{terminalId}/components")
     public List<Map<String, Object>> getComponentsByTerminal(@PathVariable Long terminalId) {
-//        List<Component> components = componentService.getAllByTerminalId(terminalId);
-//        return components.stream()
-//                .map(component -> Map.of(
-//                        "id", component.getId(),
-//                        "name", component.getName(),
-//                        "type", component.getType(),
-//                        "terminalId", terminalId,
-//                        "isActive", component.getActive()
-//                ))
-//                .toList();
-
-        return List.of(
-                Map.of("id", 10, "name", "Gate A1", "type", "GATE", "terminalId", terminalId, "isActive", true),
-                Map.of("id", 11, "name", "Desk A2", "type", "DESK", "terminalId", terminalId, "isActive", true)
-        );
+        List<Component> components = componentService.getAllByTerminalId(terminalId);
+        return components.stream()
+                .<Map<String, Object>>map(component -> Map.of(
+                        "id", component.getId(),
+                        "name", component.getName(),
+                        "type", component.getType(),
+                        "terminalId", terminalId,
+                        "isActive", component.getActive()
+                ))
+                .toList();
     }
+
 
     @PostMapping("/api/terminals/{terminalId}/components")
     @ResponseStatus(HttpStatus.CREATED)

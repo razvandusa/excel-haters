@@ -27,34 +27,31 @@ export default function ComponentTable({
   title,
   isLoading = false,
   error = '',
-  showTypeColumn = true,
-  showStatusColumn = true,
 }) {
   const [searchValue, setSearchValue] = useState('')
   const [sortField, setSortField] = useState('id')
+  const [typeFilter, setTypeFilter] = useState('all')
 
   const filteredComponents = useMemo(() => {
     const query = searchValue.trim().toLowerCase()
     const nextComponents = components.filter((component) => {
       const status = component.isActive ? 'yes active' : 'no inactive'
+      const matchesType =
+        typeFilter === 'all' ? true : component.type === typeFilter
       const matchesQuery =
         !query ||
-        [
-          component.id,
-          component.name,
-          ...(showTypeColumn ? [component.type] : []),
-          ...(showStatusColumn ? [status] : []),
-        ].some((value) => String(value).toLowerCase().includes(query))
+        [component.id, component.name, component.type, status].some((value) =>
+          String(value).toLowerCase().includes(query),
+        )
 
-      return matchesQuery
+      return matchesType && matchesQuery
     })
 
     return [...nextComponents].sort((left, right) =>
       compareComponents(left, right, sortField),
     )
-  }, [components, searchValue, showStatusColumn, showTypeColumn, sortField])
+  }, [components, searchValue, sortField, typeFilter])
   const hasRows = filteredComponents.length > 0
-  const columnCount = 2 + Number(showTypeColumn) + Number(showStatusColumn)
   const { currentPage, setCurrentPage, totalPages, paginatedItems } =
     useTablePagination(filteredComponents, DEFAULT_PAGE_SIZE)
 
@@ -95,34 +92,35 @@ export default function ComponentTable({
                   Name
                 </button>
               </th>
-              {showTypeColumn ? (
-                <th>
-                  <button
-                    type="button"
-                    className="configurator-table__sort-button"
-                    onClick={() => setSortField('type')}
-                  >
-                    Type
-                  </button>
-                </th>
-              ) : null}
-              {showStatusColumn ? (
-                <th>
-                  <button
-                    type="button"
-                    className="configurator-table__sort-button"
-                    onClick={() => setSortField('isActive')}
-                  >
-                    Is Active
-                  </button>
-                </th>
-              ) : null}
+              <th>
+                <select
+                  value={typeFilter}
+                  onChange={(event) => setTypeFilter(event.target.value)}
+                  className="configurator-table__header-select"
+                >
+                  <option value="all">Type</option>
+                  {componentTypeOptions.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+              </th>
+              <th>
+                <button
+                  type="button"
+                  className="configurator-table__sort-button"
+                  onClick={() => setSortField('isActive')}
+                >
+                  Is Active
+                </button>
+              </th>
             </tr>
           </thead>
           <tbody>
             {isLoading && (
               <tr>
-                <td colSpan={columnCount} className="configurator-table__feedback">
+                <td colSpan="4" className="configurator-table__feedback">
                   Loading components...
                 </td>
               </tr>
@@ -131,7 +129,7 @@ export default function ComponentTable({
             {!isLoading && error && (
               <tr>
                 <td
-                  colSpan={columnCount}
+                  colSpan="4"
                   className="configurator-table__feedback configurator-table__feedback--error"
                 >
                   {error}
@@ -146,32 +144,28 @@ export default function ComponentTable({
                 <tr key={component.id}>
                   <td>{component.id}</td>
                   <td>{component.name}</td>
-                  {showTypeColumn ? (
-                    <td className="capitalize">
-                      {componentTypeOptions.includes(component.type)
-                        ? component.type
-                        : 'Unknown'}
-                    </td>
-                  ) : null}
-                  {showStatusColumn ? (
-                    <td>
-                      <span
-                        className={
-                          component.isActive
-                            ? 'configurator-status configurator-status--active'
-                            : 'configurator-status configurator-status--inactive'
-                        }
-                      >
-                        {formatStatus(component.isActive)}
-                      </span>
-                    </td>
-                  ) : null}
+                  <td className="capitalize">
+                    {componentTypeOptions.includes(component.type)
+                      ? component.type
+                      : 'Unknown'}
+                  </td>
+                  <td>
+                    <span
+                      className={
+                        component.isActive
+                          ? 'configurator-status configurator-status--active'
+                          : 'configurator-status configurator-status--inactive'
+                      }
+                    >
+                      {formatStatus(component.isActive)}
+                    </span>
+                  </td>
                 </tr>
               ))}
 
             {!isLoading && !error && !hasRows && (
               <tr>
-                <td colSpan={columnCount} className="configurator-table__feedback">
+                <td colSpan="4" className="configurator-table__feedback">
                   No components found.
                 </td>
               </tr>

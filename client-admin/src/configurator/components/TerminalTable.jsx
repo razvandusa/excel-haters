@@ -41,11 +41,14 @@ export default function TerminalTable({
 }) {
   const [searchValue, setSearchValue] = useState('')
   const [sortField, setSortField] = useState('id')
+  const [typeFilter, setTypeFilter] = useState('all')
   const filteredTerminals = useMemo(() => {
     const query = searchValue.trim().toLowerCase()
     const nextTerminals = terminals.filter((terminal) => {
       const status = terminal.isActive ? 'yes active' : 'no inactive'
       const nameTokens = getTerminalNameTokens(terminal.name)
+      const matchesType =
+        showType && typeFilter !== 'all' ? terminal.type === typeFilter : true
       const queryValues = [terminal.id]
 
       if (showType) {
@@ -61,13 +64,13 @@ export default function TerminalTable({
         queryValues.some((value) => String(value).toLowerCase().includes(query)) ||
         nameTokens.some((value) => value.includes(query))
 
-      return matchesQuery
+      return matchesType && matchesQuery
     })
 
     return [...nextTerminals].sort((left, right) =>
       compareTerminals(left, right, sortField),
     )
-  }, [searchValue, showIsActive, showType, sortField, terminals])
+  }, [searchValue, showIsActive, showType, sortField, terminals, typeFilter])
   const hasRows = filteredTerminals.length > 0
   const { currentPage, setCurrentPage, totalPages, paginatedItems } =
     useTablePagination(filteredTerminals, DEFAULT_PAGE_SIZE)
@@ -112,13 +115,18 @@ export default function TerminalTable({
               </th>
               {showType ? (
                 <th>
-                  <button
-                    type="button"
-                    className="configurator-table__sort-button"
-                    onClick={() => setSortField('type')}
+                  <select
+                    value={typeFilter}
+                    onChange={(event) => setTypeFilter(event.target.value)}
+                    className="configurator-table__header-select"
                   >
-                    Type
-                  </button>
+                    <option value="all">Type</option>
+                    {terminalTypeOptions.map((type) => (
+                      <option key={type} value={type}>
+                        {type}
+                      </option>
+                    ))}
+                  </select>
                 </th>
               ) : null}
               {showIsActive ? (
