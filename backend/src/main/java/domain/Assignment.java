@@ -1,56 +1,43 @@
 package domain;
 
+import java.time.LocalDateTime;
+
 public class Assignment {
-    Long id;
-    Long terminalId;
-    String name;
-    String type;
-    Boolean active;
+    LocalDateTime start;
+    LocalDateTime end;
+    Long idComponent;
+    Long idFlight;
 
-    public Assignment(Long terminalId, String name, String type, Boolean active) {
-        this.terminalId = terminalId;
-        this.name = name;
-        this.type = type;
-        this.active = active;
+    public Assignment(LocalDateTime start, LocalDateTime end, Long idComponent, Long idFlight) {
+        this.start = start;
+        this.end = end;
+        this.idComponent = idComponent;
+        this.idFlight = idFlight;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public LocalDateTime getStart() {
+        return start;
+    }
+    public LocalDateTime getEnd() {
+        return end;
+    }
+    public Long getIdComponent() {
+        return idComponent;
     }
 
-    public Long getId() {
-        return id;
+    public void setStart(LocalDateTime start) {
+        this.start = start;
     }
-
-    public Long getTerminalId() {
-        return terminalId;
+    public void setEnd(LocalDateTime end) {
+        this.end = end;
     }
-
-    public void setTerminalId(Long terminalId) {
-        this.terminalId = terminalId;
+    public void setIdComponent(Long idComponent) {
+        this.idComponent = idComponent;
     }
-
-    public String getName() {
-        return name;
+    public Long getIdFlight() {
+        return idFlight;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
+    public void setIdFlight(Long idFlight) {
+        this.idFlight = idFlight;
     }
 }
