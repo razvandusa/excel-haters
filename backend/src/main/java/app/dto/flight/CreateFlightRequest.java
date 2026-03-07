@@ -1,25 +1,61 @@
 package app.dto.flight;
 
 public class CreateFlightRequest {
-    private String flightCode;
-    private Long terminalId;
+    private String flightId;
+    private String terminalName;
+    private String deskName;
+    private String securityName;
+    private String gateName;
+    private String standName;
     private String departureTime;
     private String arrivalTime;
 
-    public String getFlightCode() {
-        return flightCode;
+    public String getFlightId() {
+        return flightId;
     }
 
-    public void setFlightCode(String flightCode) {
-        this.flightCode = flightCode;
+    public void setFlightId(String flightId) {
+        this.flightId = flightId;
     }
 
-    public Long getTerminalId() {
-        return terminalId;
+    public String getTerminalName() {
+        return terminalName;
     }
 
-    public void setTerminalId(Long terminalId) {
-        this.terminalId = terminalId;
+    public void setTerminalName(String terminalName) {
+        this.terminalName = terminalName;
+    }
+
+    public String getDeskName() {
+        return deskName;
+    }
+
+    public void setDeskName(String deskName) {
+        this.deskName = deskName;
+    }
+
+    public String getSecurityName() {
+        return securityName;
+    }
+
+    public void setSecurityName(String securityName) {
+        this.securityName = securityName;
+    }
+
+    public String getGateName() {
+        return gateName;
+    }
+
+    public void setGateName(String gateName) {
+        this.gateName = gateName;
+    }
+
+    public String getStandName() {
+        return standName;
+    }
+
+    public void setStandName(String standName) {
+        this.standName = standName;
     }
 
     public String getDepartureTime() {
