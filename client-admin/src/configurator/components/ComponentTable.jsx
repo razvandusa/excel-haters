@@ -1,55 +1,55 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState } from "react";
 import useTablePagination, {
   DEFAULT_PAGE_SIZE,
-} from '../hooks/useTablePagination.js'
+} from "../hooks/useTablePagination.js";
 
 function formatStatus(isActive) {
-  return isActive ? 'Yes' : 'No'
+  return isActive ? "Yes" : "No";
 }
 
 function compareComponents(left, right, sortField) {
-  if (sortField === 'id') {
+  if (sortField === "id") {
     return String(left.id).localeCompare(String(right.id), undefined, {
       numeric: true,
-    })
+    });
   }
 
-  if (sortField === 'isActive') {
-    return Number(right.isActive) - Number(left.isActive)
+  if (sortField === "isActive") {
+    return Number(right.isActive) - Number(left.isActive);
   }
 
-  return String(left[sortField]).localeCompare(String(right[sortField]))
+  return String(left[sortField]).localeCompare(String(right[sortField]));
 }
 
 export default function ComponentTable({
   components,
   title,
   isLoading = false,
-  error = '',
+  error = "",
 }) {
-  const [searchValue, setSearchValue] = useState('')
-  const [sortField, setSortField] = useState('id')
+  const [searchValue, setSearchValue] = useState("");
+  const [sortField, setSortField] = useState("id");
 
   const filteredComponents = useMemo(() => {
-    const query = searchValue.trim().toLowerCase()
+    const query = searchValue.trim().toLowerCase();
     const nextComponents = components.filter((component) => {
-      const status = component.isActive ? 'yes active' : 'no inactive'
+      const status = component.isActive ? "yes active" : "no inactive";
       const matchesQuery =
         !query ||
         [component.id, component.name, status].some((value) =>
           String(value).toLowerCase().includes(query),
-        )
+        );
 
-      return matchesQuery
-    })
+      return matchesQuery;
+    });
 
     return [...nextComponents].sort((left, right) =>
       compareComponents(left, right, sortField),
-    )
-  }, [components, searchValue, sortField])
-  const hasRows = filteredComponents.length > 0
+    );
+  }, [components, searchValue, sortField]);
+  const hasRows = filteredComponents.length > 0;
   const { currentPage, setCurrentPage, totalPages, paginatedItems } =
-    useTablePagination(filteredComponents, DEFAULT_PAGE_SIZE)
+    useTablePagination(filteredComponents, DEFAULT_PAGE_SIZE);
 
   return (
     <section className="overflow-hidden border border-white/10 bg-slate-950/40 shadow-xl shadow-black/10">
@@ -76,7 +76,7 @@ export default function ComponentTable({
                 <button
                   type="button"
                   className="w-full text-left font-bold text-slate-400 transition-colors duration-150 hover:text-white focus:outline-none"
-                  onClick={() => setSortField('id')}
+                  onClick={() => setSortField("id")}
                 >
                   ID
                 </button>
@@ -85,7 +85,7 @@ export default function ComponentTable({
                 <button
                   type="button"
                   className="w-full text-left font-bold text-slate-400 transition-colors duration-150 hover:text-white focus:outline-none"
-                  onClick={() => setSortField('name')}
+                  onClick={() => setSortField("name")}
                 >
                   Name
                 </button>
@@ -94,7 +94,7 @@ export default function ComponentTable({
                 <button
                   type="button"
                   className="w-full text-left font-bold text-slate-400 transition-colors duration-150 hover:text-white focus:outline-none"
-                  onClick={() => setSortField('isActive')}
+                  onClick={() => setSortField("isActive")}
                 >
                   Is Active
                 </button>
@@ -104,7 +104,10 @@ export default function ComponentTable({
           <tbody className="divide-y divide-white/5">
             {isLoading && (
               <tr>
-                <td colSpan="3" className="px-5 py-6 text-center text-sm text-slate-400">
+                <td
+                  colSpan="3"
+                  className="px-5 py-6 text-center text-sm text-slate-400"
+                >
                   Loading components...
                 </td>
               </tr>
@@ -126,14 +129,16 @@ export default function ComponentTable({
               hasRows &&
               paginatedItems.map((component) => (
                 <tr key={component.id} className="bg-white/[0.02]">
-                  <td className="px-5 py-3 font-medium text-white">{component.id}</td>
+                  <td className="px-5 py-3 font-medium text-white">
+                    {component.id}
+                  </td>
                   <td className="px-5 py-3">{component.name}</td>
                   <td className="px-5 py-3 text-right">
                     <span
                       className={
                         component.isActive
-                          ? 'inline-flex border px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] border-emerald-300/20 bg-emerald-300/10 text-emerald-100'
-                          : 'inline-flex border px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] border-slate-300/15 bg-slate-300/10 text-slate-300'
+                          ? "inline-flex border px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] border-emerald-300/20 bg-emerald-300/10 text-emerald-100"
+                          : "inline-flex border px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] border-slate-300/15 bg-slate-300/10 text-slate-300"
                       }
                     >
                       {formatStatus(component.isActive)}
@@ -144,7 +149,10 @@ export default function ComponentTable({
 
             {!isLoading && !error && !hasRows && (
               <tr>
-                <td colSpan="3" className="px-5 py-6 text-center text-sm text-slate-400">
+                <td
+                  colSpan="3"
+                  className="px-5 py-6 text-center text-sm text-slate-400"
+                >
                   No components found.
                 </td>
               </tr>
@@ -181,5 +189,5 @@ export default function ComponentTable({
         </div>
       )}
     </section>
-  )
+  );
 }

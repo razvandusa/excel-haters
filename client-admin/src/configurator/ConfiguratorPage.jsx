@@ -2,12 +2,16 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import TerminalTable from "./components/TerminalTable.jsx";
 import configuratorContent from "./config/configuratorContent.js";
-import { fetchTerminals } from "../api/terminals.js";
+import { fetchTerminals, createTerminal } from "../api/terminals.js";
 
 export default function ConfiguratorPage() {
   const [terminals, setTerminals] = useState([]);
   const [terminalsLoading, setTerminalsLoading] = useState(true);
   const [terminalsError, setTerminalsError] = useState("");
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newTerminalName, setNewTerminalName] = useState("");
+  const [newTerminalIsActive, setNewTerminalIsActive] = useState(true);
+  const [creating, setCreating] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -40,6 +44,7 @@ export default function ConfiguratorPage() {
           <button
             type="button"
             className="inline-flex border border-cyan-300/20 bg-cyan-300/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-cyan-100 transition-colors duration-150 hover:bg-cyan-300/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+            onClick={() => setShowCreateModal(true)}
           >
             Create Terminal
           </button>
@@ -61,6 +66,62 @@ export default function ConfiguratorPage() {
           />
         </div>
       </div>
+      {showCreateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4">
+          <div className="w-full max-w-md border border-white/10 bg-slate-900 p-5 shadow-2xl shadow-black/40">
+            <h2 className="text-lg font-semibold text-white mb-4">
+              Create Terminal
+            </h2>
+            <input
+              type="text"
+              value={newTerminalName}
+              onChange={(e) => setNewTerminalName(e.target.value)}
+              placeholder="Terminal Name"
+              className="mb-4 w-full px-3 py-2"
+            />
+            <label className="flex items-center mb-4">
+              <input
+                type="checkbox"
+                checked={newTerminalIsActive}
+                onChange={(e) => setNewTerminalIsActive(e.target.checked)}
+              />
+              <span className="ml-2 text-slate-200">Active</span>
+            </label>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowCreateModal(false)}
+                disabled={creating}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  setCreating(true);
+                  try {
+                    await createTerminal({
+                      name: newTerminalName,
+                      isActive: newTerminalIsActive,
+                    });
+                    // Refresh terminals
+                    const updated = await fetchTerminals();
+                    setTerminals(updated);
+                    setShowCreateModal(false);
+                    setNewTerminalName("");
+                    setNewTerminalIsActive(true);
+                  } catch (err) {
+                    alert(err.message);
+                  } finally {
+                    setCreating(false);
+                  }
+                }}
+                disabled={creating || !newTerminalName.trim()}
+              >
+                {creating ? "Creating..." : "Create"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

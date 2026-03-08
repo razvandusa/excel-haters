@@ -1,0 +1,27 @@
+const TERMINALS_API_URL =
+  import.meta.env.VITE_TERMINALS_API_URL || "/api/terminals";
+
+export async function createComponent({ terminalId, name, type, isActive }) {
+  const response = await fetch(
+    `${TERMINALS_API_URL}/${terminalId}/components`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, type, isActive }),
+    },
+  );
+  if (!response.ok) {
+    throw new Error(`Create component failed with status ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function deleteComponent(componentId) {
+  const response = await fetch(`/api/components/${componentId}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) {
+    throw new Error(`Delete component failed with status ${response.status}`);
+  }
+  return true;
+}
