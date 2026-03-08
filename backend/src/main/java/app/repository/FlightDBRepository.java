@@ -35,6 +35,7 @@ public class FlightDBRepository {
      * @param flight Flight to save
      */
     public void save(Flight flight) {
+
         String sql = "INSERT INTO flight (flight_id, terminal_name, arrival, departure, status) VALUES (?, ?, ?, ?, ?);";
         try (Connection conn = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -42,7 +43,9 @@ public class FlightDBRepository {
             ps.setString(2, flight.getTerminalName());
             if (flight.getDeparture() == null) {
                 ps.setTimestamp(3, Timestamp.valueOf(flight.getArrival()));
+                ps.setNull(4, Types.TIMESTAMP);
             } else {
+                ps.setNull(3, Types.TIMESTAMP);
                 ps.setTimestamp(4, Timestamp.valueOf(flight.getDeparture()));
             }
             ps.setString(5, flight.getStatus());
