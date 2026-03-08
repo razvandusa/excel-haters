@@ -39,7 +39,7 @@ public class FlightService {
             throw new IllegalArgumentException("Flight with this flightId already exists.");
         }
         flight.setFlightId(flightRequest.getFlightId());
-        if (flight.getTerminalName() == null || !terminalService.findByName(flight.getTerminalName()).getActive()) {
+        if (flightRequest.getTerminalName() == null || !terminalService.findByName(flightRequest.getTerminalName()).getActive()) {
             throw new IllegalArgumentException("Terminal does not exist.");
         }
         flight.setTerminalName(flightRequest.getTerminalName());
