@@ -1,6 +1,7 @@
 import recommendationContent from '../config/recommendationContent.js'
 
 export default function RecommendationFlightForm({
+  fieldLabel,
   flightId,
   onChangeFlightId,
   onSubmit,
@@ -11,7 +12,8 @@ export default function RecommendationFlightForm({
         type="text"
         value={flightId}
         onChange={(event) => onChangeFlightId(event.target.value)}
-        placeholder={recommendationContent.flightIdPlaceholder}
+        placeholder={fieldLabel || recommendationContent.flightIdPlaceholder}
+        aria-label={fieldLabel || recommendationContent.flightIdPlaceholder}
         className="configurator-modal__input"
       />
       <button type="submit" className="configurator-action-link">

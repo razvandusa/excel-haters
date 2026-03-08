@@ -22,13 +22,6 @@ export default function FlightActionModal({
       <div className="configurator-modal flights-form-modal">
         <div className="configurator-modal__header">
           <h2 className="configurator-modal__title">{title}</h2>
-          <button
-            type="button"
-            className="configurator-modal__close"
-            onClick={onClose}
-          >
-            Close
-          </button>
         </div>
 
         <form onSubmit={onSubmit}>
