@@ -1,7 +1,6 @@
 import { useRef } from 'react'
 import AddFlightModal from './components/AddFlightModal.jsx'
 import FlightActionModal from './components/FlightActionModal.jsx'
-import cancelFlightFieldDefinitions from './config/cancelFlightFieldDefinitions.js'
 import flightsContent from './config/flightsContent.js'
 import updateFlightTimeFieldDefinitions from './config/updateFlightTimeFieldDefinitions.js'
 import useFlightForm from './hooks/useFlightForm.js'
@@ -11,26 +10,20 @@ export default function FlightsPage() {
   const {
     closeForm,
     componentsByTerminalId,
-    draftCancelFlight,
     draftFlight,
     draftFlightTimeUpdate,
-    handleCancelFlightChange,
     handleExcelUpload,
     handleFieldChange,
     handleFlightTimeChange,
     isAddFormOpen,
-    isCancelFlightFormOpen,
     isUpdateTimeFormOpen,
     openAddForm,
-    openCancelFlightForm,
     openUpdateTimeForm,
-    resetCancelFlightForm,
     resetForm,
     resetFlightTimeForm,
     selectedTerminalComponents,
     selectedTerminalComponentsError,
     selectedTerminalComponentsLoading,
-    submitCancelFlight,
     submitFlight,
     submitFlightTimeUpdate,
     terminals,
@@ -65,13 +58,6 @@ export default function FlightsPage() {
             onClick={openUpdateTimeForm}
           >
             {flightsContent.updateTimeLabel}
-          </button>
-          <button
-            type="button"
-            className="configurator-action-link"
-            onClick={openCancelFlightForm}
-          >
-            {flightsContent.cancelFlightLabel}
           </button>
         </div>
         <input
@@ -108,17 +94,6 @@ export default function FlightsPage() {
         onSubmit={submitFlightTimeUpdate}
         submitLabel={flightsContent.updateTimeSubmitLabel}
         title={flightsContent.updateTimeModalTitle}
-      />
-      <FlightActionModal
-        draftValues={draftCancelFlight}
-        fields={cancelFlightFieldDefinitions}
-        isOpen={isCancelFlightFormOpen}
-        onChangeField={handleCancelFlightChange}
-        onClose={closeForm}
-        onReset={resetCancelFlightForm}
-        onSubmit={submitCancelFlight}
-        submitLabel={flightsContent.cancelSubmitLabel}
-        title={flightsContent.cancelModalTitle}
       />
     </section>
   )

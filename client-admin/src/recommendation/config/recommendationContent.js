@@ -1,6 +1,6 @@
 const recommendationContent = {
-  kicker: 'Recommendation',
-  title: 'Recommendation center',
+  kicker: 'Flight Viewer',
+  title: 'Flight Viewer',
   submitLabel: 'Submit',
   flightIdPlaceholder: 'Flight ID',
   validTitle: 'Flight found',

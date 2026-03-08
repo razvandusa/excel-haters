@@ -25,7 +25,7 @@ function formatDateTime(now) {
   }
 }
 
-export default function TabNav({ tabs }) {
+export default function TabNav({ onLogout, tabs }) {
   const [dateTime, setDateTime] = useState(() => formatDateTime(new Date()))
 
   useEffect(() => {
@@ -64,6 +64,13 @@ export default function TabNav({ tabs }) {
       <div className="top-bar__meta">
         <span className="top-bar__date">{dateTime.date}</span>
         <span className="top-bar__time">{dateTime.time}</span>
+        <button
+          type="button"
+          className="top-bar__logout"
+          onClick={onLogout}
+        >
+          Logout
+        </button>
       </div>
     </div>
   )

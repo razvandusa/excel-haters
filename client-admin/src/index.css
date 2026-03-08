@@ -48,8 +48,44 @@ body {
     @apply text-cyan-100;
   }
 
+  .top-bar__logout {
+    @apply inline-flex items-center border border-rose-300/20 bg-rose-300/10 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-rose-100 transition-colors duration-150 hover:bg-rose-300/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950;
+  }
+
   .page-shell {
     @apply mt-4;
+  }
+
+  .role-gate {
+    @apply flex min-h-screen items-center justify-center py-10;
+  }
+
+  .role-gate__panel {
+    @apply w-full max-w-4xl border border-cyan-300/15 bg-slate-950/60 p-6 shadow-2xl shadow-black/30 backdrop-blur sm:p-8;
+  }
+
+  .role-gate__title {
+    @apply mt-4 text-4xl font-semibold tracking-tight text-white sm:text-5xl;
+  }
+
+  .role-gate__status {
+    @apply mt-6 inline-flex border border-emerald-300/20 bg-emerald-300/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-emerald-100;
+  }
+
+  .role-gate__status span {
+    @apply ml-2 text-white;
+  }
+
+  .role-gate__actions {
+    @apply mt-8 grid gap-4 md:grid-cols-2;
+  }
+
+  .role-gate__button {
+    @apply flex min-h-52 flex-col justify-between border border-white/10 bg-white/[0.03] p-6 text-left transition-[transform,border-color,background-color,box-shadow] duration-150 hover:-translate-y-1 hover:border-cyan-300/25 hover:bg-cyan-300/10 hover:shadow-xl hover:shadow-cyan-950/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950;
+  }
+
+  .role-gate__button-title {
+    @apply text-2xl font-semibold tracking-tight text-white;
   }
 
   .tab-link {
