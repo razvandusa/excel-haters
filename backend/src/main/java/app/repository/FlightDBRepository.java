@@ -106,8 +106,10 @@ public class FlightDBRepository {
             if (rs.next()) {
                 String flight_id = rs.getString("flight_id");
                 String terminalName = rs.getString("terminal_name");
-                LocalDateTime arrival = rs.getTimestamp("arrival").toLocalDateTime();
-                LocalDateTime departure = rs.getTimestamp("departure").toLocalDateTime();
+                Timestamp arrivalTs = rs.getTimestamp("arrival");
+                LocalDateTime arrival = (arrivalTs != null) ? arrivalTs.toLocalDateTime() : null;
+                Timestamp departureTs = rs.getTimestamp("departure");
+                LocalDateTime departure = (departureTs != null) ? departureTs.toLocalDateTime() : null;
                 String status = rs.getString("status");
                 return new Flight(flight_id, terminalName, arrival, departure, status);
             }
@@ -131,8 +133,10 @@ public class FlightDBRepository {
             while (rs.next()) {
                 String flight_id = rs.getString("flight_id");
                 String terminalName = rs.getString("terminal_name");
-                LocalDateTime arrival = rs.getTimestamp("arrival").toLocalDateTime();
-                LocalDateTime departure = rs.getTimestamp("departure").toLocalDateTime();
+                Timestamp arrivalTs = rs.getTimestamp("arrival");
+                LocalDateTime arrival = (arrivalTs != null) ? arrivalTs.toLocalDateTime() : null;
+                Timestamp departureTs = rs.getTimestamp("departure");
+                LocalDateTime departure = (departureTs != null) ? departureTs.toLocalDateTime() : null;
                 String status = rs.getString("status");
                 flights.add(new Flight(flight_id, terminalName, arrival, departure, status));
             }
