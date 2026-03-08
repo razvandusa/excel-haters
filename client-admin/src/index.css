@@ -87,53 +87,6 @@ body {
     @apply mt-4 max-w-sm text-sm text-slate-300 sm:text-base;
   }
 
-  .role-gate__plane-mark {
-    @apply relative z-10 mt-10 flex w-full justify-center lg:mt-0 lg:justify-start;
-  }
-
-  .role-gate__plane-svg {
-    @apply h-auto w-full max-w-[42rem] drop-shadow-[0_18px_40px_rgba(8,47,73,0.45)];
-  }
-
-  .role-gate__plane-grid {
-    fill: none;
-    stroke: rgba(34, 211, 238, 0.14);
-    stroke-width: 1;
-  }
-
-  .role-gate__plane-outline {
-    fill: rgba(34, 211, 238, 0.03);
-    stroke: rgba(34, 211, 238, 0.92);
-    stroke-linejoin: round;
-    stroke-width: 3.2;
-  }
-
-  .role-gate__plane-detail {
-    fill: none;
-    stroke: rgba(34, 211, 238, 0.72);
-    stroke-width: 1.6;
-  }
-
-  .role-gate__plane-engine {
-    fill: none;
-    stroke: rgba(34, 211, 238, 0.78);
-    stroke-width: 2.2;
-  }
-
-  .role-gate__plane-guide {
-    fill: none;
-    stroke: rgba(250, 204, 21, 0.72);
-    stroke-width: 1.5;
-  }
-
-  .role-gate__plane-label {
-    fill: rgba(253, 224, 71, 0.86);
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
   .role-gate__route {
     @apply pointer-events-none absolute rounded-full border border-cyan-300/20;
   }
