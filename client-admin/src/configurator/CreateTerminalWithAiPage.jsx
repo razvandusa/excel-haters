@@ -161,13 +161,33 @@ export default function CreateTerminalWithAiPage() {
 
       // 3. Create each component
       for (const c of generatedComponents) {
+        let prefix;
+        switch (c.type) {
+          case "desk":
+            prefix = "D";
+            break;
+          case "security":
+            prefix = "S";
+            break;
+          case "gate":
+            prefix = "G";
+            break;
+          case "stand":
+            prefix = "St";
+            break;
+          default:
+            prefix = "C";
+        }
+        const uniqueName = `${prefix}-${terminalId}-${Math.floor(Math.random() * 1000)}`;
         const payload = {
           terminalId,
-          name: c.name,
-          type: c.originalType || c.type.toUpperCase(),
+          name: uniqueName,
+          type: c.type.toUpperCase(),
           isActive: c.isActive,
         };
-        await createComponent(payload);
+        console.log("Creating component:", payload);
+        const result = await createComponent(payload);
+        console.log("Result:", result);
       }
 
       navigate("/configurator");
