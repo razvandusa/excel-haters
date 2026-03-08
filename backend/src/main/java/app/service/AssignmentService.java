@@ -243,11 +243,41 @@ public class AssignmentService {
         boolean standFree = standInput == null || isComponentFreeInInterval(standInput, start, end);
 
         if (deskFree && securityFree && gateFree && standFree) {
-            if (deskInput != null) saveAssignment(flightId, deskInput, start, end);
-            if (securityInput != null) saveAssignment(flightId, securityInput, start, end);
-            if (gateInput != null) saveAssignment(flightId, gateInput, start, end);
-            if (standInput != null) saveAssignment(flightId, standInput, start, end);
-            return; // toate assignments salvate, ieșim
+
+            LocalDateTime deskStart, deskEnd, securityStart, securityEnd, gateStart, gateEnd, standStart, standEnd;
+
+            if (flight.getDeparture() != null) {
+                deskStart = flight.getDeparture().minusHours(4);
+                deskEnd = flight.getDeparture().minusHours(2);
+
+                securityStart = flight.getDeparture().minusHours(3);
+                securityEnd = flight.getDeparture().minusHours(2);
+
+                gateStart = flight.getDeparture().minusHours(2);
+                gateEnd = flight.getDeparture().minusMinutes(15);
+
+                standStart = flight.getDeparture().minusHours(1);
+                standEnd = flight.getDeparture().plusMinutes(15);
+            } else {
+                deskStart = flight.getArrival().minusMinutes(30);
+                deskEnd = flight.getArrival().plusMinutes(120);
+
+                securityStart = flight.getArrival().plusMinutes(15);
+                securityEnd = flight.getArrival().plusMinutes(90);
+
+                gateStart = flight.getArrival();
+                gateEnd = flight.getArrival().plusHours(1);
+
+                standStart = flight.getArrival().minusHours(1);
+                standEnd = flight.getArrival().plusMinutes(15);
+            }
+
+            if (deskInput != null) saveAssignment(flightId, deskInput, deskStart, deskEnd);
+            if (securityInput != null) saveAssignment(flightId, securityInput, securityStart, securityEnd);
+            if (gateInput != null) saveAssignment(flightId, gateInput, gateStart, gateEnd);
+            if (standInput != null) saveAssignment(flightId, standInput, standStart, standEnd);
+
+            return;
         }
 
         // Dacă nu toate componentele input sunt libere, intrăm în backtracking
