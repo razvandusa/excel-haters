@@ -278,10 +278,32 @@ public class AssignmentService {
                         if (!isComponentFreeInInterval(stand, start, end)) continue;
 
                         // Am găsit combinația completă
-                        saveAssignment(flightId, desk, start, end);
-                        saveAssignment(flightId, security, start, end);
-                        saveAssignment(flightId, gate, start, end);
-                        saveAssignment(flightId, stand, start, end);
+                        LocalDateTime deskStart, deskEnd, securityStart, securityEnd, gateStart, gateEnd, standStart, standEnd;
+
+                        if (flight.getDeparture() != null) {
+                            deskStart = flight.getDeparture().minusHours(4);
+                            deskEnd = flight.getDeparture().minusHours(2);
+                            securityStart = flight.getDeparture().minusHours(3);
+                            securityEnd = flight.getDeparture().minusHours(2);
+                            gateStart = flight.getDeparture().minusHours(2);
+                            gateEnd = flight.getDeparture().minusMinutes(15);
+                            standStart = flight.getDeparture().minusHours(1);
+                            standEnd = flight.getDeparture().plusMinutes(15);
+                        } else {
+                            deskStart = flight.getArrival().minusMinutes(30);
+                            deskEnd = flight.getArrival().plusMinutes(120);
+                            securityStart = flight.getArrival().plusMinutes(15);
+                            securityEnd = flight.getArrival().plusMinutes(90);
+                            gateStart = flight.getArrival();
+                            gateEnd = flight.getArrival().plusHours(1);
+                            standStart = flight.getArrival().minusHours(1);
+                            standEnd = flight.getArrival().plusMinutes(15);
+                        }
+
+                        saveAssignment(flightId, desk, deskStart, deskEnd);
+                        saveAssignment(flightId, security, securityStart, securityEnd);
+                        saveAssignment(flightId, gate, gateStart, gateEnd);
+                        saveAssignment(flightId, stand, standStart, standEnd);
                         scheduled = true;
                         break;
                     }
