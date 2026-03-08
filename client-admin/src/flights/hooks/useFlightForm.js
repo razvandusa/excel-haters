@@ -5,7 +5,7 @@ const DEFAULT_EXCEL_IMPORT_DATE = '2026-03-07'
 const FLIGHTS_API_URL = import.meta.env.VITE_FLIGHTS_API_URL || '/api/flights'
 
 const emptyFlightForm = {
-  flightID: '',
+  flightId: '',
   terminal: '',
   desk: '',
   security: '',
@@ -16,7 +16,7 @@ const emptyFlightForm = {
 }
 
 const emptyFlightTimeUpdateForm = {
-  flightID: '',
+  flightId: '',
   newTime: '',
 }
 
@@ -143,7 +143,7 @@ function normalizeFlightTimes(payload) {
 
 function formatCreateFlightPayload(payload) {
   return {
-    flightID: payload.flightID,
+    flightId: payload.flightId,
     terminalName: payload.terminal,
     deskName: payload.desk,
     securityName: payload.security,
@@ -151,6 +151,38 @@ function formatCreateFlightPayload(payload) {
     standName: payload.stand,
     departureTime: payload.departureTime,
     arrivalTime: payload.arrivalTime,
+  }
+}
+
+function normalizeExcelFlightRow(row) {
+  return {
+    flightId: row.flightId ?? row.flightID ?? row.flightid ?? '',
+    terminal:
+      row.terminal ??
+      row.terminalName ??
+      row.terminalname ??
+      '',
+    desk: row.desk ?? row.deskName ?? row.deskname ?? '',
+    security:
+      row.security ??
+      row.securityName ??
+      row.securityname ??
+      '',
+    gate:
+      row.gate ??
+      row.gatenName ??
+      row.gateName ??
+      row.gatename ??
+      '',
+    stand: row.stand ?? row.standName ?? row.standname ?? '',
+    departureTime:
+      row.departureTime ??
+      row.departuretime ??
+      '',
+    arrivalTime:
+      row.arrivalTime ??
+      row.arrivaltime ??
+      '',
   }
 }
 
@@ -307,7 +339,11 @@ export default function useFlightForm() {
           .sheet_to_json(workbook.Sheets[sheetName], {
             defval: '',
           })
-          .map((row) => normalizeFlightTimes(row)),
+          .map((row) =>
+            formatCreateFlightPayload(
+              normalizeFlightTimes(normalizeExcelFlightRow(row)),
+            ),
+          ),
       }))
 
       console.log(
@@ -341,7 +377,7 @@ export default function useFlightForm() {
 
     const payload = normalizeFlightTimes(draftFlightTimeUpdate)
 
-    await patchFlight(payload.flightID, payload)
+    await patchFlight(payload.flightId, payload)
     resetFlightTimeForm()
     closeForm()
   }
