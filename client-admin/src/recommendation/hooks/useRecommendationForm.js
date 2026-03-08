@@ -42,19 +42,33 @@ export default function useRecommendationForm() {
       }
 
       const matchedFlight = await response.json()
+      const componentsResponse = await fetch(
+        `${FLIGHTS_API_URL}/${encodeURIComponent(normalizedFlightId)}/assignments`,
+      )
+
+      if (!componentsResponse.ok) {
+        throw new Error(
+          `Flight components request failed with status ${componentsResponse.status}`,
+        )
+      }
+
+      const matchedComponents = await componentsResponse.json()
       const nextResult = {
         flight: matchedFlight,
+        components: Array.isArray(matchedComponents) ? matchedComponents : [],
         isValid: true,
         message: `Flight ID ${normalizedFlightId} is valid.`,
         title: recommendationContent.validTitle,
       }
 
       console.log('Recommendation flight JSON:', matchedFlight)
+      console.log('Recommendation flight components JSON:', matchedComponents)
       setResult(nextResult)
       return
     } catch (error) {
       setResult({
         flight: null,
+        components: [],
         isValid: false,
         message:
           error.message || `Failed to load flight ID ${normalizedFlightId}.`,
