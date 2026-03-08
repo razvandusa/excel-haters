@@ -51,20 +51,30 @@ export default function ComponentTypeColumns({
   }
 
   async function handleCreate() {
+    console.log("=== handleCreate START ===");
+    console.log("terminalId:", terminalId);
+    console.log("name:", newName);
+    console.log("type:", createModalType.toUpperCase());
+    console.log("isActive:", newIsActive);
+
     setCreating(true);
     try {
-      await createComponent({
+      const result = await createComponent({
         terminalId,
         name: newName,
         type: createModalType.toUpperCase(),
         isActive: newIsActive,
       });
+      console.log("=== createComponent SUCCESS ===", result);
       handleCloseCreateModal();
+
       if (onComponentCreated) onComponentCreated();
     } catch (err) {
+      console.error("=== createComponent FAILED ===", err);
       alert(err.message);
     } finally {
       setCreating(false);
+      console.log("=== handleCreate END ===");
     }
   }
 
