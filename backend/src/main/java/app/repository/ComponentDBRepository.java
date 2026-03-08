@@ -91,7 +91,7 @@ public class ComponentDBRepository {
      * @return True if terminal exists, false otherwise
      */
     public Boolean findTerminalById(Long terminalId) {
-        String sql = "SELECT EXISTS (SELECT 1 FROM component WHERE terminal_id = ?);";
+        String sql = "SELECT EXISTS (SELECT 1 FROM terminal WHERE terminal_id = ?);";
 
         try (Connection conn = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = conn.prepareStatement(sql)) {
