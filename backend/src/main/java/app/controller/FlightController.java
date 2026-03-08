@@ -23,23 +23,17 @@ public class FlightController {
 
     @GetMapping("/{id}")
     public Map<String, Object> getFlightById(@PathVariable String id) {
-        try {
-            Flight flight = flightService.findById(id);
-            if (flight == null) {
-                return Map.of("error", "Flight not found");
-            }
-            return Map.of(
-                    "flightId", flight.getFlightId(),
-                    "terminalName", flight.getTerminalName(),
-                    "arrivalTime", flight.getArrival(),
-                    "departureTime", flight.getDeparture(),
-                    "status", flight.getStatus()
-            );
-        } catch (Exception e) {
-            return Map.of(
-                    "error", e.getMessage()
-            );
+        Flight flight = flightService.findById(id);
+        if (flight == null) {
+            return Map.of("error", "Flight not found");
         }
+        return Map.ofEntries(
+                Map.entry("flightId", flight.getFlightId() != null ? flight.getFlightId() : ""),
+                Map.entry("terminalName", flight.getTerminalName() != null ? flight.getTerminalName() : ""),
+                Map.entry("arrivalTime", flight.getArrival() != null ? flight.getArrival().toString() : ""),
+                Map.entry("departureTime", flight.getDeparture() != null ? flight.getDeparture().toString() : ""),
+                Map.entry("status", flight.getStatus() != null ? flight.getStatus() : "")
+        );
     }
 
     @PostMapping

@@ -16,6 +16,7 @@ public class FlightCreatedEvent extends ApplicationEvent {
         this.securityName = securityName;
         this.gateName = gateName;
         this.standName = standName;
+        System.out.println("FlightCreatedEvent fired: flightId=" + flightId + ", desk=" + deskName + ", security=" + securityName + ", gate=" + gateName + ", stand=" + standName);
     }
 
     public String getFlightId() {
