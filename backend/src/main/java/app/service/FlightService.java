@@ -3,7 +3,9 @@ package app.service;
 import app.domain.Flight;
 import app.dto.flight.CreateFlightRequest;
 import app.dto.flight.UpdateFlightRequest;
+import app.events.FlightCreatedEvent;
 import app.repository.FlightDBRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,11 +17,17 @@ public class FlightService {
 
     private final FlightDBRepository repository;
     private final TerminalService terminalService;
+    private final ApplicationEventPublisher eventPublisher;
+    private final ComponentService componentService;
 
     public FlightService(FlightDBRepository repository,
-                         TerminalService terminalService) {
+                         TerminalService terminalService,
+                         ApplicationEventPublisher eventPublisher,
+                         ComponentService componentService) {
         this.repository = repository;
         this.terminalService = terminalService;
+        this.eventPublisher = eventPublisher;
+        this.componentService = componentService;
     }
 
     public void add(CreateFlightRequest flightRequest) { // metoda trebuie sa declanseze algoritmul de distribuire a componentelor pentru flight
@@ -67,6 +75,7 @@ public class FlightService {
             }
         }
         repository.save(flight);
+        eventPublisher.publishEvent(new FlightCreatedEvent(this, flight.getFlightId(), flightRequest.getDeskName(), flightRequest.getSecurityName(), flightRequest.getGateName(), flightRequest.getStandName()));
     }
 
     public void remove(String id) {
@@ -131,6 +140,7 @@ public class FlightService {
         flight.setStatus("DELAYED");
 
         repository.update(flight);
+        eventPublisher.publishEvent(new FlightCreatedEvent(this, flight.getFlightId(), null, null, null, null));
     }
 
     public Flight findById(String id) {
