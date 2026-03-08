@@ -35,13 +35,19 @@ public class FlightDBRepository {
      * @param flight Flight to save
      */
     public void save(Flight flight) {
+
         String sql = "INSERT INTO flight (flight_id, terminal_name, arrival, departure, status) VALUES (?, ?, ?, ?, ?);";
         try (Connection conn = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, flight.getFlightId());
             ps.setString(2, flight.getTerminalName());
-            ps.setTimestamp(3, Timestamp.valueOf(flight.getArrival()));
-            ps.setTimestamp(4, Timestamp.valueOf(flight.getDeparture()));
+            if (flight.getDeparture() == null) {
+                ps.setTimestamp(3, Timestamp.valueOf(flight.getArrival()));
+                ps.setNull(4, Types.TIMESTAMP);
+            } else {
+                ps.setNull(3, Types.TIMESTAMP);
+                ps.setTimestamp(4, Timestamp.valueOf(flight.getDeparture()));
+            }
             ps.setString(5, flight.getStatus());
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -59,8 +65,14 @@ public class FlightDBRepository {
         try (Connection conn = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, flight.getTerminalName());
-            ps.setTimestamp(2, Timestamp.valueOf(flight.getArrival()));
-            ps.setTimestamp(3, Timestamp.valueOf(flight.getDeparture()));
+            if (flight.getArrival() == null) {
+                ps.setNull(2, Types.TIMESTAMP);
+                ps.setTimestamp(3, Timestamp.valueOf(flight.getDeparture()));
+            }
+            else if (flight.getDeparture() == null) {
+                ps.setTimestamp(2, Timestamp.valueOf(flight.getArrival()));
+                ps.setNull(3, Types.TIMESTAMP);
+            }
             ps.setString(4, flight.getStatus());
             ps.setString(5, flight.getFlightId());
             ps.executeUpdate();
@@ -100,8 +112,10 @@ public class FlightDBRepository {
             if (rs.next()) {
                 String flight_id = rs.getString("flight_id");
                 String terminalName = rs.getString("terminal_name");
-                LocalDateTime arrival = rs.getTimestamp("arrival").toLocalDateTime();
-                LocalDateTime departure = rs.getTimestamp("departure").toLocalDateTime();
+                Timestamp arrivalTs = rs.getTimestamp("arrival");
+                LocalDateTime arrival = (arrivalTs != null) ? arrivalTs.toLocalDateTime() : null;
+                Timestamp departureTs = rs.getTimestamp("departure");
+                LocalDateTime departure = (departureTs != null) ? departureTs.toLocalDateTime() : null;
                 String status = rs.getString("status");
                 return new Flight(flight_id, terminalName, arrival, departure, status);
             }
@@ -125,8 +139,10 @@ public class FlightDBRepository {
             while (rs.next()) {
                 String flight_id = rs.getString("flight_id");
                 String terminalName = rs.getString("terminal_name");
-                LocalDateTime arrival = rs.getTimestamp("arrival").toLocalDateTime();
-                LocalDateTime departure = rs.getTimestamp("departure").toLocalDateTime();
+                Timestamp arrivalTs = rs.getTimestamp("arrival");
+                LocalDateTime arrival = (arrivalTs != null) ? arrivalTs.toLocalDateTime() : null;
+                Timestamp departureTs = rs.getTimestamp("departure");
+                LocalDateTime departure = (departureTs != null) ? departureTs.toLocalDateTime() : null;
                 String status = rs.getString("status");
                 flights.add(new Flight(flight_id, terminalName, arrival, departure, status));
             }

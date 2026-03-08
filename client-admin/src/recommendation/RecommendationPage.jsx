@@ -1,7 +1,7 @@
-import RecommendationFlightForm from './components/RecommendationFlightForm.jsx'
-import RecommendationValidationResult from './components/RecommendationValidationResult.jsx'
-import recommendationContent from './config/recommendationContent.js'
-import useRecommendationForm from './hooks/useRecommendationForm.js'
+import RecommendationFlightForm from "./components/RecommendationFlightForm.jsx";
+import RecommendationValidationResult from "./components/RecommendationValidationResult.jsx";
+import recommendationContent from "./config/recommendationContent.js";
+import useRecommendationForm from "./hooks/useRecommendationForm.js";
 
 export default function RecommendationPage({ role = 'admin' }) {
   const fieldLabel = role === 'user' ? 'Flight Name' : 'Flight ID'
@@ -9,12 +9,15 @@ export default function RecommendationPage({ role = 'admin' }) {
     useRecommendationForm({ fieldLabel })
 
   return (
-    <section className="page-shell">
-      <div className="page-panel page-panel--recommendation">
-        <p className="page-kicker page-kicker--recommendation">
+    <section className="mt-4">
+      <div className="border border-cyan-400/15 bg-cyan-400/5 p-6">
+        <p className="text-sm uppercase tracking-[0.2em] text-cyan-200">
           {recommendationContent.kicker}
         </p>
-        <h1 className="page-title">{recommendationContent.title}</h1>
+
+        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white">
+          {recommendationContent.title}
+        </h1>
 
         <RecommendationFlightForm
           fieldLabel={fieldLabel}
@@ -26,5 +29,5 @@ export default function RecommendationPage({ role = 'admin' }) {
         <RecommendationValidationResult result={result} />
       </div>
     </section>
-  )
+  );
 }

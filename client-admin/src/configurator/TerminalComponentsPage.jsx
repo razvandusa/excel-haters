@@ -1,27 +1,30 @@
-import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import ComponentTypeColumns from './components/ComponentTypeColumns.jsx'
-import useTerminalComponents from './hooks/useTerminalComponents.js'
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import ComponentTypeColumns from "./components/ComponentTypeColumns.jsx";
+import useTerminalComponents from "./hooks/useTerminalComponents.js";
 
 export default function TerminalComponentsPage() {
-  const { terminalName = '' } = useParams()
-  const { terminal, components, isLoading, error } =
-    useTerminalComponents(terminalName)
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [draftName, setDraftName] = useState('')
-  const [draftIsActive, setDraftIsActive] = useState(false)
+  const { terminalName = "" } = useParams();
+  const { terminal, components, isLoading, error, refresh } =
+    useTerminalComponents(terminalName);
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [draftName, setDraftName] = useState("");
+  const [draftIsActive, setDraftIsActive] = useState(false);
 
   useEffect(() => {
-    setDraftName(terminal?.name || terminalName)
-    setDraftIsActive(Boolean(terminal?.isActive))
-  }, [terminal, terminalName])
+    setDraftName(terminal?.name || terminalName);
+    setDraftIsActive(Boolean(terminal?.isActive));
+  }, [terminal, terminalName]);
 
   return (
     <section className="page-shell">
       <div className="page-panel page-panel--configurator">
         <div className="configurator-detail-header">
           <div>
-            <p className="page-kicker page-kicker--configurator">Configurator</p>
+            <p className="page-kicker page-kicker--configurator">
+              Configurator
+            </p>
             <h1 className="page-title">
               {terminal ? terminal.name : terminalName}
             </h1>
@@ -45,19 +48,21 @@ export default function TerminalComponentsPage() {
           <span
             className={
               terminal?.isActive
-                ? 'configurator-status configurator-status--active'
-                : 'configurator-status configurator-status--inactive'
+                ? "configurator-status configurator-status--active"
+                : "configurator-status configurator-status--inactive"
             }
           >
-            {terminal ? (terminal.isActive ? 'Active' : 'Inactive') : 'Unknown'}
+            {terminal ? (terminal.isActive ? "Active" : "Inactive") : "Unknown"}
           </span>
         </div>
 
         <div className="mt-8">
           <ComponentTypeColumns
             components={components}
+            terminalId={terminal?.id}
             isLoading={isLoading}
             error={error}
+            onComponentCreated={refresh}
           />
         </div>
       </div>
@@ -102,9 +107,9 @@ export default function TerminalComponentsPage() {
                 type="button"
                 className="configurator-pagination-button"
                 onClick={() => {
-                  setDraftName(terminal?.name || terminalName)
-                  setDraftIsActive(Boolean(terminal?.isActive))
-                  setIsEditModalOpen(false)
+                  setDraftName(terminal?.name || terminalName);
+                  setDraftIsActive(Boolean(terminal?.isActive));
+                  setIsEditModalOpen(false);
                 }}
               >
                 Cancel
@@ -121,5 +126,5 @@ export default function TerminalComponentsPage() {
         </div>
       ) : null}
     </section>
-  )
+  );
 }

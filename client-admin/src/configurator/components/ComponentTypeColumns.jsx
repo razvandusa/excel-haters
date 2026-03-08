@@ -1,29 +1,81 @@
-import { useEffect, useState } from 'react'
-import componentTypeOptions from '../config/componentTypeOptions.js'
+import { useEffect, useState } from "react";
+import componentTypeOptions from "../config/componentTypeOptions.js";
+import { createComponent, deleteComponent } from "../../api/components.js";
 
 function formatTitle(type) {
-  return type.charAt(0).toUpperCase() + type.slice(1)
+  return type.charAt(0).toUpperCase() + type.slice(1);
 }
 
 function formatStatus(isActive) {
-  return isActive ? 'Active' : 'Inactive'
+  return isActive ? "Active" : "Inactive";
 }
 
 export default function ComponentTypeColumns({
   components,
+  terminalId,
   isLoading = false,
-  error = '',
+  error = "",
+  onComponentCreated,
 }) {
-  const [componentItems, setComponentItems] = useState(components)
+  const [componentItems, setComponentItems] = useState(components);
+  const [createModalType, setCreateModalType] = useState(null);
+  const [newName, setNewName] = useState("");
+  const [newIsActive, setNewIsActive] = useState(true);
+  const [creating, setCreating] = useState(false);
 
   useEffect(() => {
-    setComponentItems(components)
-  }, [components])
+    setComponentItems(components);
+  }, [components]);
 
-  function handleRemoveComponent(componentId) {
-    setComponentItems((currentItems) =>
-      currentItems.filter((component) => component.id !== componentId),
-    )
+  async function handleRemoveComponent(componentId) {
+    try {
+      await deleteComponent(componentId);
+      setComponentItems((currentItems) =>
+        currentItems.filter((component) => component.id !== componentId),
+      );
+    } catch (err) {
+      alert(err.message);
+    }
+  }
+
+  function handleOpenCreateModal(type) {
+    setCreateModalType(type);
+    setNewName("");
+    setNewIsActive(true);
+  }
+
+  function handleCloseCreateModal() {
+    setCreateModalType(null);
+    setNewName("");
+    setNewIsActive(true);
+  }
+
+  async function handleCreate() {
+    console.log("=== handleCreate START ===");
+    console.log("terminalId:", terminalId);
+    console.log("name:", newName);
+    console.log("type:", createModalType.toUpperCase());
+    console.log("isActive:", newIsActive);
+
+    setCreating(true);
+    try {
+      const result = await createComponent({
+        terminalId,
+        name: newName,
+        type: createModalType.toUpperCase(),
+        isActive: newIsActive,
+      });
+      console.log("=== createComponent SUCCESS ===", result);
+      handleCloseCreateModal();
+
+      if (onComponentCreated) onComponentCreated();
+    } catch (err) {
+      console.error("=== createComponent FAILED ===", err);
+      alert(err.message);
+    } finally {
+      setCreating(false);
+      console.log("=== handleCreate END ===");
+    }
   }
 
   if (isLoading) {
@@ -35,7 +87,7 @@ export default function ComponentTypeColumns({
           </p>
         </div>
       </section>
-    )
+    );
   }
 
   if (error) {
@@ -47,7 +99,7 @@ export default function ComponentTypeColumns({
           </p>
         </div>
       </section>
-    )
+    );
   }
 
   return (
@@ -56,7 +108,7 @@ export default function ComponentTypeColumns({
         {componentTypeOptions.map((type) => {
           const typedComponents = componentItems.filter(
             (component) => component.type === type,
-          )
+          );
 
           return (
             <div key={type} className="configurator-type-column">
@@ -68,6 +120,7 @@ export default function ComponentTypeColumns({
                   <button
                     type="button"
                     className="configurator-type-column__add-button"
+                    onClick={() => handleOpenCreateModal(type)}
                   >
                     +
                   </button>
@@ -93,8 +146,8 @@ export default function ComponentTypeColumns({
                         <span
                           className={
                             component.isActive
-                              ? 'configurator-status configurator-status--active'
-                              : 'configurator-status configurator-status--inactive'
+                              ? "configurator-status configurator-status--active"
+                              : "configurator-status configurator-status--inactive"
                           }
                         >
                           {formatStatus(component.isActive)}
@@ -116,9 +169,68 @@ export default function ComponentTypeColumns({
                 )}
               </div>
             </div>
-          )
+          );
         })}
       </section>
+
+      {createModalType && (
+        <div className="configurator-modal-backdrop">
+          <div className="configurator-modal">
+            <div className="configurator-modal__header">
+              <h2 className="configurator-modal__title">
+                Create {formatTitle(createModalType)} Component
+              </h2>
+              <button
+                type="button"
+                className="configurator-modal__close"
+                onClick={handleCloseCreateModal}
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="configurator-modal__body">
+              <label className="configurator-modal__field">
+                <span className="configurator-modal__label">Name</span>
+                <input
+                  type="text"
+                  value={newName}
+                  onChange={(event) => setNewName(event.target.value)}
+                  className="configurator-modal__input"
+                />
+              </label>
+
+              <label className="configurator-modal__checkbox">
+                <input
+                  type="checkbox"
+                  checked={newIsActive}
+                  onChange={(event) => setNewIsActive(event.target.checked)}
+                />
+                <span>Is Active</span>
+              </label>
+            </div>
+
+            <div className="configurator-modal__actions">
+              <button
+                type="button"
+                className="configurator-pagination-button"
+                onClick={handleCloseCreateModal}
+                disabled={creating}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="configurator-action-link"
+                onClick={handleCreate}
+                disabled={creating || !newName.trim()}
+              >
+                {creating ? "Creating..." : "Create"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
-  )
+  );
 }
