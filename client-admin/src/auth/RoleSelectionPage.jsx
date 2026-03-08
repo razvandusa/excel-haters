@@ -1,3 +1,4 @@
+import loginPageIcon from '../assets/loginpageicon.png'
 import { useNavigate } from 'react-router-dom'
 
 const landingCards = [
@@ -34,6 +35,13 @@ export default function RoleSelectionPage({ activeRole, onSelectRole }) {
             <p className="role-gate__subtitle">
               Open the control surface that matches this session.
             </p>
+          </div>
+          <div className="role-gate__visual-icon" aria-hidden="true">
+            <img
+              src={loginPageIcon}
+              alt=""
+              className="role-gate__visual-image"
+            />
           </div>
           <div className="role-gate__route role-gate__route--one" />
           <div className="role-gate__route role-gate__route--two" />
