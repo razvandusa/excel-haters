@@ -58,7 +58,6 @@ export default function useTerminalManager() {
   }, [])
 
   return {
-    components: componentsData,
     terminals,
     terminalsError,
     terminalsLoading,

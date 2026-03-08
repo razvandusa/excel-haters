@@ -176,6 +176,7 @@ export default function TerminalTable({
                         ? terminal.type
                         : 'Unknown'}
                     </td>
+<<<<<<< Updated upstream
                   ) : null}
                   {showIsActive ? (
                     <td>
@@ -185,6 +186,29 @@ export default function TerminalTable({
                             ? 'configurator-status configurator-status--active'
                             : 'configurator-status configurator-status--inactive'
                         }
+=======
+                    <td className="px-5 py-3">{terminal.name}</td>
+                    {showIsActive ? (
+                      <td className="px-5 py-3 text-right">
+                        <button
+                          className={
+                            terminal.isActive
+                              ? "inline-flex border px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] border-emerald-300/20 bg-emerald-300/10 text-emerald-100"
+                              : "inline-flex border px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] border-slate-300/15 bg-slate-300/10 text-slate-300"
+                          }
+                          disabled={toggling}
+                          onClick={() => handleToggleActive(terminal)}
+                          title="Toggle Active"
+                        >
+                          {terminal.isActive ? "Active" : "Inactive"}
+                        </button>
+                      </td>
+                    ) : null}
+                    <td className="px-5 py-3 text-right">
+                      <a
+                        href={`${CONFIGURATOR_VIEW_BASE_URL}/${encodeURIComponent(terminal.name)}`}
+                        className="inline-flex border border-cyan-300/20 bg-cyan-300/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-cyan-100 transition-colors duration-150 hover:bg-cyan-300/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+>>>>>>> Stashed changes
                       >
                         {formatStatus(terminal.isActive)}
                       </span>
