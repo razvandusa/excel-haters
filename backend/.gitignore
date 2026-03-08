@@ -1,0 +1,18 @@
+# VSCode settings
+.vscode/settings.json
+
+# Gradle
+.gradle/
+build/
+*.lock
+*.bin
+*.properties
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# EasyOCR model cache
+.EasyOCR/
