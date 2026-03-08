@@ -2,6 +2,7 @@ import { useState } from 'react'
 import * as XLSX from 'xlsx'
 
 const DEFAULT_EXCEL_IMPORT_DATE = '2026-03-07'
+const FLIGHTS_API_URL = import.meta.env.VITE_FLIGHTS_API_URL || '/api/flights'
 
 const emptyFlightForm = {
   flightID: '',
@@ -15,7 +16,7 @@ const emptyFlightForm = {
 }
 
 const emptyFlightTimeUpdateForm = {
-  lightID: '',
+  flightID: '',
   newTime: '',
 }
 
@@ -140,6 +141,29 @@ function normalizeFlightTimes(payload) {
   )
 }
 
+function formatCreateFlightPayload(payload) {
+  return {
+    flightID: payload.flightID,
+    terminalName: payload.terminal,
+    deskName: payload.desk,
+    securityName: payload.security,
+    gatenName: payload.gate,
+    standName: payload.stand,
+    departureTime: payload.departureTime,
+    arrivalTime: payload.arrivalTime,
+  }
+}
+
+async function readResponseBody(response) {
+  const responseContentType = response.headers.get('content-type') || ''
+
+  if (responseContentType.includes('application/json')) {
+    return response.json()
+  }
+
+  return response.text()
+}
+
 export default function useFlightForm() {
   const [activeForm, setActiveForm] = useState('')
   const [draftFlight, setDraftFlight] = useState(emptyFlightForm)
@@ -199,6 +223,74 @@ export default function useFlightForm() {
     setActiveForm('')
   }
 
+  async function patchFlight(id, payload) {
+    const normalizedId = String(id).trim()
+
+    if (!normalizedId) {
+      console.error('[API] PATCH /api/flights/{id} skipped: missing flight ID', payload)
+      throw new Error('Missing flight ID.')
+    }
+
+    console.log(
+      `[API] PATCH ${FLIGHTS_API_URL}/${encodeURIComponent(normalizedId)}`,
+      payload,
+    )
+
+    const response = await fetch(
+      `${FLIGHTS_API_URL}/${encodeURIComponent(normalizedId)}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      },
+    )
+
+    if (!response.ok) {
+      const responseBody = await readResponseBody(response)
+
+      console.error('Flight patch API response:', {
+        status: response.status,
+        body: responseBody,
+      })
+      throw new Error(`Flight patch failed with status ${response.status}`)
+    }
+
+    return response
+  }
+
+  async function createFlight(payload) {
+    console.log(`[API] POST ${FLIGHTS_API_URL}`, payload)
+
+    const response = await fetch(FLIGHTS_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+
+    if (!response.ok) {
+      const responseBody = await readResponseBody(response)
+
+      console.error('Flight create API response:', {
+        status: response.status,
+        body: responseBody,
+      })
+      throw new Error(`Flight create failed with status ${response.status}`)
+    }
+
+    const responseBody = await readResponseBody(response)
+
+    console.log('Flight create API success response:', {
+      status: response.status,
+      body: responseBody,
+    })
+
+    return responseBody
+  }
+
   async function handleExcelUpload(event) {
     const [file] = event.target.files || []
 
@@ -234,42 +326,35 @@ export default function useFlightForm() {
     }
   }
 
-  function submitFlight(event) {
+  async function submitFlight(event) {
     event.preventDefault()
 
-    console.log(
-      'Added flight JSON:',
-      JSON.stringify(normalizeFlightTimes(draftFlight), null, 2),
-    )
+    const payload = formatCreateFlightPayload(normalizeFlightTimes(draftFlight))
+
+    await createFlight(payload)
     resetForm()
     closeForm()
   }
 
-  function submitFlightTimeUpdate(event) {
+  async function submitFlightTimeUpdate(event) {
     event.preventDefault()
 
-    console.log(
-      'Updated flight time JSON:',
-      JSON.stringify(normalizeFlightTimes(draftFlightTimeUpdate), null, 2),
-    )
+    const payload = normalizeFlightTimes(draftFlightTimeUpdate)
+
+    await patchFlight(payload.flightID, payload)
     resetFlightTimeForm()
     closeForm()
   }
 
-  function submitCancelFlight(event) {
+  async function submitCancelFlight(event) {
     event.preventDefault()
 
-    console.log(
-      'Cancelled flight JSON:',
-      JSON.stringify(
-        {
-          ...draftCancelFlight,
-          status: 'cancelled',
-        },
-        null,
-        2,
-      ),
-    )
+    const payload = {
+      ...draftCancelFlight,
+      status: 'cancelled',
+    }
+
+    await patchFlight(payload.id, payload)
     resetCancelFlightForm()
     closeForm()
   }

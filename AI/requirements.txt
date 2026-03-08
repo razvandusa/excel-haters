@@ -1,0 +1,25 @@
+# Web framework
+fastapi
+uvicorn
+
+# HTTP client (for HuggingFace API calls)
+httpx
+
+# OCR
+easyocr
+
+# Image processing
+opencv-python-headless
+Pillow
+
+# Document parsing
+python-docx
+openpyxl
+pypdf
+pdf2image
+
+# Environment variables
+python-dotenv
+
+# File upload support
+python-multipart

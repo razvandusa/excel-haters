@@ -2,7 +2,7 @@ import requests
 import json
 
 # The URL where your FastAPI server is running
-API_URL = "http://127.0.0.1:8000/flights/import"
+API_URL = "http://127.0.0.1:8002/flights/import"
 
 # The file we want to send to the AI
 FILE_PATH = "D:\\HackTech\\excel-haters\\AI\\files\\sample_flights.txt" 
@@ -30,6 +30,7 @@ def test_api():
         else:
             print(f"Server returned an error: {response.status_code}")
             print(response.text)
+            print(response.json()) # ← add this
             
     except FileNotFoundError:
         print(f"Error: Could not find the file '{FILE_PATH}'. Make sure it exists!")

@@ -16,7 +16,9 @@ export default function TimetablesPage() {
         <div className="mt-8">
           <TimetablesTerminalTable
             terminals={terminals}
-            title={timetablesContent.terminalsTableTitle}
+            terminalsTitle={timetablesContent.terminalsTableTitle}
+            componentsTitle={timetablesContent.componentsTableTitle}
+            assignmentsTitle={timetablesContent.assignmentsTableTitle}
             isLoading={terminalsLoading}
             error={terminalsError}
           />
