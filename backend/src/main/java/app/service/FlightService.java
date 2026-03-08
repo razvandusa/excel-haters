@@ -34,8 +34,11 @@ public class FlightService {
         Flight flight = new Flight();
         flight.setFlightId(flightRequest.getFlightId());
         flight.setTerminalName(flightRequest.getTerminalName());
-        flight.setDeparture(LocalDateTime.parse(flightRequest.getDepartureTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        flight.setArrival(LocalDateTime.parse(flightRequest.getArrivalTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        if (flightRequest.getDepartureTime() != null) {
+            flight.setDeparture(LocalDateTime.parse(flightRequest.getDepartureTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        } else if (flightRequest.getArrivalTime() != null) {
+            flight.setArrival(LocalDateTime.parse(flightRequest.getArrivalTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        }
         // Verificare daca exista deja un flight cu acest flightId.
         if (findById(flight.getFlightId()) != null) {
             throw new IllegalArgumentException("Flight with this flightId already exists.");
