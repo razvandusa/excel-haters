@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import desksData from '../data/desks.json'
-import gatesData from '../data/gates.json'
-import securitiesData from '../data/securities.json'
-import standsData from '../data/stands.json'
+import desksData from '../../../excel-haters/src/recommendation/data/desks.json'
+import gatesData from '../../../excel-haters/src/recommendation/data/gates.json'
+import securitiesData from '../../../excel-haters/src/recommendation/data/securities.json'
+import standsData from '../../../excel-haters/src/recommendation/data/stands.json'
 
 const recommendationComponentData = {
   desk: desksData,
