@@ -29,7 +29,7 @@ const tabs = [
   },
   {
     id: 'recommendation',
-    label: 'Flight Viewer',
+    label: 'Flight Info',
     path: '/recommendation',
   },
 ]
@@ -147,7 +147,7 @@ export default function App() {
           path="/recommendation"
           element={
             <ProtectedRoute allowedRoles={['admin', 'user']} role={role}>
-              <RecommendationPage />
+              <RecommendationPage role={role} />
             </ProtectedRoute>
           }
         />

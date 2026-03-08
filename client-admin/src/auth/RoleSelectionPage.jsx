@@ -31,7 +31,7 @@ export default function RoleSelectionPage({ activeRole, onSelectRole }) {
         <div className="role-gate__visual">
           <div className="role-gate__visual-copy">
             <span className="role-gate__kicker">Flight Operations</span>
-            <h1 className="role-gate__title">Login</h1>
+            <h1 className="role-gate__title">Sky Track</h1>
             <p className="role-gate__subtitle">
               Open the control surface that matches this session.
             </p>
@@ -49,7 +49,7 @@ export default function RoleSelectionPage({ activeRole, onSelectRole }) {
 
         <div className="role-gate__panel">
           <div className="role-gate__panel-card">
-            <h2 className="role-gate__panel-title">Workspace Access</h2>
+            <h2 className="role-gate__panel-title">Login</h2>
 
             {activeRole ? (
               <p className="role-gate__status">

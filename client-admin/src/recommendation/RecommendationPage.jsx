@@ -3,8 +3,10 @@ import RecommendationValidationResult from './components/RecommendationValidatio
 import recommendationContent from './config/recommendationContent.js'
 import useRecommendationForm from './hooks/useRecommendationForm.js'
 
-export default function RecommendationPage() {
-  const { flightId, handleSubmit, result, setFlightId } = useRecommendationForm()
+export default function RecommendationPage({ role = 'admin' }) {
+  const fieldLabel = role === 'user' ? 'Flight Name' : 'Flight ID'
+  const { flightId, handleSubmit, result, setFlightId } =
+    useRecommendationForm({ fieldLabel })
 
   return (
     <section className="page-shell">
@@ -15,6 +17,7 @@ export default function RecommendationPage() {
         <h1 className="page-title">{recommendationContent.title}</h1>
 
         <RecommendationFlightForm
+          fieldLabel={fieldLabel}
           flightId={flightId}
           onChangeFlightId={setFlightId}
           onSubmit={handleSubmit}

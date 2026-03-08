@@ -13,7 +13,9 @@ async function readResponseBody(response) {
   return response.text()
 }
 
-export default function useRecommendationForm() {
+export default function useRecommendationForm({
+  fieldLabel = recommendationContent.flightIdPlaceholder,
+} = {}) {
   const [flightId, setFlightId] = useState('')
   const [result, setResult] = useState(null)
 
@@ -26,7 +28,7 @@ export default function useRecommendationForm() {
       setResult({
         flight: null,
         isValid: false,
-        message: 'Enter a flight ID to validate it.',
+        message: `Enter a ${fieldLabel.toLowerCase()} to validate it.`,
         title: recommendationContent.invalidTitle,
       })
       return
@@ -41,7 +43,7 @@ export default function useRecommendationForm() {
         setResult({
           flight: null,
           isValid: false,
-          message: `Flight ID ${normalizedFlightId} is not valid.`,
+          message: `${fieldLabel} ${normalizedFlightId} is not valid.`,
           title: recommendationContent.invalidTitle,
         })
         return
@@ -79,7 +81,7 @@ export default function useRecommendationForm() {
         flight: matchedFlight,
         components: Array.isArray(matchedComponents) ? matchedComponents : [],
         isValid: true,
-        message: `Flight ID ${normalizedFlightId} is valid.`,
+        message: `${fieldLabel} ${normalizedFlightId} is valid.`,
         title: recommendationContent.validTitle,
       }
 
@@ -93,7 +95,8 @@ export default function useRecommendationForm() {
         components: [],
         isValid: false,
         message:
-          error.message || `Failed to load flight ID ${normalizedFlightId}.`,
+          error.message ||
+          `Failed to load ${fieldLabel.toLowerCase()} ${normalizedFlightId}.`,
         title: recommendationContent.invalidTitle,
       })
     }
