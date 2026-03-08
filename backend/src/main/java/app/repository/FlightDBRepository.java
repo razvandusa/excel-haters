@@ -65,8 +65,14 @@ public class FlightDBRepository {
         try (Connection conn = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, flight.getTerminalName());
-            ps.setTimestamp(2, Timestamp.valueOf(flight.getArrival()));
-            ps.setTimestamp(3, Timestamp.valueOf(flight.getDeparture()));
+            if (flight.getArrival() == null) {
+                ps.setNull(2, Types.TIMESTAMP);
+                ps.setTimestamp(3, Timestamp.valueOf(flight.getDeparture()));
+            }
+            else if (flight.getDeparture() == null) {
+                ps.setTimestamp(2, Timestamp.valueOf(flight.getArrival()));
+                ps.setNull(3, Types.TIMESTAMP);
+            }
             ps.setString(4, flight.getStatus());
             ps.setString(5, flight.getFlightId());
             ps.executeUpdate();
