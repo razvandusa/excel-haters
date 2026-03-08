@@ -32,21 +32,21 @@ public class FlightService {
 
     public void add(CreateFlightRequest flightRequest) { // metoda trebuie sa declanseze algoritmul de distribuire a componentelor pentru flight
         Flight flight = new Flight();
+        if (flightRequest.getFlightId() == null || flightRequest.getFlightId().isBlank()) {
+            throw new IllegalArgumentException("Flight ID must not be null or blank");
+        }
+        if (findById(flightRequest.getFlightId()) != null) {
+            throw new IllegalArgumentException("Flight with this flightId already exists.");
+        }
         flight.setFlightId(flightRequest.getFlightId());
+        if (flight.getTerminalName() == null || !terminalService.findByName(flight.getTerminalName()).getActive()) {
+            throw new IllegalArgumentException("Terminal does not exist.");
+        }
         flight.setTerminalName(flightRequest.getTerminalName());
         if (flightRequest.getDepartureTime() != null) {
             flight.setDeparture(LocalDateTime.parse(flightRequest.getDepartureTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         } else if (flightRequest.getArrivalTime() != null) {
             flight.setArrival(LocalDateTime.parse(flightRequest.getArrivalTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        }
-        // Verificare daca exista deja un flight cu acest flightId.
-        if (findById(flight.getFlightId()) != null) {
-            throw new IllegalArgumentException("Flight with this flightId already exists.");
-        }
-
-        // Verificare daca exista terminalul cu numele si este activ terminalul
-        if (flight.getTerminalName() == null || !terminalService.findByName(flight.getTerminalName()).getActive()) {
-            throw new IllegalArgumentException("Terminal does not exist.");
         }
 
         // Verificare daca flight-ul este doar de tip arrival sau departure
