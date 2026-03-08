@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import useTablePagination, {
   DEFAULT_PAGE_SIZE,
 } from "../hooks/useTablePagination.js";
@@ -202,12 +203,12 @@ export default function TerminalTable({
                       </td>
                     ) : null}
                     <td className="px-5 py-3 text-right">
-                      <a
-                        href={`${CONFIGURATOR_VIEW_BASE_URL}/${encodeURIComponent(terminal.name)}`}
+                      <Link
+                        to={`/configurator/${encodeURIComponent(terminal.name)}`}
                         className="inline-flex border border-cyan-300/20 bg-cyan-300/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-cyan-100 transition-colors duration-150 hover:bg-cyan-300/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
                       >
                         View
-                      </a>
+                      </Link>
                       <button
                         className="ml-2 inline-flex border border-rose-300/20 bg-rose-300/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-rose-100 transition-colors duration-150 hover:bg-rose-300/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
                         onClick={() => {
