@@ -188,6 +188,10 @@ function normalizeExcelFlightRow(row) {
   }
 }
 
+function hasFlightRowContent(row) {
+  return Object.values(row).some((value) => String(value ?? '').trim() !== '')
+}
+
 function normalizeTerminal(terminal) {
   return {
     id: terminal.id,
@@ -394,12 +398,43 @@ export default function useFlightForm() {
           .sheet_to_json(workbook.Sheets[sheetName], {
             defval: '',
           })
+          .filter(hasFlightRowContent)
           .map((row) =>
             formatCreateFlightPayload(
               normalizeFlightTimes(normalizeExcelFlightRow(row)),
             ),
           ),
       }))
+
+      const flightPayloads = sheets.flatMap((sheet) =>
+        sheet.rows.map((row, index) => ({
+          payload: row,
+          sheetName: sheet.name,
+          rowNumber: index + 1,
+        })),
+      )
+
+      const results = []
+
+      for (const flightRow of flightPayloads) {
+        try {
+          const responseBody = await createFlight(flightRow.payload)
+
+          results.push({
+            ok: true,
+            rowNumber: flightRow.rowNumber,
+            sheetName: flightRow.sheetName,
+            responseBody,
+          })
+        } catch (error) {
+          results.push({
+            ok: false,
+            rowNumber: flightRow.rowNumber,
+            sheetName: flightRow.sheetName,
+            error: error.message || 'Flight import failed.',
+          })
+        }
+      }
 
       console.log(
         'Loaded flight Excel JSON:',
@@ -412,6 +447,14 @@ export default function useFlightForm() {
           2,
         ),
       )
+
+      console.log('Flight Excel import summary:', {
+        fileName: file.name,
+        totalRows: flightPayloads.length,
+        succeeded: results.filter((result) => result.ok).length,
+        failed: results.filter((result) => !result.ok).length,
+        results,
+      })
     } finally {
       event.target.value = ''
     }
