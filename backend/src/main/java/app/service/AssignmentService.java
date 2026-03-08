@@ -217,9 +217,14 @@ public class AssignmentService {
             throw new IllegalArgumentException("Flight not found");
         }
 
-        LocalDateTime referenceTime = (flight.getArrival() != null) ? flight.getArrival() : flight.getDeparture();
-        if (referenceTime == null) {
-            throw new IllegalArgumentException("Flight must have either arrival or departure time");
+        LocalDateTime referenceTime;
+
+        if (flight.getArrival() != null) {
+            referenceTime = flight.getArrival();
+        } else if (flight.getDeparture() != null) {
+            referenceTime = flight.getDeparture();
+        } else {
+            throw new IllegalStateException("Flight has no arrival or departure time");
         }
 
         LocalDateTime start = referenceTime;
