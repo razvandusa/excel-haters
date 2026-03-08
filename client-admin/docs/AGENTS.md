@@ -1,76 +1,103 @@
 # AGENTS.md
 
 ## Workspace Overview
-- This workspace contains a Vite + React frontend app in `excel-haters/`.
+- This workspace is a Vite + React frontend app rooted in this repo.
 - The frontend is a single-page application using `react-router-dom`.
-- Styling is done with Tailwind CSS classes and shared component classes in `excel-haters/src/index.css`.
-- Keep structure separated across CSS, JSX, and JS/data files.
+- Source code lives under `src/`.
+- Styling is handled with Tailwind utility classes plus shared component classes in `src/index.css`.
+- Keep CSS, JSX, hooks, config, and static data separated by feature.
 
 ## App Structure
-- `excel-haters/src/main.jsx`: React entry point and router setup.
-- `excel-haters/src/App.jsx`: root shell, tabs, and route declarations.
-- `excel-haters/src/shared/TabNav.jsx`: top navigation component with tab icons plus a live date/time display in 24-hour format.
-- `excel-haters/src/configurator/ConfiguratorPage.jsx`: main configurator dashboard route with terminal actions and the terminals table.
-- `excel-haters/src/configurator/CreateTerminalWithAiPage.jsx`: configurator route for `/configurator/create-terminal-with-ai`, with an editable terminal shell and local image upload preview.
-- `excel-haters/src/configurator/TerminalComponentsPage.jsx`: terminal detail page for `/configurator/:terminalName`.
-- `excel-haters/src/configurator/components/TerminalTable.jsx`: terminals table with loading/error states, search, pagination, and row action links.
-- `excel-haters/src/configurator/components/ComponentTable.jsx`: reusable components table with loading/error states, search, sorting, and pagination.
-- `excel-haters/src/configurator/components/ComponentTypeColumns.jsx`: grouped component layout that renders Desk, Security, Gate, and Stand sections in `configurator-type-rows`, with local add/remove item modal controls.
-- `excel-haters/src/configurator/components/TerminalPhotoUploadPanel.jsx`: upload-and-preview panel used on the AI terminal page.
-- `excel-haters/src/configurator/hooks/useTablePagination.js`: shared client-side pagination hook with a 7-row page size.
-- `excel-haters/src/configurator/hooks/useTerminalManager.js`: loads terminals from the API and components from local JSON.
-- `excel-haters/src/configurator/hooks/useTerminalComponents.js`: loads a terminal by name and fetches its components from the API.
-- `excel-haters/src/configurator/hooks/useImageUploadPreview.js`: local image preview state and object URL cleanup for uploaded photos.
-- `excel-haters/src/configurator/data/terminals.json`: local terminal seed data file.
-- `excel-haters/src/configurator/data/components.json`: local component dataset used by the main configurator page.
-- `excel-haters/src/configurator/config/configuratorContent.js`: configurator labels and titles.
-- `excel-haters/src/configurator/config/terminalTypeOptions.js`: allowed terminal types.
-- `excel-haters/src/configurator/config/componentTypeOptions.js`: allowed component types.
-- `excel-haters/src/timetables/TimetablesPage.jsx`: timetables page.
-- `excel-haters/src/flights/FlightsPage.jsx`: flights feature entry page.
-- `excel-haters/src/flights/components/AddFlightModal.jsx`: modal form for manual flight entry.
-- `excel-haters/src/flights/components/FlightActionModal.jsx`: shared modal wrapper used by update-time and cancel-flight flows.
-- `excel-haters/src/flights/hooks/useFlightForm.js`: local state and submit flow for the flights modal.
-- `excel-haters/src/flights/config/cancelFlightFieldDefinitions.js`: field list for the cancel-flight form.
-- `excel-haters/src/flights/config/flightFieldDefinitions.js`: field list for the flight form.
-- `excel-haters/src/flights/config/flightsContent.js`: flights page and modal labels.
-- `excel-haters/src/flights/config/updateFlightTimeFieldDefinitions.js`: field list for the update-flight-time form.
-- `excel-haters/src/recommendation/RecommendationPage.jsx`: recommendation page.
-- `excel-haters/src/index.css`: global styles and Tailwind import.
-- `excel-haters/vite.config.js`: Vite config with `/api` proxy to `http://10.1.0.135:8080` for local development.
+- `src/main.jsx`: React entry point.
+- `src/App.jsx`: app shell, tab navigation, and route declarations.
+- `src/shared/TabNav.jsx`: top navigation with Material Symbols icons and live date/time.
+- `src/shared/debugApiRequest.js`: shared debug helper for request inspection.
+- `src/api/terminals.js`: terminal API helpers for fetch, delete, and status updates.
+- `src/configurator/ConfiguratorPage.jsx`: main configurator dashboard with terminal actions and terminal table.
+- `src/configurator/CreateTerminalWithAiPage.jsx`: AI terminal draft page with grouped component sections and local image preview.
+- `src/configurator/TerminalComponentsPage.jsx`: terminal detail route for `/configurator/:terminalName`.
+- `src/configurator/components/TerminalTable.jsx`: terminals table with search, pagination, delete, status toggle, and `View` link.
+- `src/configurator/components/ComponentTable.jsx`: reusable components table with search, sorting, and pagination.
+- `src/configurator/components/ComponentTypeColumns.jsx`: grouped Desk / Security / Gate / Stand layout with local add/remove controls.
+- `src/configurator/components/TerminalPhotoUploadPanel.jsx`: image upload and preview panel.
+- `src/configurator/hooks/useTablePagination.js`: shared 7-row client-side pagination hook.
+- `src/configurator/hooks/useTerminalManager.js`: loads terminals from `/api/terminals`.
+- `src/configurator/hooks/useTerminalComponents.js`: resolves a terminal by name, then fetches `/api/terminals/{id}/components`.
+- `src/configurator/hooks/useImageUploadPreview.js`: object URL preview state and cleanup.
+- `src/configurator/config/configuratorContent.js`: configurator labels and copy.
+- `src/configurator/config/terminalTypeOptions.js`: terminal type options.
+- `src/configurator/config/componentTypeOptions.js`: component type options.
+- `src/flights/FlightsPage.jsx`: flights feature entry page.
+- `src/flights/components/AddFlightModal.jsx`: modal for manual flight creation.
+- `src/flights/components/FlightActionModal.jsx`: shared modal for update-time and cancel flows.
+- `src/flights/hooks/useFlightForm.js`: flights form state, Excel parsing, payload normalization, and API submit logic.
+- `src/flights/config/flightFieldDefinitions.js`: add-flight modal field definitions.
+- `src/flights/config/updateFlightTimeFieldDefinitions.js`: update-flight-time field definitions.
+- `src/flights/config/cancelFlightFieldDefinitions.js`: cancel-flight field definitions.
+- `src/flights/config/flightsContent.js`: flights page and modal labels.
+- `src/recommendation/RecommendationPage.jsx`: recommendation feature entry page.
+- `src/recommendation/components/RecommendationFlightForm.jsx`: flight ID submit form.
+- `src/recommendation/components/RecommendationValidationResult.jsx`: recommendation result renderer.
+- `src/recommendation/hooks/useRecommendationForm.js`: recommendation submit flow for flight and assignment lookup.
+- `src/recommendation/hooks/useRecommendationComponentLookup.js`: component lookup helper for recommendation-related data.
+- `src/recommendation/config/recommendationContent.js`: recommendation labels and copy.
+- `src/recommendation/data/*.json`: local recommendation seed data kept alongside the feature.
+- `src/timetables/TimetablesPage.jsx`: timetables feature entry page.
+- `src/timetables/components/TimetablesTerminalTable.jsx`: sequential terminal -> component -> assignments flow.
+- `src/timetables/hooks/useTimetablesOverview.js`: reuses terminal overview state from configurator.
+- `src/timetables/hooks/useTimetablesTerminalComponents.js`: fetches `/api/terminals/{terminalId}/components`.
+- `src/timetables/hooks/useTimetablesAssignments.js`: fetches `/api/components/{componentId}/assignments?date={today}`.
+- `src/timetables/hooks/useTimetablesFlights.js`: fetches flight details for assignment flight IDs.
+- `src/timetables/config/timetablesContent.js`: timetables labels and titles.
+- `src/index.css`: global styles and shared component classes.
+- `vite.config.js`: Vite config with `/api` proxy for local development.
 
 ## Conventions
-- Add feature pages under `excel-haters/src/<feature>/`.
-- Put feature-specific reusable components in `excel-haters/src/<feature>/components/`.
-- Put shared cross-feature components in `excel-haters/src/shared/`.
-- Put static local datasets in `excel-haters/src/<feature>/data/`.
-- Put simple feature configuration constants in `excel-haters/src/<feature>/config/`.
-- Put data-fetching and normalization logic in `excel-haters/src/<feature>/hooks/`.
-- Prefer functional React components.
-- Keep styling consistent with the current square-edged admin layout in `index.css`.
-- Add new top-level sections in `excel-haters/src/App.jsx`.
-- Prefer same-origin frontend requests and use the Vite `/api` proxy in development instead of hardcoding backend origins in components.
+- Add feature pages under `src/<feature>/`.
+- Put feature-specific reusable components in `src/<feature>/components/`.
+- Put feature-specific hooks in `src/<feature>/hooks/`.
+- Put static local datasets in `src/<feature>/data/`.
+- Put simple labels and constants in `src/<feature>/config/`.
+- Put cross-feature helpers in `src/shared/` or `src/api/` when they are API-specific.
+- Prefer functional React components and local hooks for fetch/normalization logic.
+- Prefer same-origin requests like `/api/...` and rely on the Vite proxy in development.
+- Keep styling consistent with the square-edged admin layout already established in `src/index.css`.
 
 ## Current State
-- The app shell and routing are in place.
-- The top bar now includes Material Symbols icons for each main tab plus a live date/time display on the right.
-- The configurator page is implemented.
-- The main configurator view currently shows terminal actions and the terminals table.
-- Terminals are fetched from `/api/terminals` and normalized in `useTerminalManager`.
-- Components on the main configurator page are loaded from local JSON.
-- The reusable configurator tables support local search, sorting/filter controls, and client-side pagination with 7 rows per page.
-- Terminal search supports matching by terminal name letters as well as other terminal fields.
-- Each terminal row includes a `View` action linking to `http://10.1.0.171:5173/configurator/{terminalName}`.
+- The top-level app tabs are `Configurator`, `Timetables`, `Flights`, and `Recommendation`.
+- `TabNav` includes Material Symbols icons and a live date/time display.
+- Configurator terminals are loaded from `/api/terminals`.
+- Terminal rows support search, pagination, delete, and status toggle via `PATCH /api/terminals/{id}` with `{ isActive }`.
+- Terminal row `View` navigation uses SPA routing to `/configurator/{terminalName}`.
 - The terminal detail page fetches `/api/terminals`, resolves the selected terminal by name, then fetches `/api/terminals/{id}/components`.
-- The terminal detail page shows grouped Desk / Security / Gate / Stand sections for the selected terminal, plus a placeholder `Update` modal, a `Back` link, and local add/remove item controls in each grouped section.
-- The AI terminal page mirrors the detail layout, keeps grouped component sections empty, and includes an upload photo action with in-page image preview.
-- The Flights feature is now split into `components/`, `config/`, and `hooks/` folders to match the configurator feature structure.
-- The Flights page includes actions for Excel import, add flight, update flight time, and cancel flight.
-- The Excel action opens a file picker for `.xlsx/.xls`, parses the workbook with `xlsx`, normalizes time fields to ISO 8601, and logs the resulting JSON payload to the browser console.
-- The add-flight modal captures `flightID`, `departureTime`, `arrivalTime`, `terminal`, `desk`, `security`, `gate`, and `stand`.
-- The update-flight-time modal captures `lightID` and `newTime`.
-- The cancel-flight modal captures `id`.
-- Flights time values are normalized to ISO 8601 strings like `2026-03-07T23:06:00`, including best-effort AM/PM and 24-hour parsing for Excel-imported values.
-- Current modals across the app do not close when clicking outside the dialog; they close through their explicit actions instead.
-- Recommendation now includes a `Flight ID` input and `Submit` button.
-- Timetables is still a placeholder section.
+- The terminal detail page shows grouped Desk / Security / Gate / Stand sections, an `Update` modal shell, and a `Back` link.
+- The AI terminal page mirrors the grouped configurator layout and supports local image upload preview.
+- Flights supports four actions: Excel import, add flight, update flight time, and cancel flight.
+- Add flight submits `POST /api/flights`.
+- Add-flight payload shape is:
+  - `flightId`
+  - `terminalName`
+  - `deskName`
+  - `securityName`
+  - `gatenName`
+  - `standName`
+  - `departureTime`
+  - `arrivalTime`
+- Update flight time submits `PATCH /api/flights/{id}`.
+- Cancel flight submits `PATCH /api/flights/{id}` with `status: 'cancelled'`.
+- Flight requests log the outgoing API request and backend response bodies in the browser console when relevant.
+- Excel import parses `.xlsx/.xls`, normalizes date/time values to ISO 8601, and maps each row into the same payload shape as the add-flight modal.
+- Recommendation submits a flight ID, fetches `GET /api/flights/{flightId}`, then fetches `GET /api/flights/{flightId}/assignments`.
+- Recommendation renders flight details plus fetched assignment/component data and logs backend error response bodies for failed requests.
+- Timetables is implemented as a sequential flow:
+  - select terminal
+  - confirm terminal
+  - load terminal components
+  - select component
+  - confirm component
+  - load today’s assignments for that component
+  - fetch related flight details for assignment flight IDs
+- Timetables only advances to the next card after the relevant fetch succeeds, and each later step has a `Back` button.
+- The final timetables card presents assignment windows and readable flight summaries instead of raw JSON dumps.
+- Current modals do not close on backdrop click; they close through explicit UI actions only.
+- The current Vite dev proxy forwards `/api` to `http://192.168.0.138:8080`.

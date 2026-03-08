@@ -1,5 +1,5 @@
 const flightFieldDefinitions = [
-  { key: 'flightID', label: 'Flight ID', type: 'text' },
+  { key: 'flightId', label: 'Flight ID', type: 'text' },
   { key: 'departureTime', label: 'Departure Time', type: 'datetime-local' },
   { key: 'arrivalTime', label: 'Arrival Time', type: 'datetime-local' },
   { key: 'terminal', label: 'Terminal *', type: 'text' },

@@ -3,6 +3,16 @@ import recommendationContent from '../config/recommendationContent.js'
 
 const FLIGHTS_API_URL = import.meta.env.VITE_FLIGHTS_API_URL || '/api/flights'
 
+async function readResponseBody(response) {
+  const responseContentType = response.headers.get('content-type') || ''
+
+  if (responseContentType.includes('application/json')) {
+    return response.json()
+  }
+
+  return response.text()
+}
+
 export default function useRecommendationForm() {
   const [flightId, setFlightId] = useState('')
   const [result, setResult] = useState(null)
@@ -38,6 +48,12 @@ export default function useRecommendationForm() {
       }
 
       if (!response.ok) {
+        const responseBody = await readResponseBody(response)
+
+        console.error('Recommendation flight API response:', {
+          status: response.status,
+          body: responseBody,
+        })
         throw new Error(`Flight request failed with status ${response.status}`)
       }
 
@@ -47,6 +63,12 @@ export default function useRecommendationForm() {
       )
 
       if (!componentsResponse.ok) {
+        const responseBody = await readResponseBody(componentsResponse)
+
+        console.error('Recommendation assignments API response:', {
+          status: componentsResponse.status,
+          body: responseBody,
+        })
         throw new Error(
           `Flight components request failed with status ${componentsResponse.status}`,
         )

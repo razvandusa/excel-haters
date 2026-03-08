@@ -1,3 +1,15 @@
+function formatDisplayValue(value) {
+  if (value === null || value === undefined || value === '') {
+    return 'N/A'
+  }
+
+  if (typeof value === 'object') {
+    return JSON.stringify(value)
+  }
+
+  return String(value)
+}
+
 export default function RecommendationValidationResult({ result }) {
   if (!result) {
     return null
@@ -17,7 +29,9 @@ export default function RecommendationValidationResult({ result }) {
             {Object.entries(result.flight).map(([key, value]) => (
               <div key={key} className="recommendation-result__row">
                 <span className="recommendation-result__label">{key}</span>
-                <span className="recommendation-result__value">{value}</span>
+                <span className="recommendation-result__value">
+                  {formatDisplayValue(value)}
+                </span>
               </div>
             ))}
           </div>
@@ -30,7 +44,9 @@ export default function RecommendationValidationResult({ result }) {
                     {Object.entries(component).map(([key, value]) => (
                       <div key={key}>
                         <span className="recommendation-result__label">{key}</span>
-                        <span className="recommendation-result__value">{String(value)}</span>
+                        <span className="recommendation-result__value">
+                          {formatDisplayValue(value)}
+                        </span>
                       </div>
                     ))}
                   </div>
