@@ -1,5 +1,5 @@
 const updateFlightTimeFieldDefinitions = [
-  { key: 'flightID', label: 'Flight ID', type: 'text' },
+  { key: 'flightId', label: 'Flight ID', type: 'text' },
   { key: 'newTime', label: 'New Time', type: 'datetime-local' },
 ]
 

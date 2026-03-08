@@ -1,11 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import * as XLSX from 'xlsx'
 
 const DEFAULT_EXCEL_IMPORT_DATE = '2026-03-07'
 const FLIGHTS_API_URL = import.meta.env.VITE_FLIGHTS_API_URL || '/api/flights'
+const TERMINALS_API_URL =
+  import.meta.env.VITE_TERMINALS_API_URL || '/api/terminals'
 
 const emptyFlightForm = {
-  flightID: '',
+  flightId: '',
   terminal: '',
   desk: '',
   security: '',
@@ -16,7 +18,7 @@ const emptyFlightForm = {
 }
 
 const emptyFlightTimeUpdateForm = {
-  flightID: '',
+  flightId: '',
   newTime: '',
 }
 
@@ -143,14 +145,67 @@ function normalizeFlightTimes(payload) {
 
 function formatCreateFlightPayload(payload) {
   return {
-    flightID: payload.flightID,
+    flightId: payload.flightId,
     terminalName: payload.terminal,
     deskName: payload.desk,
     securityName: payload.security,
-    gatenName: payload.gate,
+    gateName: payload.gate,
     standName: payload.stand,
     departureTime: payload.departureTime,
     arrivalTime: payload.arrivalTime,
+  }
+}
+
+function normalizeExcelFlightRow(row) {
+  return {
+    flightId: row.flightId ?? row.flightID ?? row.flightid ?? '',
+    terminal:
+      row.terminal ??
+      row.terminalName ??
+      row.terminalname ??
+      '',
+    desk: row.desk ?? row.deskName ?? row.deskname ?? '',
+    security:
+      row.security ??
+      row.securityName ??
+      row.securityname ??
+      '',
+    gate:
+      row.gate ??
+      row.gatenName ??
+      row.gateName ??
+      row.gatename ??
+      '',
+    stand: row.stand ?? row.standName ?? row.standname ?? '',
+    departureTime:
+      row.departureTime ??
+      row.departuretime ??
+      '',
+    arrivalTime:
+      row.arrivalTime ??
+      row.arrivaltime ??
+      '',
+  }
+}
+
+function hasFlightRowContent(row) {
+  return Object.values(row).some((value) => String(value ?? '').trim() !== '')
+}
+
+function normalizeTerminal(terminal) {
+  return {
+    id: terminal.id,
+    name: String(terminal.name ?? '').trim(),
+    isActive: Boolean(terminal.isActive),
+  }
+}
+
+function normalizeComponent(component) {
+  return {
+    id: component.id ?? component.elementId ?? component.elementID ?? null,
+    name: String(component.name ?? '').trim(),
+    type: String(component.type ?? '').toLowerCase(),
+    isActive: Boolean(component.isActive),
   }
 }
 
@@ -164,6 +219,21 @@ async function readResponseBody(response) {
   return response.text()
 }
 
+function ensureCreateFlightPayload(payload) {
+  const normalizedDepartureTime = String(payload.departureTime ?? '').trim()
+  const normalizedArrivalTime = String(payload.arrivalTime ?? '').trim()
+
+  if (!normalizedDepartureTime && !normalizedArrivalTime) {
+    throw new Error('Departure Time or Arrival Time is required.')
+  }
+
+  return {
+    ...payload,
+    departureTime: normalizedDepartureTime || null,
+    arrivalTime: normalizedArrivalTime || null,
+  }
+}
+
 export default function useFlightForm() {
   const [activeForm, setActiveForm] = useState('')
   const [draftFlight, setDraftFlight] = useState(emptyFlightForm)
@@ -173,10 +243,141 @@ export default function useFlightForm() {
   const [draftCancelFlight, setDraftCancelFlight] = useState(
     emptyCancelFlightForm,
   )
+  const [terminals, setTerminals] = useState([])
+  const [terminalsLoading, setTerminalsLoading] = useState(true)
+  const [terminalsError, setTerminalsError] = useState('')
+  const [componentsByTerminalId, setComponentsByTerminalId] = useState({})
+  const [componentsLoadingByTerminalId, setComponentsLoadingByTerminalId] =
+    useState({})
+  const [componentsErrorByTerminalId, setComponentsErrorByTerminalId] =
+    useState({})
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    async function loadTerminals() {
+      setTerminalsLoading(true)
+      setTerminalsError('')
+
+      try {
+        const response = await fetch(TERMINALS_API_URL, {
+          signal: controller.signal,
+        })
+
+        if (!response.ok) {
+          throw new Error(`Terminal request failed with status ${response.status}`)
+        }
+
+        const data = await response.json()
+        const nextTerminals = Array.isArray(data)
+          ? data
+              .map(normalizeTerminal)
+              .filter((terminal) => terminal.name)
+              .sort((left, right) => left.name.localeCompare(right.name))
+          : []
+
+        setTerminals(nextTerminals)
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          return
+        }
+
+        setTerminals([])
+        setTerminalsError(error.message || 'Failed to load terminals.')
+      } finally {
+        setTerminalsLoading(false)
+      }
+    }
+
+    loadTerminals()
+
+    return () => controller.abort()
+  }, [])
+
+  const selectedTerminal = terminals.find(
+    (terminal) => terminal.name === draftFlight.terminal,
+  )
+  const selectedTerminalId = String(selectedTerminal?.id ?? '')
+  const selectedTerminalComponents =
+    componentsByTerminalId[selectedTerminalId] ?? []
+  const selectedTerminalComponentsLoading = Boolean(
+    componentsLoadingByTerminalId[selectedTerminalId],
+  )
+  const selectedTerminalComponentsError =
+    componentsErrorByTerminalId[selectedTerminalId] || ''
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    async function loadTerminalComponents() {
+      if (!selectedTerminalId || componentsByTerminalId[selectedTerminalId]) {
+        return
+      }
+
+      setComponentsLoadingByTerminalId((currentState) => ({
+        ...currentState,
+        [selectedTerminalId]: true,
+      }))
+      setComponentsErrorByTerminalId((currentState) => ({
+        ...currentState,
+        [selectedTerminalId]: '',
+      }))
+
+      try {
+        const response = await fetch(
+          `${TERMINALS_API_URL}/${encodeURIComponent(selectedTerminalId)}/components`,
+          {
+            signal: controller.signal,
+          },
+        )
+
+        if (!response.ok) {
+          throw new Error(`Component request failed with status ${response.status}`)
+        }
+
+        const data = await response.json()
+        const nextComponents = Array.isArray(data)
+          ? data.map(normalizeComponent).filter((component) => component.name)
+          : []
+
+        setComponentsByTerminalId((currentState) => ({
+          ...currentState,
+          [selectedTerminalId]: nextComponents,
+        }))
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          return
+        }
+
+        setComponentsErrorByTerminalId((currentState) => ({
+          ...currentState,
+          [selectedTerminalId]:
+            error.message || 'Failed to load terminal components.',
+        }))
+      } finally {
+        setComponentsLoadingByTerminalId((currentState) => ({
+          ...currentState,
+          [selectedTerminalId]: false,
+        }))
+      }
+    }
+
+    loadTerminalComponents()
+
+    return () => controller.abort()
+  }, [componentsByTerminalId, selectedTerminalId])
 
   function handleFieldChange(field, value) {
     setDraftFlight((currentDraft) => ({
       ...currentDraft,
+      ...(field === 'terminal'
+        ? {
+            desk: '',
+            security: '',
+            gate: '',
+            stand: '',
+          }
+        : {}),
       [field]: value,
     }))
   }
@@ -261,14 +462,16 @@ export default function useFlightForm() {
   }
 
   async function createFlight(payload) {
-    console.log(`[API] POST ${FLIGHTS_API_URL}`, payload)
+    const validatedPayload = ensureCreateFlightPayload(payload)
+
+    console.log(`[API] POST ${FLIGHTS_API_URL}`, validatedPayload)
 
     const response = await fetch(FLIGHTS_API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(validatedPayload),
     })
 
     if (!response.ok) {
@@ -307,8 +510,43 @@ export default function useFlightForm() {
           .sheet_to_json(workbook.Sheets[sheetName], {
             defval: '',
           })
-          .map((row) => normalizeFlightTimes(row)),
+          .filter(hasFlightRowContent)
+          .map((row) =>
+            formatCreateFlightPayload(
+              normalizeFlightTimes(normalizeExcelFlightRow(row)),
+            ),
+          ),
       }))
+
+      const flightPayloads = sheets.flatMap((sheet) =>
+        sheet.rows.map((row, index) => ({
+          payload: row,
+          sheetName: sheet.name,
+          rowNumber: index + 1,
+        })),
+      )
+
+      const results = []
+
+      for (const flightRow of flightPayloads) {
+        try {
+          const responseBody = await createFlight(flightRow.payload)
+
+          results.push({
+            ok: true,
+            rowNumber: flightRow.rowNumber,
+            sheetName: flightRow.sheetName,
+            responseBody,
+          })
+        } catch (error) {
+          results.push({
+            ok: false,
+            rowNumber: flightRow.rowNumber,
+            sheetName: flightRow.sheetName,
+            error: error.message || 'Flight import failed.',
+          })
+        }
+      }
 
       console.log(
         'Loaded flight Excel JSON:',
@@ -321,6 +559,14 @@ export default function useFlightForm() {
           2,
         ),
       )
+
+      console.log('Flight Excel import summary:', {
+        fileName: file.name,
+        totalRows: flightPayloads.length,
+        succeeded: results.filter((result) => result.ok).length,
+        failed: results.filter((result) => !result.ok).length,
+        results,
+      })
     } finally {
       event.target.value = ''
     }
@@ -341,7 +587,7 @@ export default function useFlightForm() {
 
     const payload = normalizeFlightTimes(draftFlightTimeUpdate)
 
-    await patchFlight(payload.flightID, payload)
+    await patchFlight(payload.flightId, payload)
     resetFlightTimeForm()
     closeForm()
   }
@@ -361,6 +607,7 @@ export default function useFlightForm() {
 
   return {
     closeForm,
+    componentsByTerminalId,
     draftCancelFlight,
     draftFlight,
     draftFlightTimeUpdate,
@@ -377,8 +624,14 @@ export default function useFlightForm() {
     resetCancelFlightForm,
     resetForm,
     resetFlightTimeForm,
+    selectedTerminalComponents,
+    selectedTerminalComponentsError,
+    selectedTerminalComponentsLoading,
     submitCancelFlight,
     submitFlight,
     submitFlightTimeUpdate,
+    terminals,
+    terminalsError,
+    terminalsLoading,
   }
 }
