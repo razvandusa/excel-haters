@@ -35,27 +35,6 @@ export default function RecommendationValidationResult({ result }) {
               </div>
             ))}
           </div>
-          <div className="mt-6">
-            <h3 className="configurator-modal__title">Flight Components</h3>
-            {result.components?.length ? (
-              <div className="recommendation-result__grid">
-                {result.components.map((component, index) => (
-                  <div key={component.id ?? component.elementId ?? index} className="recommendation-result__row">
-                    {Object.entries(component).map(([key, value]) => (
-                      <div key={key}>
-                        <span className="recommendation-result__label">{key}</span>
-                        <span className="recommendation-result__value">
-                          {formatDisplayValue(value)}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="recommendation-result__copy">No components found for this flight.</p>
-            )}
-          </div>
         </>
       ) : null}
     </section>
