@@ -10,6 +10,7 @@ export default function FlightsPage() {
   const excelInputRef = useRef(null)
   const {
     closeForm,
+    componentsByTerminalId,
     draftCancelFlight,
     draftFlight,
     draftFlightTimeUpdate,
@@ -26,6 +27,9 @@ export default function FlightsPage() {
     resetCancelFlightForm,
     resetForm,
     resetFlightTimeForm,
+    selectedTerminalComponents,
+    selectedTerminalComponentsError,
+    selectedTerminalComponentsLoading,
     submitCancelFlight,
     submitFlight,
     submitFlightTimeUpdate,
@@ -86,6 +90,10 @@ export default function FlightsPage() {
         onClose={closeForm}
         onReset={resetForm}
         onSubmit={submitFlight}
+        componentsByTerminalId={componentsByTerminalId}
+        selectedTerminalComponents={selectedTerminalComponents}
+        selectedTerminalComponentsError={selectedTerminalComponentsError}
+        selectedTerminalComponentsLoading={selectedTerminalComponentsLoading}
         terminals={terminals}
         terminalsError={terminalsError}
         terminalsLoading={terminalsLoading}

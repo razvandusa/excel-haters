@@ -13,6 +13,10 @@ export default function FlightActionModal({
     return null
   }
 
+  function getDatalistId(fieldKey) {
+    return `flight-action-modal-${fieldKey}`
+  }
+
   return (
     <div className="configurator-modal-backdrop">
       <div className="configurator-modal flights-form-modal">
@@ -48,6 +52,27 @@ export default function FlightActionModal({
                       </option>
                     ))}
                   </select>
+                ) : field.type === 'autocomplete' ? (
+                  <>
+                    <input
+                      type="text"
+                      list={getDatalistId(field.key)}
+                      value={draftValues[field.key]}
+                      onChange={(event) =>
+                        onChangeField(field.key, event.target.value)
+                      }
+                      className="configurator-modal__input"
+                      disabled={field.disabled}
+                      placeholder={field.placeholder}
+                    />
+                    <datalist id={getDatalistId(field.key)}>
+                      {field.options?.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </datalist>
+                  </>
                 ) : (
                   <input
                     type={field.type}
@@ -56,6 +81,8 @@ export default function FlightActionModal({
                       onChangeField(field.key, event.target.value)
                     }
                     className="configurator-modal__input"
+                    placeholder={field.placeholder}
+                    disabled={field.disabled}
                   />
                 )}
                 {field.error ? (
