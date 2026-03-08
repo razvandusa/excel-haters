@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -49,9 +50,13 @@ public class AiPipelineClient {
                     .body(BodyInserters.fromMultipartData(builder.build()))
                     .retrieve()
                     .bodyToMono(Map.class)
+                    .timeout(Duration.ofSeconds(30))
                     .block();
 
             List<?> components = (List<?>) response.get("components");
+
+//            System.out.println("=== Layout AI Response ===");
+//            System.out.println(response);
 
             return Map.of(
                     "status", "DONE",
@@ -85,6 +90,7 @@ public class AiPipelineClient {
                     .body(BodyInserters.fromMultipartData(builder.build()))
                     .retrieve()
                     .bodyToMono(Map.class)
+                    .timeout(Duration.ofSeconds(30))
                     .block();
 
             List<?> flights = (List<?>) response.get("flights");
