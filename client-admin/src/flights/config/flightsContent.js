@@ -4,13 +4,13 @@ const flightsContent = {
   addExcelLabel: 'Add Flight with Excel',
   addFormLabel: 'Add Flight with Form',
   updateTimeLabel: 'Update Flight Time',
-  cancelFlightLabel: 'Cancel Flight',
+  cancelFlightLabel: 'Delay Flight',
   addModalTitle: 'Add Flight',
   addSubmitLabel: 'Add Flight',
   updateTimeModalTitle: 'Update Flight Time',
   updateTimeSubmitLabel: 'Update Flight Time',
-  cancelModalTitle: 'Cancel Flight',
-  cancelSubmitLabel: 'Cancel Flight',
+  cancelModalTitle: 'Delay Flight',
+  cancelSubmitLabel: 'Delay Flight',
 }
 
 export default flightsContent

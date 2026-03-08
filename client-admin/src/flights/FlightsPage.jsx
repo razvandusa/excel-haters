@@ -29,6 +29,9 @@ export default function FlightsPage() {
     submitCancelFlight,
     submitFlight,
     submitFlightTimeUpdate,
+    terminals,
+    terminalsError,
+    terminalsLoading,
   } = useFlightForm()
 
   return (
@@ -83,6 +86,9 @@ export default function FlightsPage() {
         onClose={closeForm}
         onReset={resetForm}
         onSubmit={submitFlight}
+        terminals={terminals}
+        terminalsError={terminalsError}
+        terminalsLoading={terminalsLoading}
       />
       <FlightActionModal
         draftValues={draftFlightTimeUpdate}

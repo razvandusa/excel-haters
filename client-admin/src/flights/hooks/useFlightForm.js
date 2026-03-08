@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import * as XLSX from 'xlsx'
 
 const DEFAULT_EXCEL_IMPORT_DATE = '2026-03-07'
 const FLIGHTS_API_URL = import.meta.env.VITE_FLIGHTS_API_URL || '/api/flights'
+const TERMINALS_API_URL =
+  import.meta.env.VITE_TERMINALS_API_URL || '/api/terminals'
 
 const emptyFlightForm = {
   flightId: '',
@@ -186,6 +188,14 @@ function normalizeExcelFlightRow(row) {
   }
 }
 
+function normalizeTerminal(terminal) {
+  return {
+    id: terminal.id,
+    name: String(terminal.name ?? '').trim(),
+    isActive: Boolean(terminal.isActive),
+  }
+}
+
 async function readResponseBody(response) {
   const responseContentType = response.headers.get('content-type') || ''
 
@@ -205,6 +215,51 @@ export default function useFlightForm() {
   const [draftCancelFlight, setDraftCancelFlight] = useState(
     emptyCancelFlightForm,
   )
+  const [terminals, setTerminals] = useState([])
+  const [terminalsLoading, setTerminalsLoading] = useState(true)
+  const [terminalsError, setTerminalsError] = useState('')
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    async function loadTerminals() {
+      setTerminalsLoading(true)
+      setTerminalsError('')
+
+      try {
+        const response = await fetch(TERMINALS_API_URL, {
+          signal: controller.signal,
+        })
+
+        if (!response.ok) {
+          throw new Error(`Terminal request failed with status ${response.status}`)
+        }
+
+        const data = await response.json()
+        const nextTerminals = Array.isArray(data)
+          ? data
+              .map(normalizeTerminal)
+              .filter((terminal) => terminal.name)
+              .sort((left, right) => left.name.localeCompare(right.name))
+          : []
+
+        setTerminals(nextTerminals)
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          return
+        }
+
+        setTerminals([])
+        setTerminalsError(error.message || 'Failed to load terminals.')
+      } finally {
+        setTerminalsLoading(false)
+      }
+    }
+
+    loadTerminals()
+
+    return () => controller.abort()
+  }, [])
 
   function handleFieldChange(field, value) {
     setDraftFlight((currentDraft) => ({
@@ -416,5 +471,8 @@ export default function useFlightForm() {
     submitCancelFlight,
     submitFlight,
     submitFlightTimeUpdate,
+    terminals,
+    terminalsError,
+    terminalsLoading,
   }
 }

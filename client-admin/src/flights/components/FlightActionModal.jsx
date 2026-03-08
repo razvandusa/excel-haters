@@ -32,14 +32,37 @@ export default function FlightActionModal({
             {fields.map((field) => (
               <label key={field.key} className="configurator-modal__field">
                 <span className="configurator-modal__label">{field.label}</span>
-                <input
-                  type={field.type}
-                  value={draftValues[field.key]}
-                  onChange={(event) =>
-                    onChangeField(field.key, event.target.value)
-                  }
-                  className="configurator-modal__input"
-                />
+                {field.type === 'select' ? (
+                  <select
+                    value={draftValues[field.key]}
+                    onChange={(event) =>
+                      onChangeField(field.key, event.target.value)
+                    }
+                    className="configurator-modal__input"
+                    disabled={field.disabled}
+                  >
+                    <option value="">{field.placeholder || 'Select an option'}</option>
+                    {field.options?.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type={field.type}
+                    value={draftValues[field.key]}
+                    onChange={(event) =>
+                      onChangeField(field.key, event.target.value)
+                    }
+                    className="configurator-modal__input"
+                  />
+                )}
+                {field.error ? (
+                  <span className="mt-2 block text-sm text-rose-300">
+                    {field.error}
+                  </span>
+                ) : null}
               </label>
             ))}
           </div>

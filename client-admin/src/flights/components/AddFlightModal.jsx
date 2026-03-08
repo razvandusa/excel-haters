@@ -9,11 +9,36 @@ export default function AddFlightModal({
   onClose,
   onReset,
   onSubmit,
+  terminals,
+  terminalsError,
+  terminalsLoading,
 }) {
+  const fields = flightFieldDefinitions.map((field) => {
+    if (field.key !== 'terminal') {
+      return field
+    }
+
+    return {
+      ...field,
+      type: 'select',
+      options: terminals.map((terminal) => ({
+        label: terminal.name,
+        value: terminal.name,
+      })),
+      placeholder: terminalsLoading
+        ? 'Loading terminals...'
+        : terminalsError
+          ? 'Failed to load terminals'
+          : 'Select terminal',
+      disabled: terminalsLoading || Boolean(terminalsError) || !terminals.length,
+      error: terminalsError,
+    }
+  })
+
   return (
     <FlightActionModal
       draftValues={draftFlight}
-      fields={flightFieldDefinitions}
+      fields={fields}
       isOpen={isOpen}
       onChangeField={onChangeField}
       onClose={onClose}
