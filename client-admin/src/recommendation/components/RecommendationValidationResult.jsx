@@ -6,15 +6,11 @@ export default function RecommendationValidationResult({ result }) {
   return (
     <section className="flights-form-modal recommendation-result">
       <h2 className="configurator-modal__title">{result.title}</h2>
-      <p
-        className={
-          result.isValid
-            ? 'recommendation-result__copy recommendation-result__copy--valid'
-            : 'recommendation-result__copy recommendation-result__copy--invalid'
-        }
-      >
-        {result.message}
-      </p>
+      {!result.isValid ? (
+        <p className="recommendation-result__copy recommendation-result__copy--invalid">
+          {result.message}
+        </p>
+      ) : null}
       {result.flight ? (
         <div className="recommendation-result__grid">
           {Object.entries(result.flight).map(([key, value]) => (
