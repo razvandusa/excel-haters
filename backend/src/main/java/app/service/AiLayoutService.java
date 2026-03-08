@@ -25,7 +25,7 @@ public class AiLayoutService {
 
         Map<String, Object> jobData = new ConcurrentHashMap<>();
         jobData.put("jobId", jobId);
-        jobData.put("status", result.get("status"));
+        jobData.put("status", "ready");
         jobData.put("fileName", file.getOriginalFilename());
         jobData.put("detectedComponents", result.get("detectedComponents"));
 

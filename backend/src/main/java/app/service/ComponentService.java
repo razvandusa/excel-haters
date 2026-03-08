@@ -56,7 +56,7 @@ public class ComponentService {
         if (!type.equals("GATE") && !type.equals("DESK") && !type.equals("SECURITY") && !type.equals("STAND")) {
             throw new IllegalArgumentException("Tipul componentului trebuie să fie GATE, DESK, SECURITY sau STAND");
         }
-
+        component.setType(type); // 'type' is already uppercased from the validation above
         repository.save(component);
     }
 

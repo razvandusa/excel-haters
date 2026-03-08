@@ -25,6 +25,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    runtimeOnly 'io.netty:netty-resolver-dns-native-macos:4.1.127.Final:osx-aarch_64'
+    runtimeOnly 'io.netty:netty-resolver-dns-native-macos:4.1.127.Final:osx-x86_64'
 }
 
 test {

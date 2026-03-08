@@ -47,19 +47,18 @@ public class ComponentController {
     ) {
         try {
             componentService.add(terminalId, request);
-            return Map.of(
-                    "message", "Component created",
-                    "terminalId", terminalId,
-                    "name", request.getName(),
-                    "type", request.getType(),
-                    "isActive", request.getIsActive()
-            );
+            Map<String, Object> response = new java.util.HashMap<>();
+            response.put("message", "Component created");
+            response.put("terminalId", terminalId);
+            response.put("name", request.getName());
+            response.put("type", request.getType());
+            response.put("isActive", request.getIsActive());
+            return response;
         } catch (Exception e) {
-            return Map.of(
-                    "error", e.getMessage()
-            );
-        }
-    }
+            Map<String, Object> error = new java.util.HashMap<>();
+            error.put("error", e.getMessage());
+            return error;
+        }}
 
     @PatchMapping("/api/components/{id}")
     public Map<String, Object> updateComponent(

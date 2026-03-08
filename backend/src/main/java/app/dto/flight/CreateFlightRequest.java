@@ -1,5 +1,7 @@
 package app.dto.flight;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class CreateFlightRequest {
     private String flightId;
     private String terminalName;
