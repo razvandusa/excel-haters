@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import componentsData from '../data/components.json'
 
 const TERMINALS_API_URL =
   import.meta.env.VITE_TERMINALS_API_URL || '/api/terminals'

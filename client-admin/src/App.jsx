@@ -37,14 +37,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/configurator" replace />} />
         <Route path="/configurator" element={<ConfiguratorPage />} />
-        <Route
-          path="/configurator/create-terminal-with-ai"
-          element={<CreateTerminalWithAiPage />}
-        />
-        <Route
-          path="/configurator/:terminalName"
-          element={<TerminalComponentsPage />}
-        />
+        <Route path="/configurator/create-terminal-with-ai" element={<CreateTerminalWithAiPage />}/>
+        <Route path="/configurator/:terminalName" element={<TerminalComponentsPage />}/>
         <Route path="/timetables" element={<TimetablesPage />} />
         <Route path="/flights" element={<FlightsPage />} />
         <Route path="/recommendation" element={<RecommendationPage />} />
