@@ -57,15 +57,126 @@ body {
   }
 
   .role-gate {
-    @apply flex min-h-screen items-center justify-center py-10;
+    @apply flex min-h-screen items-center justify-center py-6;
   }
 
-  .role-gate__panel {
-    @apply w-full max-w-4xl border border-cyan-300/15 bg-slate-950/60 p-6 shadow-2xl shadow-black/30 backdrop-blur sm:p-8;
+  .role-gate__shell {
+    @apply grid min-h-[calc(100vh-3rem)] w-full max-w-7xl overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/50 shadow-2xl shadow-black/40 backdrop-blur lg:grid-cols-[1.05fr_0.95fr];
+  }
+
+  .role-gate__visual {
+    @apply relative flex min-h-[320px] flex-col justify-between overflow-hidden bg-slate-900 px-8 py-10 sm:px-12 sm:py-14;
+    background-image:
+      radial-gradient(circle at 20% 18%, rgba(34, 211, 238, 0.18), transparent 30%),
+      linear-gradient(180deg, rgba(15, 23, 42, 0.94) 0%, rgba(2, 6, 23, 0.98) 100%);
+  }
+
+  .role-gate__visual-copy {
+    @apply relative z-10 max-w-md;
+  }
+
+  .role-gate__kicker {
+    @apply text-xs font-semibold uppercase tracking-[0.28em] text-cyan-200;
   }
 
   .role-gate__title {
     @apply mt-4 text-4xl font-semibold tracking-tight text-white sm:text-5xl;
+  }
+
+  .role-gate__subtitle {
+    @apply mt-4 max-w-sm text-sm text-slate-300 sm:text-base;
+  }
+
+  .role-gate__plane-mark {
+    @apply relative z-10 mt-10 flex w-full justify-center lg:mt-0 lg:justify-start;
+  }
+
+  .role-gate__plane-svg {
+    @apply h-auto w-full max-w-[42rem] drop-shadow-[0_18px_40px_rgba(8,47,73,0.45)];
+  }
+
+  .role-gate__plane-grid {
+    fill: none;
+    stroke: rgba(34, 211, 238, 0.14);
+    stroke-width: 1;
+  }
+
+  .role-gate__plane-outline {
+    fill: rgba(34, 211, 238, 0.03);
+    stroke: rgba(34, 211, 238, 0.92);
+    stroke-linejoin: round;
+    stroke-width: 3.2;
+  }
+
+  .role-gate__plane-detail {
+    fill: none;
+    stroke: rgba(34, 211, 238, 0.72);
+    stroke-width: 1.6;
+  }
+
+  .role-gate__plane-engine {
+    fill: none;
+    stroke: rgba(34, 211, 238, 0.78);
+    stroke-width: 2.2;
+  }
+
+  .role-gate__plane-guide {
+    fill: none;
+    stroke: rgba(250, 204, 21, 0.72);
+    stroke-width: 1.5;
+  }
+
+  .role-gate__plane-label {
+    fill: rgba(253, 224, 71, 0.86);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .role-gate__route {
+    @apply pointer-events-none absolute rounded-full border border-cyan-300/20;
+  }
+
+  .role-gate__route--one {
+    @apply -bottom-28 -left-14 h-56 w-56;
+  }
+
+  .role-gate__route--two {
+    @apply -bottom-16 left-12 h-72 w-72;
+  }
+
+  .role-gate__panel {
+    @apply relative flex items-center justify-center overflow-hidden px-6 py-10 sm:px-10;
+    background-image:
+      radial-gradient(circle at top right, rgba(186, 230, 253, 0.12), transparent 24%),
+      radial-gradient(circle at bottom left, rgba(34, 211, 238, 0.12), transparent 32%),
+      linear-gradient(180deg, #0f172a 0%, #111827 55%, #020617 100%);
+  }
+
+  .role-gate__panel::before,
+  .role-gate__panel::after {
+    content: "";
+    @apply pointer-events-none absolute rounded-full border border-white/30;
+  }
+
+  .role-gate__panel::before {
+    @apply -bottom-32 -right-20 h-72 w-72;
+  }
+
+  .role-gate__panel::after {
+    @apply -bottom-44 -right-4 h-[26rem] w-[26rem];
+  }
+
+  .role-gate__panel-card {
+    @apply relative z-10 w-full max-w-md rounded-[2rem] border border-cyan-200/10 bg-slate-900/88 p-8 shadow-2xl shadow-black/40 backdrop-blur sm:p-10;
+    box-shadow:
+      0 24px 60px rgba(2, 6, 23, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .role-gate__panel-title {
+    @apply text-3xl font-semibold tracking-tight text-white;
   }
 
   .role-gate__status {
@@ -77,15 +188,15 @@ body {
   }
 
   .role-gate__actions {
-    @apply mt-8 grid gap-4 md:grid-cols-2;
+    @apply mt-8 grid gap-4;
   }
 
   .role-gate__button {
-    @apply flex min-h-52 flex-col justify-between border border-white/10 bg-white/[0.03] p-6 text-left transition-[transform,border-color,background-color,box-shadow] duration-150 hover:-translate-y-1 hover:border-cyan-300/25 hover:bg-cyan-300/10 hover:shadow-xl hover:shadow-cyan-950/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950;
+    @apply inline-flex min-h-16 items-center justify-center rounded-full border border-cyan-300/25 bg-cyan-300/10 px-6 py-4 text-center transition-[transform,border-color,background-color,box-shadow] duration-150 hover:-translate-y-1 hover:border-cyan-200/40 hover:bg-cyan-300/20 hover:shadow-xl hover:shadow-cyan-950/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950;
   }
 
   .role-gate__button-title {
-    @apply text-2xl font-semibold tracking-tight text-white;
+    @apply text-lg font-semibold tracking-tight text-white;
   }
 
   .tab-link {

@@ -9,8 +9,9 @@
 
 ## App Structure
 - `src/main.jsx`: React entry point.
-- `src/App.jsx`: app shell, tab navigation, and route declarations.
-- `src/shared/TabNav.jsx`: top navigation with Material Symbols icons and live date/time.
+- `src/App.jsx`: app shell, role-gated routing, tab visibility rules, and route declarations.
+- `src/auth/RoleSelectionPage.jsx`: root landing page with `Login as Admin` / `Login as User` entry actions.
+- `src/shared/TabNav.jsx`: top navigation with Material Symbols icons, live date/time, and logout action.
 - `src/shared/debugApiRequest.js`: shared debug helper for request inspection.
 - `src/api/terminals.js`: terminal API helpers for fetch, delete, and status updates.
 - `src/configurator/ConfiguratorPage.jsx`: main configurator dashboard with terminal actions and terminal table.
@@ -29,18 +30,18 @@
 - `src/configurator/config/componentTypeOptions.js`: component type options.
 - `src/flights/FlightsPage.jsx`: flights feature entry page.
 - `src/flights/components/AddFlightModal.jsx`: modal for manual flight creation.
-- `src/flights/components/FlightActionModal.jsx`: shared modal for update-time and cancel flows.
+- `src/flights/components/FlightActionModal.jsx`: shared modal shell used by the update-flight-time flow.
 - `src/flights/hooks/useFlightForm.js`: flights form state, Excel parsing, payload normalization, and API submit logic.
 - `src/flights/config/flightFieldDefinitions.js`: add-flight modal field definitions.
 - `src/flights/config/updateFlightTimeFieldDefinitions.js`: update-flight-time field definitions.
-- `src/flights/config/cancelFlightFieldDefinitions.js`: cancel-flight field definitions.
+- `src/flights/config/cancelFlightFieldDefinitions.js`: legacy cancel-flight field definitions that are not currently rendered from the page.
 - `src/flights/config/flightsContent.js`: flights page and modal labels.
-- `src/recommendation/RecommendationPage.jsx`: recommendation feature entry page.
+- `src/recommendation/RecommendationPage.jsx`: Flight Viewer feature entry page.
 - `src/recommendation/components/RecommendationFlightForm.jsx`: flight ID submit form.
 - `src/recommendation/components/RecommendationValidationResult.jsx`: recommendation result renderer.
 - `src/recommendation/hooks/useRecommendationForm.js`: recommendation submit flow for flight and assignment lookup.
 - `src/recommendation/hooks/useRecommendationComponentLookup.js`: component lookup helper for recommendation-related data.
-- `src/recommendation/config/recommendationContent.js`: recommendation labels and copy.
+- `src/recommendation/config/recommendationContent.js`: Flight Viewer labels and copy.
 - `src/recommendation/data/*.json`: local recommendation seed data kept alongside the feature.
 - `src/timetables/TimetablesPage.jsx`: timetables feature entry page.
 - `src/timetables/components/TimetablesTerminalTable.jsx`: sequential terminal -> component -> assignments flow.
@@ -64,31 +65,36 @@
 - Keep styling consistent with the square-edged admin layout already established in `src/index.css`.
 
 ## Current State
-- The top-level app tabs are `Configurator`, `Timetables`, `Flights`, and `Recommendation`.
-- `TabNav` includes Material Symbols icons and a live date/time display.
+- The root route `/` shows a role-selection landing page with `Login as Admin` and `Login as User`.
+- The landing page stores the selected role in local storage under `client-admin-role`.
+- Admin sessions default to `/configurator` and can access all tabs.
+- User sessions default to `/recommendation` and are restricted to Flight Viewer only.
+- Route access is guarded in `src/App.jsx`; unauthenticated access redirects to `/`, and unauthorized routes redirect to the default path for the active role.
+- The top-level app tabs for admin are `Configurator`, `Timetables`, `Flights`, and `Flight Viewer`.
+- `TabNav` includes Material Symbols icons, a live date/time display, and a logout button.
 - Configurator terminals are loaded from `/api/terminals`.
 - Terminal rows support search, pagination, delete, and status toggle via `PATCH /api/terminals/{id}` with `{ isActive }`.
 - Terminal row `View` navigation uses SPA routing to `/configurator/{terminalName}`.
 - The terminal detail page fetches `/api/terminals`, resolves the selected terminal by name, then fetches `/api/terminals/{id}/components`.
 - The terminal detail page shows grouped Desk / Security / Gate / Stand sections, an `Update` modal shell, and a `Back` link.
 - The AI terminal page mirrors the grouped configurator layout and supports local image upload preview.
-- Flights supports four actions: Excel import, add flight, update flight time, and cancel flight.
+- Flights currently exposes three actions from the page: Excel import, add flight, and update flight time.
 - Add flight submits `POST /api/flights`.
 - Add-flight payload shape is:
   - `flightId`
   - `terminalName`
   - `deskName`
   - `securityName`
-  - `gatenName`
+  - `gateName`
   - `standName`
   - `departureTime`
   - `arrivalTime`
 - Update flight time submits `PATCH /api/flights/{id}`.
-- Cancel flight submits `PATCH /api/flights/{id}` with `status: 'cancelled'`.
+- Legacy cancel-flight form state and field definitions still exist in the flights hook/config, but the page does not currently render a cancel/delay action.
 - Flight requests log the outgoing API request and backend response bodies in the browser console when relevant.
 - Excel import parses `.xlsx/.xls`, normalizes date/time values to ISO 8601, and maps each row into the same payload shape as the add-flight modal.
-- Recommendation submits a flight ID, fetches `GET /api/flights/{flightId}`, then fetches `GET /api/flights/{flightId}/assignments`.
-- Recommendation renders flight details plus fetched assignment/component data and logs backend error response bodies for failed requests.
+- Flight Viewer submits a flight ID, fetches `GET /api/flights/{flightId}`, then fetches `GET /api/flights/{flightId}/assignments`.
+- Flight Viewer renders flight details plus fetched assignment/component data and logs backend error response bodies for failed requests.
 - Timetables is implemented as a sequential flow:
   - select terminal
   - confirm terminal
@@ -100,4 +106,4 @@
 - Timetables only advances to the next card after the relevant fetch succeeds, and each later step has a `Back` button.
 - The final timetables card presents assignment windows and readable flight summaries instead of raw JSON dumps.
 - Current modals do not close on backdrop click; they close through explicit UI actions only.
-- The current Vite dev proxy forwards `/api` to `http://192.168.0.138:8080`.
+- The current Vite dev proxy forwards `/api` to `http://10.1.0.135:8080`.
