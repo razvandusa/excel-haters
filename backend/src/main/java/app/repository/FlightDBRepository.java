@@ -40,8 +40,11 @@ public class FlightDBRepository {
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, flight.getFlightId());
             ps.setString(2, flight.getTerminalName());
-            ps.setTimestamp(3, Timestamp.valueOf(flight.getArrival()));
-            ps.setTimestamp(4, Timestamp.valueOf(flight.getDeparture()));
+            if (flight.getDeparture() == null) {
+                ps.setTimestamp(3, Timestamp.valueOf(flight.getArrival()));
+            } else {
+                ps.setTimestamp(4, Timestamp.valueOf(flight.getDeparture()));
+            }
             ps.setString(5, flight.getStatus());
             ps.executeUpdate();
         } catch (SQLException e) {
