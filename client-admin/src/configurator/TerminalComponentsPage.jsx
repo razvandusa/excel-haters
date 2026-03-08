@@ -5,8 +5,9 @@ import useTerminalComponents from "./hooks/useTerminalComponents.js";
 
 export default function TerminalComponentsPage() {
   const { terminalName = "" } = useParams();
-  const { terminal, components, isLoading, error } =
+  const { terminal, components, isLoading, error, refresh } =
     useTerminalComponents(terminalName);
+
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [draftName, setDraftName] = useState("");
   const [draftIsActive, setDraftIsActive] = useState(false);
@@ -61,10 +62,7 @@ export default function TerminalComponentsPage() {
             terminalId={terminal?.id}
             isLoading={isLoading}
             error={error}
-            onComponentCreated={() => {
-              // Re-trigger the hook by updating the terminal name (or use a refresh key)
-              window.location.reload();
-            }}
+            onComponentCreated={refresh}
           />
         </div>
       </div>

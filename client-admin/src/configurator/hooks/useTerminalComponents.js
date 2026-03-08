@@ -1,113 +1,120 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
 const TERMINALS_API_URL =
-  import.meta.env.VITE_TERMINALS_API_URL || '/api/terminals'
+  import.meta.env.VITE_TERMINALS_API_URL || "/api/terminals";
 
 function normalizeTerminal(terminal) {
   return {
     id: terminal.id,
     name: terminal.name,
-    type: String(terminal.type ?? '').toLowerCase(),
+    type: String(terminal.type ?? "").toLowerCase(),
     isActive: Boolean(terminal.isActive),
-  }
+  };
 }
 
 function normalizeComponent(component) {
   return {
     id: component.id,
     name: component.name,
-    type: String(component.type ?? '').toLowerCase(),
+    type: String(component.type ?? "").toLowerCase(),
     isActive: Boolean(component.isActive),
-  }
+  };
 }
 
 export default function useTerminalComponents(terminalName) {
-  const [terminal, setTerminal] = useState(null)
-  const [components, setComponents] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState('')
+  const [terminal, setTerminal] = useState(null);
+  const [components, setComponents] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [refreshKey, setRefreshKey] = useState(0); // ADD THIS
 
+  function refresh() {
+    // ADD THIS
+    setRefreshKey((k) => k + 1);
+  }
   useEffect(() => {
-    const controller = new AbortController()
+    const controller = new AbortController();
 
     async function loadTerminalComponents() {
-      setIsLoading(true)
-      setError('')
+      setIsLoading(true);
+      setError("");
 
       try {
         const terminalsResponse = await fetch(TERMINALS_API_URL, {
           signal: controller.signal,
-        })
+        });
 
         if (!terminalsResponse.ok) {
           throw new Error(
             `Terminal request failed with status ${terminalsResponse.status}`,
-          )
+          );
         }
 
-        const terminalsData = await terminalsResponse.json()
+        const terminalsData = await terminalsResponse.json();
         const matchedTerminal = Array.isArray(terminalsData)
           ? terminalsData
               .map(normalizeTerminal)
               .find(
-                (item) => item.name.toLowerCase() === terminalName.toLowerCase(),
+                (item) =>
+                  item.name.toLowerCase() === terminalName.toLowerCase(),
               )
-          : null
+          : null;
 
         if (!matchedTerminal) {
-          throw new Error(`Terminal "${terminalName}" was not found.`)
+          throw new Error(`Terminal "${terminalName}" was not found.`);
         }
 
-        setTerminal(matchedTerminal)
+        setTerminal(matchedTerminal);
 
         const componentsResponse = await fetch(
           `${TERMINALS_API_URL}/${matchedTerminal.id}/components`,
           {
             signal: controller.signal,
           },
-        )
+        );
 
         if (!componentsResponse.ok) {
           throw new Error(
             `Component request failed with status ${componentsResponse.status}`,
-          )
+          );
         }
 
-        const componentsData = await componentsResponse.json()
+        const componentsData = await componentsResponse.json();
         const nextComponents = Array.isArray(componentsData)
           ? componentsData.map(normalizeComponent)
-          : []
+          : [];
 
-        setComponents(nextComponents)
+        setComponents(nextComponents);
       } catch (fetchError) {
-        if (fetchError.name === 'AbortError') {
-          return
+        if (fetchError.name === "AbortError") {
+          return;
         }
 
-        setTerminal(null)
-        setComponents([])
-        setError(fetchError.message || 'Failed to load terminal components.')
+        setTerminal(null);
+        setComponents([]);
+        setError(fetchError.message || "Failed to load terminal components.");
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
 
     if (terminalName) {
-      loadTerminalComponents()
+      loadTerminalComponents();
     } else {
-      setTerminal(null)
-      setComponents([])
-      setError('Missing terminal name.')
-      setIsLoading(false)
+      setTerminal(null);
+      setComponents([]);
+      setError("Missing terminal name.");
+      setIsLoading(false);
     }
 
-    return () => controller.abort()
-  }, [terminalName])
+    return () => controller.abort();
+  }, [terminalName, refreshKey]); // ADD refreshKey to dependencies
 
   return {
     terminal,
     components,
     isLoading,
     error,
-  }
+    refresh,
+  };
 }
