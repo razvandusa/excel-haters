@@ -1,0 +1,1 @@
+gource --start-date "2026-03-06 00:00:00" --stop-date "2026-03-08 14:00:00" --seconds-per-day 20.0 --auto-skip-seconds 5 --highlight-users --multi-sampling --user-image-dir avatars --max-file-lag 0.2 --file-idle-time 0 --disable-bloom --hide filenames --title "Excel Haters"

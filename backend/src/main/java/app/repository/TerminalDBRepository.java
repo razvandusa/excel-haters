@@ -111,14 +111,15 @@ public class TerminalDBRepository {
      * @return Terminal object if found, null otherwise
      */
     public Terminal findByName(String terminalName) {
-        String sql = "SELECT * FROM terminal WHERE name = ?;";
+        String sql = "SELECT * FROM terminal WHERE TRIM(name) = ?;";
         try (Connection conn = DriverManager.getConnection(url, username, password);
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, terminalName);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
+                String name = rs.getString("name");
                 Boolean active = rs.getBoolean("active");
-                return new Terminal(terminalName, active);
+                return new Terminal(name != null ? name.trim() : null, active);
             }
         } catch (SQLException e) {
             System.out.println("Error fetching terminal from database: " + e.getMessage());
@@ -141,7 +142,7 @@ public class TerminalDBRepository {
                 Long id = rs.getLong("terminal_id");
                 String name = rs.getString("name");
                 Boolean active = rs.getBoolean("active");
-                Terminal t = new Terminal(name, active);
+                Terminal t = new Terminal(name != null ? name.trim() : null, active);
                 t.setId(id);
                 terminals.add(t);
             }

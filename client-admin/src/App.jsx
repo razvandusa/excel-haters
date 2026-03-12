@@ -89,7 +89,10 @@ export default function App() {
   }
 
   return (
-    <main className="app-shell">
+    <main
+      className="min-h-screen px-4 pb-10 text-slate-50 sm:px-6"
+      style={{ backgroundImage: 'radial-gradient(circle at top, #1e293b, #020617 55%)' }}
+    >
       {shouldShowTabs ? (
         <TabNav tabs={visibleTabs} onLogout={handleLogout} />
       ) : null}

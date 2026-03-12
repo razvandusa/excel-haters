@@ -7,6 +7,7 @@ import app.service.ComponentService;
 import app.service.AssignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +37,22 @@ public class ComponentController {
                         "isActive", component.getActive()
                 ))
                 .toList();
+    }
+
+    @GetMapping("/api/components/{id}")
+    public ResponseEntity<Map<String, Object>> getComponentById(@PathVariable Long id) {
+        Component component = componentService.findById(id);
+        if (component == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Component not found"));
+        }
+
+        Map<String, Object> response = new java.util.HashMap<>();
+        response.put("id", component.getId());
+        response.put("name", component.getName());
+        response.put("type", component.getType());
+        response.put("terminalId", component.getTerminalId());
+        response.put("isActive", component.getActive());
+        return ResponseEntity.ok(response);
     }
 
 

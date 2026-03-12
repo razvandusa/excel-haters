@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import * as XLSX from 'xlsx'
 
-const DEFAULT_EXCEL_IMPORT_DATE = '2026-03-07'
 const FLIGHTS_API_URL = import.meta.env.VITE_FLIGHTS_API_URL || '/api/flights'
 const TERMINALS_API_URL =
   import.meta.env.VITE_TERMINALS_API_URL || '/api/terminals'
@@ -30,23 +29,72 @@ function padTimePart(value) {
   return String(value).padStart(2, '0')
 }
 
+function formatLocalDate(dateValue) {
+  return [
+    dateValue.getFullYear(),
+    padTimePart(dateValue.getMonth() + 1),
+    padTimePart(dateValue.getDate()),
+  ].join('-')
+}
+
+function formatDateTimeParts(datePart, rawHour, rawMinute, rawSecond = 0) {
+  return `${datePart}T${padTimePart(rawHour)}:${padTimePart(rawMinute)}:${padTimePart(
+    Math.floor(rawSecond || 0),
+  )}`
+}
+
+function formatJsDateTime(dateValue) {
+  return formatDateTimeParts(
+    formatLocalDate(dateValue),
+    dateValue.getHours(),
+    dateValue.getMinutes(),
+    dateValue.getSeconds(),
+  )
+}
+
+function getExcelImportDateFallback() {
+  return formatLocalDate(new Date())
+}
+
 function formatDateTimeValue(value) {
   if (value === undefined || value === null || value === '') {
     return value
+  }
+
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return formatJsDateTime(value)
   }
 
   if (typeof value === 'number') {
     const parsedDateCode = XLSX.SSF.parse_date_code(value)
 
     if (parsedDateCode) {
-      return [
-        `${parsedDateCode.y}-${padTimePart(parsedDateCode.m)}-${padTimePart(parsedDateCode.d)}`,
-        `${padTimePart(parsedDateCode.H)}:${padTimePart(parsedDateCode.M)}:${padTimePart(Math.floor(parsedDateCode.S || 0))}`,
-      ].join('T')
+      const hasDatePart =
+        Number(parsedDateCode.y) >= 1900 &&
+        Number(parsedDateCode.m) >= 1 &&
+        Number(parsedDateCode.d) >= 1
+      const datePart = hasDatePart
+        ? `${parsedDateCode.y}-${padTimePart(parsedDateCode.m)}-${padTimePart(parsedDateCode.d)}`
+        : getExcelImportDateFallback()
+
+      return formatDateTimeParts(
+        datePart,
+        parsedDateCode.H,
+        parsedDateCode.M,
+        parsedDateCode.S,
+      )
     }
   }
 
   const normalizedValue = String(value).trim()
+
+  if (normalizedValue === '') {
+    return ''
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(normalizedValue)) {
+    return `${normalizedValue}T00:00:00`
+  }
 
   if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(normalizedValue)) {
     return `${normalizedValue}:00`
@@ -80,7 +128,12 @@ function formatDateTimeValue(value) {
       hour = 0
     }
 
-    return `${DEFAULT_EXCEL_IMPORT_DATE}T${padTimePart(hour)}:${padTimePart(rawMinute)}:${padTimePart(rawSecond)}`
+    return formatDateTimeParts(
+      getExcelImportDateFallback(),
+      hour,
+      rawMinute,
+      rawSecond,
+    )
   }
 
   const twentyFourHourMatch = normalizedValue.match(
@@ -90,7 +143,12 @@ function formatDateTimeValue(value) {
   if (twentyFourHourMatch) {
     const [, rawHour, rawMinute, rawSecond = '00'] = twentyFourHourMatch
 
-    return `${DEFAULT_EXCEL_IMPORT_DATE}T${padTimePart(rawHour)}:${padTimePart(rawMinute)}:${padTimePart(rawSecond)}`
+    return formatDateTimeParts(
+      getExcelImportDateFallback(),
+      rawHour,
+      rawMinute,
+      rawSecond,
+    )
   }
 
   const slashDateTimeMatch = normalizedValue.match(
@@ -123,7 +181,18 @@ function formatDateTimeValue(value) {
     const year =
       rawYear.length === 2 ? `20${rawYear}` : rawYear
 
-    return `${year}-${padTimePart(rawMonth)}-${padTimePart(rawDay)}T${padTimePart(hour)}:${padTimePart(rawMinute)}:${padTimePart(rawSecond)}`
+    return formatDateTimeParts(
+      `${year}-${padTimePart(rawMonth)}-${padTimePart(rawDay)}`,
+      hour,
+      rawMinute,
+      rawSecond,
+    )
+  }
+
+  const parsedDate = new Date(normalizedValue)
+
+  if (!Number.isNaN(parsedDate.getTime())) {
+    return formatJsDateTime(parsedDate)
   }
 
   return normalizedValue
@@ -156,35 +225,84 @@ function formatCreateFlightPayload(payload) {
   }
 }
 
+function buildCreateFlightPayload(flightDraft) {
+  return formatCreateFlightPayload(normalizeFlightTimes(flightDraft))
+}
+
+function normalizeExcelHeaderKey(key) {
+  return String(key ?? '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '')
+}
+
+function findExcelRowValue(normalizedRow, aliases) {
+  for (const alias of aliases) {
+    const normalizedAlias = normalizeExcelHeaderKey(alias)
+
+    if (
+      Object.prototype.hasOwnProperty.call(normalizedRow, normalizedAlias)
+    ) {
+      return normalizedRow[normalizedAlias]
+    }
+  }
+
+  return ''
+}
+
+function normalizeExcelTextValue(value) {
+  return String(value ?? '').trim()
+}
+
+function normalizeExcelDateTimeValue(value) {
+  if (value === undefined || value === null) {
+    return ''
+  }
+
+  return typeof value === 'string' ? value.trim() : value
+}
+
 function normalizeExcelFlightRow(row) {
+  const normalizedRow = Object.fromEntries(
+    Object.entries(row).map(([key, value]) => [
+      normalizeExcelHeaderKey(key),
+      value,
+    ]),
+  )
+
   return {
-    flightId: row.flightId ?? row.flightID ?? row.flightid ?? '',
-    terminal:
-      row.terminal ??
-      row.terminalName ??
-      row.terminalname ??
-      '',
-    desk: row.desk ?? row.deskName ?? row.deskname ?? '',
-    security:
-      row.security ??
-      row.securityName ??
-      row.securityname ??
-      '',
-    gate:
-      row.gate ??
-      row.gatenName ??
-      row.gateName ??
-      row.gatename ??
-      '',
-    stand: row.stand ?? row.standName ?? row.standname ?? '',
-    departureTime:
-      row.departureTime ??
-      row.departuretime ??
-      '',
-    arrivalTime:
-      row.arrivalTime ??
-      row.arrivaltime ??
-      '',
+    flightId: normalizeExcelTextValue(
+      findExcelRowValue(normalizedRow, ['flightId', 'flightID', 'flight']),
+    ),
+    terminal: normalizeExcelTextValue(
+      findExcelRowValue(normalizedRow, ['terminal', 'terminalName']),
+    ),
+    desk: normalizeExcelTextValue(
+      findExcelRowValue(normalizedRow, ['desk', 'deskName']),
+    ),
+    security: normalizeExcelTextValue(
+      findExcelRowValue(normalizedRow, ['security', 'securityName']),
+    ),
+    gate: normalizeExcelTextValue(
+      findExcelRowValue(normalizedRow, ['gate', 'gateName']),
+    ),
+    stand: normalizeExcelTextValue(
+      findExcelRowValue(normalizedRow, ['stand', 'standName']),
+    ),
+    departureTime: normalizeExcelDateTimeValue(
+      findExcelRowValue(normalizedRow, [
+        'departureTime',
+        'departureDateTime',
+        'departure',
+      ]),
+    ),
+    arrivalTime: normalizeExcelDateTimeValue(
+      findExcelRowValue(normalizedRow, [
+        'arrivalTime',
+        'arrivalDateTime',
+        'arrival',
+      ]),
+    ),
   }
 }
 
@@ -219,16 +337,90 @@ async function readResponseBody(response) {
   return response.text()
 }
 
+function extractApiErrorMessage(responseBody) {
+  if (typeof responseBody === 'string') {
+    return responseBody.trim()
+  }
+
+  if (
+    !responseBody ||
+    typeof responseBody !== 'object' ||
+    Array.isArray(responseBody)
+  ) {
+    return ''
+  }
+
+  const responseError =
+    responseBody.error ??
+    responseBody.message ??
+    responseBody.detail ??
+    responseBody.details
+
+  if (responseError === undefined || responseError === null) {
+    return ''
+  }
+
+  if (typeof responseError === 'string') {
+    return responseError.trim()
+  }
+
+  try {
+    return JSON.stringify(responseError)
+  } catch {
+    return 'Unknown API error.'
+  }
+}
+
+function hasApiErrorField(responseBody) {
+  return (
+    responseBody &&
+    typeof responseBody === 'object' &&
+    !Array.isArray(responseBody) &&
+    typeof responseBody.error === 'string' &&
+    responseBody.error.trim() !== ''
+  )
+}
+
+function isLocalIsoDateTime(value) {
+  return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(value)
+}
+
 function ensureCreateFlightPayload(payload) {
-  const normalizedDepartureTime = String(payload.departureTime ?? '').trim()
-  const normalizedArrivalTime = String(payload.arrivalTime ?? '').trim()
+  const normalizedPayload = Object.fromEntries(
+    Object.entries(payload).map(([key, value]) => [
+      key,
+      typeof value === 'string' ? value.trim() : value,
+    ]),
+  )
+  const normalizedDepartureTime = String(
+    normalizedPayload.departureTime ?? '',
+  ).trim()
+  const normalizedArrivalTime = String(normalizedPayload.arrivalTime ?? '').trim()
 
   if (!normalizedDepartureTime && !normalizedArrivalTime) {
     throw new Error('Departure Time or Arrival Time is required.')
   }
 
+  if (
+    normalizedDepartureTime &&
+    !isLocalIsoDateTime(normalizedDepartureTime)
+  ) {
+    throw new Error(
+      `Invalid departure time format: "${normalizedDepartureTime}". Expected YYYY-MM-DDTHH:mm:ss.`,
+    )
+  }
+
+  if (
+    normalizedArrivalTime &&
+    !isLocalIsoDateTime(normalizedArrivalTime)
+  ) {
+    throw new Error(
+      `Invalid arrival time format: "${normalizedArrivalTime}". Expected YYYY-MM-DDTHH:mm:ss.`,
+    )
+  }
+
   return {
-    ...payload,
+    ...normalizedPayload,
     departureTime: normalizedDepartureTime || null,
     arrivalTime: normalizedArrivalTime || null,
   }
@@ -448,17 +640,20 @@ export default function useFlightForm() {
       },
     )
 
-    if (!response.ok) {
-      const responseBody = await readResponseBody(response)
+    const responseBody = await readResponseBody(response)
+    const responseError = extractApiErrorMessage(responseBody)
 
+    if (!response.ok || hasApiErrorField(responseBody)) {
       console.error('Flight patch API response:', {
         status: response.status,
         body: responseBody,
       })
-      throw new Error(`Flight patch failed with status ${response.status}`)
+      throw new Error(
+        responseError || `Flight patch failed with status ${response.status}`,
+      )
     }
 
-    return response
+    return responseBody
   }
 
   async function createFlight(payload) {
@@ -474,17 +669,18 @@ export default function useFlightForm() {
       body: JSON.stringify(validatedPayload),
     })
 
-    if (!response.ok) {
-      const responseBody = await readResponseBody(response)
+    const responseBody = await readResponseBody(response)
+    const responseError = extractApiErrorMessage(responseBody)
 
+    if (!response.ok || hasApiErrorField(responseBody)) {
       console.error('Flight create API response:', {
         status: response.status,
         body: responseBody,
       })
-      throw new Error(`Flight create failed with status ${response.status}`)
+      throw new Error(
+        responseError || `Flight create failed with status ${response.status}`,
+      )
     }
-
-    const responseBody = await readResponseBody(response)
 
     console.log('Flight create API success response:', {
       status: response.status,
@@ -512,9 +708,7 @@ export default function useFlightForm() {
           })
           .filter(hasFlightRowContent)
           .map((row) =>
-            formatCreateFlightPayload(
-              normalizeFlightTimes(normalizeExcelFlightRow(row)),
-            ),
+            buildCreateFlightPayload(normalizeExcelFlightRow(row)),
           ),
       }))
 
@@ -575,7 +769,7 @@ export default function useFlightForm() {
   async function submitFlight(event) {
     event.preventDefault()
 
-    const payload = formatCreateFlightPayload(normalizeFlightTimes(draftFlight))
+    const payload = buildCreateFlightPayload(draftFlight)
 
     await createFlight(payload)
     resetForm()

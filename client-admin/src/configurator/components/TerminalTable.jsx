@@ -186,20 +186,18 @@ export default function TerminalTable({
                     <td className="px-5 py-3">{terminal.name}</td>
                     {showIsActive ? (
                       <td className="px-5 py-3 text-right">
-                        <td className="px-5 py-3 text-right">
-                          <button
-                            className={
-                              terminal.isActive
-                                ? "inline-flex border px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] border-emerald-300/20 bg-emerald-300/10 text-emerald-100"
-                                : "inline-flex border px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] border-slate-300/15 bg-slate-300/10 text-slate-300"
-                            }
-                            disabled={toggling}
-                            onClick={() => handleToggleActive(terminal)}
-                            title="Toggle Active"
-                          >
-                            {terminal.isActive ? "Active" : "Inactive"}
-                          </button>
-                        </td>
+                        <button
+                          className={
+                            terminal.isActive
+                              ? "inline-flex border px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] border-emerald-300/20 bg-emerald-300/10 text-emerald-100"
+                              : "inline-flex border px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] border-slate-300/15 bg-slate-300/10 text-slate-300"
+                          }
+                          disabled={toggling}
+                          onClick={() => handleToggleActive(terminal)}
+                          title="Toggle Active"
+                        >
+                          {terminal.isActive ? "Active" : "Inactive"}
+                        </button>
                       </td>
                     ) : null}
                     <td className="px-5 py-3 text-right">

@@ -50,21 +50,3 @@ export async function getLayoutAnalysis(jobId) {
   }
   return response.json();
 }
-
-export async function commitLayout(jobId, { name, isActive, components }) {
-  const response = await fetch(
-    `${AI_LAYOUTS_URL}/${encodeURIComponent(jobId)}/commit`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, isActive, components }),
-    },
-  );
-  if (!response.ok) {
-    const errorBody = await response.text();
-    throw new Error(
-      `Create component failed (${response.status}): ${errorBody}`,
-    );
-  }
-  return response.json();
-}

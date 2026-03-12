@@ -77,7 +77,7 @@ async function fetchComponentDetails(componentId) {
   for (const detailUrl of detailUrls) {
     const response = await fetch(detailUrl)
 
-    if (response.status === 404) {
+    if (response.status === 404 || response.status === 405) {
       continue
     }
 

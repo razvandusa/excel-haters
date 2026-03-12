@@ -1,6 +1,6 @@
 const configuratorContent = {
   kicker: 'Configurator',
-  title: 'Airport configuration workspace',
+  title: 'f',
   componentsTableTitle: '',
   terminalsTableTitle: 'Terminals',
 }

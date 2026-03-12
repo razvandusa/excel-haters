@@ -142,26 +142,26 @@ export default function TimetablesTerminalTable({
   return (
     <div>
       {currentStep === 'terminals' ? (
-        <section className="configurator-table-card">
-          <div className="configurator-table-card__header">
+        <section className="overflow-hidden border border-white/10 bg-slate-950/40 shadow-xl shadow-black/10">
+          <div className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-4">
             <div>
-              <h2 className="configurator-table-card__title">{terminalsTitle}</h2>
+              <h2 className="text-lg font-semibold text-white">{terminalsTitle}</h2>
             </div>
           </div>
 
           <div className="p-5">
             {isLoading ? (
-              <p className="configurator-table__feedback">Loading terminals...</p>
+              <p className="px-5 py-6 text-center text-sm text-slate-400">Loading terminals...</p>
             ) : null}
 
             {!isLoading && error ? (
-              <p className="configurator-table__feedback configurator-table__feedback--error">
+              <p className="px-5 py-6 text-center text-sm text-rose-300">
                 {error}
               </p>
             ) : null}
 
             {!isLoading && !error && terminals.length === 0 ? (
-              <p className="configurator-table__feedback">No terminals found.</p>
+              <p className="px-5 py-6 text-center text-sm text-slate-400">No terminals found.</p>
             ) : null}
 
             {!isLoading && !error && terminals.length > 0 ? (
@@ -169,7 +169,7 @@ export default function TimetablesTerminalTable({
                 <select
                   value={selectedTerminalId}
                   onChange={(event) => setSelectedTerminalId(event.target.value)}
-                  className="configurator-modal__input w-full"
+                  className="w-full border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-300/70"
                 >
                   {terminals.map((terminal) => (
                     <option key={terminal.id} value={String(terminal.id)}>
@@ -179,7 +179,7 @@ export default function TimetablesTerminalTable({
                 </select>
                 <button
                   type="button"
-                  className="configurator-action-link"
+                  className="inline-flex border border-cyan-300/20 bg-cyan-300/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-cyan-100 transition-colors duration-150 hover:bg-cyan-300/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
                   onClick={handleConfirmTerminal}
                   disabled={!selectedTerminalId || selectedTerminalId === confirmedTerminalId}
                 >
@@ -192,14 +192,14 @@ export default function TimetablesTerminalTable({
       ) : null}
 
       {currentStep === 'components' ? (
-        <section className="configurator-table-card">
-          <div className="configurator-table-card__header">
+        <section className="overflow-hidden border border-white/10 bg-slate-950/40 shadow-xl shadow-black/10">
+          <div className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-4">
             <div>
-              <h2 className="configurator-table-card__title">{componentsTitle}</h2>
+              <h2 className="text-lg font-semibold text-white">{componentsTitle}</h2>
             </div>
             <button
               type="button"
-              className="configurator-pagination-button"
+              className="inline-flex border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-100 transition-colors duration-150 hover:bg-white/10 disabled:cursor-not-allowed disabled:border-white/5 disabled:bg-white/[0.03] disabled:text-slate-500"
               onClick={handleBackToTerminals}
             >
               Back
@@ -208,17 +208,17 @@ export default function TimetablesTerminalTable({
 
           <div className="p-5">
             {componentsLoading ? (
-              <p className="configurator-table__feedback">Loading components...</p>
+              <p className="px-5 py-6 text-center text-sm text-slate-400">Loading components...</p>
             ) : null}
 
             {!componentsLoading && componentsError ? (
-              <p className="configurator-table__feedback configurator-table__feedback--error">
+              <p className="px-5 py-6 text-center text-sm text-rose-300">
                 {componentsError}
               </p>
             ) : null}
 
             {!componentsLoading && !componentsError && components.length === 0 ? (
-              <p className="configurator-table__feedback">
+              <p className="px-5 py-6 text-center text-sm text-slate-400">
                 No components found for this terminal.
               </p>
             ) : null}
@@ -229,7 +229,7 @@ export default function TimetablesTerminalTable({
                   <select
                     value={selectedComponentId}
                     onChange={(event) => setSelectedComponentId(event.target.value)}
-                    className="configurator-modal__input w-full"
+                    className="w-full border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-300/70"
                   >
                     {components.map((component) => (
                       <option
@@ -242,7 +242,7 @@ export default function TimetablesTerminalTable({
                   </select>
                   <button
                     type="button"
-                    className="configurator-action-link"
+                    className="inline-flex border border-cyan-300/20 bg-cyan-300/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-cyan-100 transition-colors duration-150 hover:bg-cyan-300/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
                     onClick={handleConfirmComponent}
                     disabled={
                       !selectedComponentId ||
@@ -259,14 +259,14 @@ export default function TimetablesTerminalTable({
       ) : null}
 
       {currentStep === 'assignments' ? (
-        <section className="configurator-table-card">
-          <div className="configurator-table-card__header">
+        <section className="overflow-hidden border border-white/10 bg-slate-950/40 shadow-xl shadow-black/10">
+          <div className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-4">
             <div>
-              <h2 className="configurator-table-card__title">{assignmentsTitle}</h2>
+              <h2 className="text-lg font-semibold text-white">{assignmentsTitle}</h2>
             </div>
             <button
               type="button"
-              className="configurator-pagination-button"
+              className="inline-flex border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-100 transition-colors duration-150 hover:bg-white/10 disabled:cursor-not-allowed disabled:border-white/5 disabled:bg-white/[0.03] disabled:text-slate-500"
               onClick={handleBackToComponents}
             >
               Back
@@ -275,17 +275,17 @@ export default function TimetablesTerminalTable({
 
           <div className="p-5">
             {assignmentsLoading ? (
-              <p className="configurator-table__feedback">Loading assignments...</p>
+              <p className="px-5 py-6 text-center text-sm text-slate-400">Loading assignments...</p>
             ) : null}
 
             {!assignmentsLoading && assignmentsError ? (
-              <p className="configurator-table__feedback configurator-table__feedback--error">
+              <p className="px-5 py-6 text-center text-sm text-rose-300">
                 {assignmentsError}
               </p>
             ) : null}
 
             {!assignmentsLoading && !assignmentsError && assignments.length === 0 ? (
-              <p className="configurator-table__feedback">
+              <p className="px-5 py-6 text-center text-sm text-slate-400">
                 No assignments found for this component today.
               </p>
             ) : null}
@@ -295,18 +295,18 @@ export default function TimetablesTerminalTable({
                 {assignments.map((assignment, index) => (
                   <div
                     key={`${getAssignmentTimeRange(assignment)}-${index}`}
-                    className="recommendation-result__row"
+                    className="border border-white/10 bg-white/[0.02] px-4 py-3"
                   >
-                    <span className="recommendation-result__label">
+                    <span className="block text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
                       {getAssignmentTimeRange(assignment)}
                     </span>
                     {flightsLoading ? (
-                      <span className="recommendation-result__value">
+                      <span className="mt-2 block text-sm text-slate-100">
                         Loading flight info...
                       </span>
                     ) : null}
                     {!flightsLoading && flightsError ? (
-                      <span className="recommendation-result__value">
+                      <span className="mt-2 block text-sm text-slate-100">
                         {flightsError}
                       </span>
                     ) : null}
@@ -317,7 +317,7 @@ export default function TimetablesTerminalTable({
 
                           if (!flight) {
                             return (
-                              <div key={flightId} className="recommendation-result__value">
+                              <div key={flightId} className="mt-2 block text-sm text-slate-100">
                                 Flight {flightId} not found.
                               </div>
                             )
@@ -327,10 +327,10 @@ export default function TimetablesTerminalTable({
                             <div key={flightId} className="space-y-2">
                               {Object.entries(flight).map(([key, value]) => (
                                 <div key={`${flightId}-${key}`}>
-                                  <span className="recommendation-result__label">
+                                  <span className="block text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
                                     {key}
                                   </span>
-                                  <span className="recommendation-result__value">
+                                  <span className="mt-2 block text-sm text-slate-100">
                                     {String(value)}
                                   </span>
                                 </div>

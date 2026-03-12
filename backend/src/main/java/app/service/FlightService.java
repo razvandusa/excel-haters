@@ -39,10 +39,13 @@ public class FlightService {
             throw new IllegalArgumentException("Flight with this flightId already exists.");
         }
         flight.setFlightId(flightRequest.getFlightId());
-        if (flightRequest.getTerminalName() == null || !terminalService.findByName(flightRequest.getTerminalName()).getActive()) {
+        var terminal = flightRequest.getTerminalName() != null
+                ? terminalService.findByName(flightRequest.getTerminalName())
+                : null;
+        if (terminal == null || !terminal.getActive()) {
             throw new IllegalArgumentException("Terminal does not exist.");
         }
-        flight.setTerminalName(flightRequest.getTerminalName());
+        flight.setTerminalName(terminal.getName());
         if (flightRequest.getDepartureTime() != null) {
             flight.setDeparture(LocalDateTime.parse(flightRequest.getDepartureTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         } else if (flightRequest.getArrivalTime() != null) {

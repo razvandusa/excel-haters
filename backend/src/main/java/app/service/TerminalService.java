@@ -19,7 +19,7 @@ public class TerminalService {
 
     public void add(CreateTerminalRequest terminalRequest) {
         Terminal terminal = new Terminal();
-        terminal.setName(terminalRequest.getName());
+        terminal.setName(normalizeTerminalName(terminalRequest.getName()));
 
         // Verificare ca numele terminalului nu fie null sau gol
         if (terminal.getName() == null || terminal.getName().isBlank()) {
@@ -50,7 +50,7 @@ public class TerminalService {
     }
 
     public void update(Long id, UpdateTerminalRequest updateTerminalRequest) {
-        String name = updateTerminalRequest.getName();
+        String name = normalizeTerminalName(updateTerminalRequest.getName());
         Boolean active = updateTerminalRequest.getIsActive();
         // Verificare daca terminalul exista
         Terminal terminal = repository.findById(id);
@@ -72,10 +72,14 @@ public class TerminalService {
     }
 
     public Terminal findByName(String name) {
-        return repository.findByName(name);
+        return repository.findByName(normalizeTerminalName(name));
     }
 
     public List<Terminal> getAll() {
         return repository.getAll();
+    }
+
+    private String normalizeTerminalName(String name) {
+        return name == null ? null : name.trim();
     }
 }

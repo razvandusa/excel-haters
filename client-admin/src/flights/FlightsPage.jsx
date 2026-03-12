@@ -1,12 +1,12 @@
-import { useRef } from 'react'
-import AddFlightModal from './components/AddFlightModal.jsx'
-import FlightActionModal from './components/FlightActionModal.jsx'
-import flightsContent from './config/flightsContent.js'
-import updateFlightTimeFieldDefinitions from './config/updateFlightTimeFieldDefinitions.js'
-import useFlightForm from './hooks/useFlightForm.js'
+import { useRef } from "react";
+import AddFlightModal from "./components/AddFlightModal.jsx";
+import FlightActionModal from "./components/FlightActionModal.jsx";
+import flightsContent from "./config/flightsContent.js";
+import updateFlightTimeFieldDefinitions from "./config/updateFlightTimeFieldDefinitions.js";
+import useFlightForm from "./hooks/useFlightForm.js";
 
 export default function FlightsPage() {
-  const excelInputRef = useRef(null)
+  const excelInputRef = useRef(null);
   const {
     closeForm,
     componentsByTerminalId,
@@ -29,32 +29,34 @@ export default function FlightsPage() {
     terminals,
     terminalsError,
     terminalsLoading,
-  } = useFlightForm()
+  } = useFlightForm();
 
   return (
-    <section className="page-shell">
-      <div className="page-panel page-panel--flights">
-        <p className="page-kicker page-kicker--flights">{flightsContent.kicker}</p>
-        <h1 className="page-title">{flightsContent.title}</h1>
+    <section className="mt-4">
+      <div className="border border-cyan-400/15 bg-cyan-400/5 p-6">
+        <p className="text-sm uppercase tracking-[0.2em] text-cyan-200">
+          {flightsContent.kicker}
+        </p>
+        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white">{flightsContent.title}</h1>
 
-        <div className="flights-page-actions">
+        <div className="mt-4 flex flex-wrap gap-2">
           <button
             type="button"
-            className="configurator-action-link"
+            className="inline-flex border border-cyan-300/20 bg-cyan-300/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-cyan-100 transition-colors duration-150 hover:bg-cyan-300/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
             onClick={() => excelInputRef.current?.click()}
           >
             {flightsContent.addExcelLabel}
           </button>
           <button
             type="button"
-            className="configurator-action-link"
+            className="inline-flex border border-cyan-300/20 bg-cyan-300/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-cyan-100 transition-colors duration-150 hover:bg-cyan-300/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
             onClick={openAddForm}
           >
             {flightsContent.addFormLabel}
           </button>
           <button
             type="button"
-            className="configurator-action-link"
+            className="inline-flex border border-cyan-300/20 bg-cyan-300/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-cyan-100 transition-colors duration-150 hover:bg-cyan-300/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
             onClick={openUpdateTimeForm}
           >
             {flightsContent.updateTimeLabel}
@@ -64,7 +66,7 @@ export default function FlightsPage() {
           ref={excelInputRef}
           type="file"
           accept=".xlsx,.xls"
-          className="configurator-image-panel__input"
+          className="sr-only"
           onChange={handleExcelUpload}
         />
       </div>
@@ -96,5 +98,5 @@ export default function FlightsPage() {
         title={flightsContent.updateTimeModalTitle}
       />
     </section>
-  )
+  );
 }

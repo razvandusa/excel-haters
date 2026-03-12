@@ -6,12 +6,12 @@ export default function TimetablesPage() {
   const { terminals, terminalsError, terminalsLoading } = useTimetablesOverview()
 
   return (
-    <section className="page-shell">
-      <div className="page-panel page-panel--timetables">
-        <p className="page-kicker page-kicker--timetables">
+    <section className="mt-4">
+      <div className="border border-cyan-400/15 bg-cyan-400/5 p-6">
+        <p className="text-sm uppercase tracking-[0.2em] text-cyan-200">
           {timetablesContent.kicker}
         </p>
-        <h1 className="page-title">{timetablesContent.title}</h1>
+        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white">{timetablesContent.title}</h1>
 
         <div className="mt-8">
           <TimetablesTerminalTable

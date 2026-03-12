@@ -6,8 +6,10 @@ import app.dto.flight.UpdateFlightRequest;
 import app.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestController
@@ -43,41 +45,48 @@ public class FlightController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Map<String, Object> createFlight(@RequestBody CreateFlightRequest request) {
+    public ResponseEntity<Map<String, Object>> createFlight(@RequestBody CreateFlightRequest request) {
         try {
             flightService.add(request);
-            return Map.of(
-                    "message", "Flight created",
-                    "flightId", request.getFlightId(),
-                    "terminalName", request.getTerminalName(),
-                    "departureTime", request.getDepartureTime(),
-                    "arrivalTime", request.getArrivalTime()
-            );
+            Map<String, Object> body = new LinkedHashMap<>();
+            body.put("message", "Flight created");
+            body.put("flightId", request.getFlightId());
+            body.put("terminalName", request.getTerminalName());
+            body.put("departureTime", request.getDepartureTime());
+            body.put("arrivalTime", request.getArrivalTime());
+            return ResponseEntity.status(HttpStatus.CREATED).body(body);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "error", e.getMessage() != null ? e.getMessage() : "Invalid flight request"
+            ));
         } catch (Exception e) {
-            return Map.of(
-                    "error", e.getMessage()
-            );
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "error", "Unexpected server error while creating flight."
+            ));
         }
     }
 
     @PatchMapping("/{id}")
-    public Map<String, Object> updateFlight(
+    public ResponseEntity<Map<String, Object>> updateFlight(
             @PathVariable String id,
             @RequestBody UpdateFlightRequest request
     ) {
         try {
             flightService.delay(id, request);
-            return Map.of(
-                    "message", "Flight updated",
-                    "id", id,
-                    "departureTime", request.getDepartureTime(),
-                    "arrivalTime", request.getArrivalTime()
-            );
+            Map<String, Object> body = new LinkedHashMap<>();
+            body.put("message", "Flight updated");
+            body.put("id", id);
+            body.put("departureTime", request.getDepartureTime());
+            body.put("arrivalTime", request.getArrivalTime());
+            return ResponseEntity.ok(body);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "error", e.getMessage() != null ? e.getMessage() : "Invalid flight update request"
+            ));
         } catch (Exception e) {
-            return Map.of(
-                    "error", e.getMessage()
-            );
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "error", "Unexpected server error while updating flight."
+            ));
         }
     }
 }
