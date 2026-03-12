@@ -52,7 +52,8 @@ export default function TabNav({ onLogout, tabs }) {
             {tabIcons[tab.id] ? (
               <>
                 <span
-                  className="material-symbols-outlined text-[18px] leading-none"
+                  aria-hidden="true"
+                  className="material-symbols-outlined notranslate inline-block shrink-0 text-[18px] leading-none"
                   style={{ fontVariationSettings: "'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24" }}
                 >
                   {tabIcons[tab.id]}
